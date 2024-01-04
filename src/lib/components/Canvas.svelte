@@ -107,16 +107,15 @@
 			this.drawPosY = this.AreaYBegin + (boxAreaHeight - this.size) / 2;
 		}
 
-		public checkWinner(col: number, row: number): boolean {
-			console.log("---checking wonner---"); 
+		public checkWinnerBase(col: number, row: number): boolean {
+			console.log('---checking wonner---');
 			if (this.player === 0) {
 				return false;
 			}
-
-			let diagToRightWinner = this.checkDiagToRight(col, row, 0);
-			let diagToLeftWinner = this.checkDiagToLeft(col, row, 0);
-			let horizWinner = this.checkHoriz(col, row, 0);
-			let vertWinner = this.checkVert(col, row, 0);
+			let diagToRightWinner = this.checkWinner(col, row, 0, 1);
+			let diagToLeftWinner = this.checkWinner(col, row, 0, 2);
+			let horizWinner = this.checkWinner(col, row, 0, 3);
+			let vertWinner = this.checkWinner(col, row, 0, 4);
 
 			if (diagToRightWinner || diagToLeftWinner || horizWinner || vertWinner) {
 				return true;
@@ -125,73 +124,25 @@
 			return false;
 		}
 
-		private checkDiagToRight(col: number, row: number, len: number): boolean {
+		private checkWinner(col: number, row: number, len: number, type: number): boolean {
 			let won = false;
-
 			if (len >= winLength) {
 				return true;
 			}
-
-			if (boxes[col] === undefined || boxes[col][row] === undefined) {
-				return false;
-			}
-
-			if (boxes[col][row].player === this.player) {
-				won = this.checkDiagToRight(col + 1, row + 1, len + 1);
-			}
-
-			return won;
-		}
-
-		private checkDiagToLeft(col: number, row: number, len: number): boolean {
-			let won = false;
-
-			if (len >= winLength) {
-				return true;
-			}
-
 			if (boxes[col] === undefined || boxes[col][row] === undefined) {
 				return false;
 			}
 			if (boxes[col][row].player === this.player) {
-				won = this.checkDiagToLeft(col - 1, row + 1, len + 1);
+				if (type === 1) {
+					won = this.checkWinner(col + 1, row + 1, len + 1, 1);
+				} else if (type === 2) {
+					won = this.checkWinner(col - 1, row + 1, len + 1, 2);
+				} else if (type === 3) {
+					won = this.checkWinner(col + 1, row, len + 1, 3);
+				} else if (type === 4) {
+					won = this.checkWinner(col, row + 1, len + 1, 4);
+				}
 			}
-			return won;
-		}
-
-		private checkHoriz(col: number, row: number, len: number): boolean {
-			let won = false;
-
-			if (len >= winLength) {
-				return true;
-			}
-
-			if (boxes[col] === undefined || boxes[col][row] === undefined) {
-				return false;
-			}
-
-			if (boxes[col][row].player === this.player) {
-				won = this.checkHoriz(col + 1, row, len + 1);
-			}
-
-			return won;
-		}
-
-		private checkVert(col: number, row: number, len: number): boolean {
-			let won = false;
-			
-			if (len >= winLength) {
-				return true;
-			}
-
-			if (boxes[col] === undefined || boxes[col][row] === undefined) {
-				return false;
-			}
-
-			if (boxes[col][row].player === this.player) {
-				won = this.checkVert(col, row + 1, len + 1);
-			}
-
 			return won;
 		}
 	}
@@ -255,14 +206,14 @@
 	}
 
 	function findWinner() {
-		console.log("********Finding wonner********"); 
-		console.log("********Finding wonner********"); 
+		console.log('********Finding wonner********');
+		console.log('********Finding wonner********');
 		for (let i = 0; i < boxes.length; i++) {
 			for (let j = 0; j < boxes[i].length; j++) {
-				if (boxes[i][j].checkWinner(i, j) === true) {
+				if (boxes[i][j].checkWinnerBase(i, j) === true) {
 					winner = boxes[i][j].player;
 
-					console.log( '++++Winner: ', winner)
+					console.log('++++Winner: ', winner);
 				}
 			}
 		}
