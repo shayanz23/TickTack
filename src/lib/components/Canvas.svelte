@@ -104,6 +104,10 @@
 			this.drawPosX = this.AreaXBegin + (boxAreaWidth - this.size) / 2;
 			this.drawPosY = this.AreaYBegin + (boxAreaHeight - this.size) / 2;
 		}
+
+		public checkWinner() {
+
+		}
 	}
 
 	class XComponent extends BoxComponent {
@@ -155,13 +159,20 @@
 			console.error('context is null');
 			return;
 		}
-		let x = event.clientX - left;
-		let y = event.clientY - top;
+		const x = event.clientX - left;
+		const y = event.clientY - top;
 
+		const boxPos = findBox(x, y);
+
+		console.log(boxes);
+		
+		drawBox(boxPos);
+	}
+
+	function findBox(x: number, y: number) {
+		let found = false;
 		let boxColumn = null;
 		let boxRow = null;
-		let found = false;
-		console.log(boxes);
 		for (let i = 0; i < boxes.length; i++) {
 			for (let j = 0; j < boxes[i].length; j++) {
 				if (
@@ -181,27 +192,31 @@
 				break;
 			}
 		}
-		if (boxColumn === null || boxRow === null) {
+		return {boxColumn, boxRow};
+	}
+
+	function drawBox(boxPos: {boxColumn: number|null, boxRow: number|null}) {
+		if (boxPos.boxColumn === null || boxPos.boxRow === null) {
 			return;
 		}
-		if (boxes[boxColumn][boxRow] != null && !boxes[boxColumn][boxRow].drawn) {
+		if (boxes[boxPos.boxColumn][boxPos.boxRow] != null && !boxes[boxPos.boxColumn][boxPos.boxRow].drawn) {
 			if (playerTurn == 1) {
 				let newComponent = new XComponent(
-					boxes[boxColumn][boxRow].AreaXBegin,
-					boxes[boxColumn][boxRow].AreaYBegin
+					boxes[boxPos.boxColumn][boxPos.boxRow].AreaXBegin,
+					boxes[boxPos.boxColumn][boxPos.boxRow].AreaYBegin
 				);
-				boxes[boxColumn][boxRow] = newComponent;
-				if (boxes[boxColumn][boxRow].drawn) {
+				boxes[boxPos.boxColumn][boxPos.boxRow] = newComponent;
+				if (boxes[boxPos.boxColumn][boxPos.boxRow].drawn) {
 					playerTurn = 2;
 				}
 				return;
 			} else if (playerTurn == 2) {
 				let newComponent = new OComponent(
-					boxes[boxColumn][boxRow].AreaXBegin,
-					boxes[boxColumn][boxRow].AreaYBegin
+					boxes[boxPos.boxColumn][boxPos.boxRow].AreaXBegin,
+					boxes[boxPos.boxColumn][boxPos.boxRow].AreaYBegin
 				);
-				boxes[boxColumn][boxRow] = newComponent;
-				if (boxes[boxColumn][boxRow].drawn) {
+				boxes[boxPos.boxColumn][boxRow] = newComponent;
+				if (boxes[boxPos.boxColumn][boxPos.boxRow].drawn) {
 					playerTurn = 1;
 				}
 				return;
