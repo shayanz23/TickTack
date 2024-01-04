@@ -1,17 +1,20 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	let height: number = 600;
-	let width: number = 600;
-	let gridRows: number = 4;
-	let gridColumns: number = 4;
-	let boxAreaHeight: number = height / gridRows;
-	let boxAreaWidth: number = width / gridColumns;
+	const height: number = 600;
+	const width: number = 600;
+	const gridRows: number = 4;
+	const gridColumns: number = 4;
+	const winLength = 3;
+	const boxAreaHeight: number = height / gridRows;
+	const boxAreaWidth: number = width / gridColumns;
 	let gameCanvas: HTMLCanvasElement;
 	let context: CanvasRenderingContext2D;
 	let boxes: BoxComponent[][] = [];
 	let playerTurn: number = 1;
 	let left: number = 0;
 	let top: number = 0;
+	let winner = 0;
+	let gameOver = false;
 
 	onMount(() => {
 		if (gameCanvas == null) {
@@ -85,7 +88,6 @@
 
 		protected beginDrawing() {
 			console.log('being drawn');
-			console.log(this);
 			context.lineWidth = this.lineWidth;
 
 			// context.strokeStyle = '#' + Math.floor(Math.random() * 16777215).toString(16);
@@ -105,8 +107,92 @@
 			this.drawPosY = this.AreaYBegin + (boxAreaHeight - this.size) / 2;
 		}
 
-		public checkWinner() {
+		public checkWinner(col: number, row: number): boolean {
+			console.log("---checking wonner---"); 
+			if (this.player === 0) {
+				return false;
+			}
 
+			let diagToRightWinner = this.checkDiagToRight(col, row, 0);
+			let diagToLeftWinner = this.checkDiagToLeft(col, row, 0);
+			let horizWinner = this.checkHoriz(col, row, 0);
+			let vertWinner = this.checkVert(col, row, 0);
+
+			if (diagToRightWinner || diagToLeftWinner || horizWinner || vertWinner) {
+				return true;
+			}
+
+			return false;
+		}
+
+		private checkDiagToRight(col: number, row: number, len: number): boolean {
+			let won = false;
+
+			if (len >= winLength) {
+				return true;
+			}
+
+			if (boxes[col] === undefined || boxes[col][row] === undefined) {
+				return false;
+			}
+
+			if (boxes[col][row].player === this.player) {
+				won = this.checkDiagToRight(col + 1, row + 1, len + 1);
+			}
+
+			return won;
+		}
+
+		private checkDiagToLeft(col: number, row: number, len: number): boolean {
+			let won = false;
+
+			if (len >= winLength) {
+				return true;
+			}
+
+			if (boxes[col] === undefined || boxes[col][row] === undefined) {
+				return false;
+			}
+			if (boxes[col][row].player === this.player) {
+				won = this.checkDiagToLeft(col - 1, row + 1, len + 1);
+			}
+			return won;
+		}
+
+		private checkHoriz(col: number, row: number, len: number): boolean {
+			let won = false;
+
+			if (len >= winLength) {
+				return true;
+			}
+
+			if (boxes[col] === undefined || boxes[col][row] === undefined) {
+				return false;
+			}
+
+			if (boxes[col][row].player === this.player) {
+				won = this.checkHoriz(col + 1, row, len + 1);
+			}
+
+			return won;
+		}
+
+		private checkVert(col: number, row: number, len: number): boolean {
+			let won = false;
+			
+			if (len >= winLength) {
+				return true;
+			}
+
+			if (boxes[col] === undefined || boxes[col][row] === undefined) {
+				return false;
+			}
+
+			if (boxes[col][row].player === this.player) {
+				won = this.checkVert(col, row + 1, len + 1);
+			}
+
+			return won;
 		}
 	}
 
@@ -148,30 +234,46 @@
 	}
 
 	function handleCanvasClick(event: MouseEvent) {
-		if (gameCanvas == null) {
-			console.error('game Canvas is null');
-			return;
-		}
-		left = gameCanvas.getBoundingClientRect().left;
-		top = gameCanvas.getBoundingClientRect().top;
-		console.log('left, top ', left, top);
-		if (context == null) {
-			console.error('context is null');
-			return;
-		}
-		const x = event.clientX - left;
-		const y = event.clientY - top;
+		if (!gameOver) {
+			if (gameCanvas == null) {
+				console.error('game Canvas is null');
+				return;
+			}
+			if (context == null) {
+				console.error('context is null');
+				return;
+			}
+			left = gameCanvas.getBoundingClientRect().left;
+			top = gameCanvas.getBoundingClientRect().top;
+			const x = event.clientX - left;
+			const y = event.clientY - top;
+			const boxPos = findBox(x, y);
 
-		const boxPos = findBox(x, y);
+			drawBox(boxPos);
+			findWinner();
+		}
+	}
 
-		console.log(boxes);
-		
-		drawBox(boxPos);
+	function findWinner() {
+		console.log("********Finding wonner********"); 
+		console.log("********Finding wonner********"); 
+		for (let i = 0; i < boxes.length; i++) {
+			for (let j = 0; j < boxes[i].length; j++) {
+				if (boxes[i][j].checkWinner(i, j) === true) {
+					winner = boxes[i][j].player;
+
+					console.log( '++++Winner: ', winner)
+				}
+			}
+		}
+		if (winner != 0) {
+			gameOver = true;
+		}
 	}
 
 	function findBox(x: number, y: number) {
 		let found = false;
-		let boxColumn = null;
+		let boxCol = null;
 		let boxRow = null;
 		for (let i = 0; i < boxes.length; i++) {
 			for (let j = 0; j < boxes[i].length; j++) {
@@ -181,42 +283,41 @@
 					y > boxes[i][j].AreaYBegin &&
 					y < boxes[i][j].AreaYBegin + boxAreaHeight
 				) {
-					boxColumn = i;
+					boxCol = i;
 					boxRow = j;
 					found = true;
 					break;
 				}
 			}
 			if (found) {
-				console.log(found);
 				break;
 			}
 		}
-		return {boxColumn, boxRow};
+		return { boxCol, boxRow };
 	}
 
-	function drawBox(boxPos: {boxColumn: number|null, boxRow: number|null}) {
-		if (boxPos.boxColumn === null || boxPos.boxRow === null) {
+	function drawBox(boxPos: { boxCol: number | null; boxRow: number | null }) {
+		if (boxPos.boxCol === null || boxPos.boxRow === null) {
 			return;
 		}
-		if (boxes[boxPos.boxColumn][boxPos.boxRow] != null && !boxes[boxPos.boxColumn][boxPos.boxRow].drawn) {
+		if (boxes[boxPos.boxCol][boxPos.boxRow] != null && !boxes[boxPos.boxCol][boxPos.boxRow].drawn) {
 			if (playerTurn == 1) {
 				let newComponent = new XComponent(
-					boxes[boxPos.boxColumn][boxPos.boxRow].AreaXBegin,
-					boxes[boxPos.boxColumn][boxPos.boxRow].AreaYBegin
+					boxes[boxPos.boxCol][boxPos.boxRow].AreaXBegin,
+					boxes[boxPos.boxCol][boxPos.boxRow].AreaYBegin
 				);
-				boxes[boxPos.boxColumn][boxPos.boxRow] = newComponent;
-				if (boxes[boxPos.boxColumn][boxPos.boxRow].drawn) {
+				boxes[boxPos.boxCol][boxPos.boxRow] = newComponent;
+				if (boxes[boxPos.boxCol][boxPos.boxRow].drawn) {
 					playerTurn = 2;
 				}
 				return;
 			} else if (playerTurn == 2) {
 				let newComponent = new OComponent(
-					boxes[boxPos.boxColumn][boxPos.boxRow].AreaXBegin,
-					boxes[boxPos.boxColumn][boxPos.boxRow].AreaYBegin
+					boxes[boxPos.boxCol][boxPos.boxRow].AreaXBegin,
+					boxes[boxPos.boxCol][boxPos.boxRow].AreaYBegin
 				);
-				boxes[boxPos.boxColumn][boxRow] = newComponent;
-				if (boxes[boxPos.boxColumn][boxPos.boxRow].drawn) {
+				boxes[boxPos.boxCol][boxPos.boxRow] = newComponent;
+				if (boxes[boxPos.boxCol][boxPos.boxRow].drawn) {
 					playerTurn = 1;
 				}
 				return;
