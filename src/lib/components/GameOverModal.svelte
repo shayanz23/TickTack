@@ -1,9 +1,9 @@
 <script lang="ts">
-	export let showModal; // boolean
+	export let showModal: boolean; // boolean
 	export let restartState = false;
 	import { goto } from '$app/navigation';
 
-	let dialog; // HTMLDialogElement
+	let dialog: HTMLDialogElement; // HTMLDialogElement
 
 	$: if (dialog && showModal) dialog.showModal();
 
