@@ -2,9 +2,9 @@
 	import { onMount } from 'svelte';
 	const height: number = 600;
 	const width: number = 600;
-	const gridRows: number = 4;
-	const gridColumns: number = 4;
-	const winLength = 3;
+	const gridRows: number = 5;
+	const gridColumns: number = 5;
+	const winLength = 4;
 	const boxAreaHeight: number = height / gridRows;
 	const boxAreaWidth: number = width / gridColumns;
 	let gameCanvas: HTMLCanvasElement;
@@ -13,8 +13,8 @@
 	let playerTurn: number = 1;
 	let left: number = 0;
 	let top: number = 0;
-	let winner = 0;
-	let gameOver = false;
+	export let winner = 0;
+	export let gameOver = false;
 
 	onMount(() => {
 		if (gameCanvas == null) {
