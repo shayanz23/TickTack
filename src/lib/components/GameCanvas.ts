@@ -1,0 +1,198 @@
+import { onMount } from 'svelte';
+import { navigating } from '$app/stores';
+import { writable } from 'svelte/store';
+import { browser } from '$app/environment';
+import { BoxComponent, XComponent, OComponent } from './BoxComponent';
+
+
+
+export class GameCanvas {
+
+    private gridRows: number = 5;
+    private gridColumns: number = 5;
+    private _winLength = 4;
+    private _height = 600;
+    private _width = 600;
+    private _htmlCanvas: HTMLCanvasElement;
+    private _context?: CanvasRenderingContext2D;
+    private _boxes: BoxComponent[][] = [];
+    protected playerTurn = 1;
+    private _winner = 0;
+    private isSmallDevice = false;
+    private _boxAreaHeight: number;
+    private _boxAreaWidth: number;
+
+    public get boxAreaHeight(): number {
+        return this._boxAreaHeight!;
+    }
+
+    public get boxAreaWidth(): number {
+        return this._boxAreaWidth!;
+    }
+
+    public get winner() {
+        return this._winner;
+    }
+    public set winner(value) {
+        this._winner = value;
+    }
+
+    public get width() {
+        return this._width;
+    }
+
+
+
+    public get height() {
+        return this._height;
+    }
+
+
+
+    public get boxes(): BoxComponent[][] {
+        return this._boxes;
+    }
+    public set boxes(value: BoxComponent[][]) {
+        this._boxes = value;
+    }
+
+    public get winLength(): number {
+        return this._winLength;
+    }
+
+    public get context(): CanvasRenderingContext2D {
+        return this._context!;
+    }
+
+    public set context(value: CanvasRenderingContext2D) {
+        this._context = value;
+
+    }
+
+    public get htmlCanvas(): HTMLCanvasElement {
+        return this._htmlCanvas;
+    }
+    public set htmlCanvas(value: HTMLCanvasElement) {
+        this._htmlCanvas = value;
+    }
+
+    constructor(htmlCanvas: HTMLCanvasElement, context: CanvasRenderingContext2D, gridRows: number, gridColumns: number, winLength: number, width: number, height: number) {
+        const setPropsPromise = new Promise((resolve, reject) => {
+            this._htmlCanvas = htmlCanvas;
+            this._height = height;
+            this.htmlCanvas.height = height;
+            this._width = width;
+            this.htmlCanvas.width = width;
+
+            this.gridColumns = gridColumns;
+            this.gridRows = gridRows;
+            this._boxAreaHeight = this.height / this.gridRows;
+            this._boxAreaWidth = this.width / this.gridColumns;
+            this._winLength = winLength;
+            console.log(this.htmlCanvas);
+            this.context = context;
+            resolve(0);
+        });
+        setPropsPromise.then(() => {
+            this.drawGrid();
+        })
+    }
+
+    private drawGrid() {
+        if (this._context == null) {
+            console.error('game Canvas this.context is null');
+            return;
+        }
+        this._context.font = this._boxAreaWidth + 'px serif';
+        let occumilatedLineHeight = 0;
+        let occumilatedLineWidth = 0;
+        this._context.strokeStyle = 'black';
+        this._context.lineWidth = 5;
+        for (let i = 0; i < this.gridRows - 1; i++) {
+            occumilatedLineHeight += this._boxAreaHeight;
+            this._context.beginPath();
+            this._context.moveTo(0, occumilatedLineHeight);
+            this._context.lineTo(this.width, occumilatedLineHeight);
+            this._context.closePath();
+            this._context.stroke();
+        }
+        for (let i = 0; i < this.gridColumns - 1; i++) {
+            occumilatedLineWidth += this._boxAreaWidth!;
+            this._context.beginPath();
+            this._context.moveTo(occumilatedLineWidth, 0);
+            this._context.lineTo(occumilatedLineWidth, this.height);
+            this._context.closePath();
+            this._context.stroke();
+        }
+        this.createBoxes();
+    }
+
+    private createBoxes() {
+        for (let i = 0; i < this.gridColumns; i++) {
+            this._boxes.push([]);
+            // console.log("column: ", i)
+            for (let j = 0; j < this.gridRows; j++) {
+                //for each column add the rows of boxes
+                // console.log("row: ", j)
+                this._boxes[i].push(new BoxComponent(i * this._boxAreaWidth, j * this._boxAreaHeight, this));
+            }
+        }
+    }
+
+    public findWinner() {
+        console.log('********Finding wonner********');
+        console.log('********Finding wonner********');
+        for (let i = 0; i < this._boxes.length; i++) {
+            for (let j = 0; j < this._boxes[i].length; j++) {
+                if (this._boxes[i][j].checkWinnerBase(i, j) === true) {
+                    this.winner = this._boxes[i][j].player;
+
+                    console.log('++++Winner: ', this.winner);
+                }
+            }
+        }
+    }
+
+    public findBox(x: number, y: number) {
+        let found = false;
+        let boxCol = null;
+        let boxRow = null;
+        for (let i = 0; i < this._boxes.length; i++) {
+            for (let j = 0; j < this._boxes[i].length; j++) {
+                if (
+                    x > this._boxes[i][j].AreaXBegin &&
+                    x < this._boxes[i][j].AreaXBegin + this._boxAreaWidth &&
+                    y > this._boxes[i][j].AreaYBegin &&
+                    y < this._boxes[i][j].AreaYBegin + this._boxAreaHeight
+                ) {
+                    boxCol = i;
+                    boxRow = j;
+                    found = true;
+                    break;
+                }
+            }
+            if (found) {
+                break;
+            }
+        }
+        return { boxCol, boxRow };
+    }
+
+    public drawBox(boxPos: { boxCol: number | null; boxRow: number | null }) {
+        if (boxPos.boxCol === null || boxPos.boxRow === null) {
+            return new Error("");
+        }
+        let box = this.boxes[boxPos.boxCol][boxPos.boxRow];
+        if (box !== null && !box.drawn) {
+            if (this.playerTurn === 1) {
+                box = new XComponent(box.AreaXBegin, box.AreaYBegin, this);
+                this.playerTurn = 2;
+            } else if (this.playerTurn === 2) {
+                box = new OComponent(box.AreaXBegin, box.AreaYBegin, this);
+                this.playerTurn = 1;
+            }
+        }
+        this.boxes[boxPos.boxCol][boxPos.boxRow] = box;
+    }
+
+}

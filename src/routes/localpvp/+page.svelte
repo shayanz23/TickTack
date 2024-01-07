@@ -1,5 +1,5 @@
 <script lang="ts">
-	import Canvas from '$lib/components/Canvas.svelte';
+	import Canvas from '$lib/components/LocalPvpCanvas.svelte';
 	import GameOverModal from '$lib/components/GameOverModal.svelte';
 	let gameOver = false;
 	let winner = 0;
@@ -26,12 +26,23 @@
 		{/each}
 	</div>
 	<GameOverModal bind:showModal bind:restartState>
-		<h2 slot="header">Game Over!</h2>
-		<p>player {winner} wins!</p>
+		<div>
+			<h2>Game Over!</h2>
+			<p>Player {winner} wins!</p>
+		</div>
 	</GameOverModal>
 </div>
 
 <style>
+	h2 {
+		margin: 0%;
+		margin-bottom: 10px;
+	}
+
+	p {
+		margin: 5px;
+	}
+
 	#page-div {
 		display: grid;
 		grid-template-rows: auto;

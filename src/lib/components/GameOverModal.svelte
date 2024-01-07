@@ -29,12 +29,8 @@
 	on:click|self={() => dialog.close()}
 >
 	<!-- svelte-ignore a11y-no-static-element-interactions -->
-	<div id="main-div" on:click|stopPropagation>
-		<slot name="header" />
-		<hr />
-		<slot id="slot"/>
-		<hr />
-
+	<div id="modal-div" on:click|stopPropagation>
+		<slot id="modal-slot"/>
 		<!-- svelte-ignore a11y-autofocus -->
 		<div id="modal-buttons">
 			<button id="modal-home-button" autofocus on:click={() => toHome()}>Home</button>
@@ -44,28 +40,55 @@
 </dialog>
 
 <style>
-	#main-div {
+
+
+
+	#modal-div {
 		display: grid;
 		grid-template-rows: 5;
 		grid-template-columns: 1;
+		height:auto;
 	}
 
 	#modal-buttons {
 		display: grid;
 		grid-template-rows: 1;
 		grid-template-columns: 5;
+
 	}
+
+	
+
+	#modal-slot {
+		grid-row: 1;
+	}
+
+	
 
 	#modal-home-button {
 		grid-column: 4;
+		margin-left: 60%;
+		margin-right: 0%;
 	}
+	
 	#modal-restart-button {
 		grid-column: 5;
+		margin-left: 40%;
+		margin-right: 0px;
+		padding: 0px;
 	}
+
+	button {
+		height: 30px;
+		min-width: fit-content;
+		width: 70px;
+		
+	}
+
 	dialog {
 		width: 26em;
-		height: 15em;
-		border-radius: 0.2em;
+		height: fit-content;
+		border-radius: 0.5em;
 		border: none;
 		padding: 0;
 	}
