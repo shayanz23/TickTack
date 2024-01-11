@@ -5,8 +5,8 @@
 	import { browser } from '$app/environment';
 	import { GameCanvas } from './GameCanvas';
 	import { XComponent, OComponent } from './BoxComponent';
-	$: height = 600;
-	$: width = 600;
+	let height = 600;
+	let width = 600;
 	let left = 0;
 	let top = 0;
 	let isSmallDevice = false;
@@ -30,10 +30,10 @@
 			let box = this.boxes[boxPos.boxCol][boxPos.boxRow];
 			if (box !== null && !box.drawn) {
 				if (this.playerTurn === 1) {
-					box = new XComponent(box.AreaXBegin, box.AreaYBegin, this);
+					box = new XComponent(box.areaXBegin, box.areaYBegin, this);
 					this.playerTurn = 2;
 				} else if (this.playerTurn === 2) {
-					box = new OComponent(box.AreaXBegin, box.AreaYBegin, this);
+					box = new OComponent(box.areaXBegin, box.areaYBegin, this);
 					this.playerTurn = 1;
 				}
 			}
@@ -51,13 +51,17 @@
 			console.error('game Canvas context is null');
 			return;
 		}
+		gameCanvas = new LocalPvpCanvas(htmlCanvas,htmlCanvas.getContext('2d')!, 5, 5, 4);
 		if (browser) {
 			if (window.outerWidth <= screens.md) {
-				width = 300;
-				height = 300;
+				gameCanvas.width = 300
+			gameCanvas.height = 300
 			}
 			console.log(width);
-			gameCanvas = new LocalPvpCanvas(htmlCanvas,htmlCanvas.getContext('2d')!, 5, 5, 4, width, height);
+			console.log(htmlCanvas.width)
+			
+			console.log(htmlCanvas.width)
+			console.log(htmlCanvas.height)
 
 		}
 	});
@@ -84,10 +88,17 @@
 			winner !== 0 ? (gameOver = true) : null;
 		}
 	}
+
+	function redraw() {
+		gameCanvas.width = 400
+		gameCanvas.height = 350;
+	}
 </script>
 
 <canvas id="game-canvas" {width} {height} bind:this={htmlCanvas} on:click={handleCanvasClick}
 ></canvas>
+
+<button on:click={redraw}></button>
 
 <style>
 	#game-canvas {

@@ -1,8 +1,8 @@
 import { GameCanvas } from "./GameCanvas"
 
 export class BoxComponent {
-    AreaXBegin: number;
-    AreaYBegin: number;
+    areaXBegin: number;
+    areaYBegin: number;
     lineWidth: number;
     padding: number;
     size: number = 0;
@@ -11,15 +11,11 @@ export class BoxComponent {
     drawn: boolean = false;
     player: number = 0;
     canvas: GameCanvas;
-    private boxAreaHeight: number;
-    private boxAreaWidth: number;
-    constructor(AreaXBegin: number, AreaYBegin: number, canvas: GameCanvas) {
-        this.AreaXBegin = AreaXBegin;
-        this.AreaYBegin = AreaYBegin;
+    constructor(areaXBegin: number, areaYBegin: number, canvas: GameCanvas) {
+        this.areaXBegin = areaXBegin;
+        this.areaYBegin = areaYBegin;
         this.canvas = canvas;
-        this.boxAreaHeight = canvas.boxAreaHeight;
-        this.boxAreaWidth = canvas.boxAreaWidth;
-        this.lineWidth = Math.min(this.boxAreaHeight, this.boxAreaWidth) / 7;
+        this.lineWidth = Math.min(this.canvas.boxAreaHeight, this.canvas.boxAreaWidth) / 7;
         this.padding = this.lineWidth;
         this.calculateDrawPos();
     }
@@ -39,10 +35,22 @@ export class BoxComponent {
         this.drawn = true;
     }
 
-    private calculateDrawPos() {
-        this.size = Math.min(this.boxAreaHeight, this.boxAreaWidth) - this.padding * 2;
-        this.drawPosX = this.AreaXBegin + (this.boxAreaWidth - this.size) / 2;
-        this.drawPosY = this.AreaYBegin + (this.boxAreaHeight - this.size) / 2;
+    public calculateDrawPos() {
+        this.size = Math.min(this.canvas.boxAreaHeight, this.canvas.boxAreaWidth) - this.padding * 2;
+        this.drawPosX = this.areaXBegin + (this.canvas.boxAreaWidth - this.size) / 2;
+        this.drawPosY = this.areaYBegin + (this.canvas.boxAreaHeight - this.size) / 2;
+    }
+
+    public recalculateDrawPos(areaXBegin: number, areaYBegin: number) {
+        this.areaXBegin = areaXBegin
+        this.areaYBegin = areaYBegin;
+        this.size = Math.min(this.canvas.boxAreaHeight, this.canvas.boxAreaWidth) - this.padding * 2;
+        this.drawPosX = this.areaXBegin + (this.canvas.boxAreaWidth - this.size) / 2;
+        this.drawPosY = this.areaYBegin + (this.canvas.boxAreaHeight - this.size) / 2;
+    }
+
+    public draw(): void {
+
     }
 
     public checkWinnerBase(col: number, row: number): boolean {
@@ -64,6 +72,7 @@ export class BoxComponent {
 
     private checkWinner(col: number, row: number, len: number, type: number): boolean {
         let won = false;
+        console.log(len);
         if (len >= this.canvas.winLength) {
             return true;
         }
@@ -92,7 +101,7 @@ export class XComponent extends BoxComponent {
         this.draw();
     }
 
-    private draw() {
+    public draw() {
         this.beginDrawing();
         this.canvas.context.moveTo(this.drawPosX, this.drawPosY);
         this.canvas.context.lineTo(this.drawPosX + this.size, this.drawPosY + this.size);
@@ -109,7 +118,7 @@ export class OComponent extends BoxComponent {
         this.draw();
     }
 
-    private draw() {
+    public draw() {
         this.beginDrawing();
         this.canvas.context.arc(
             this.drawPosX + this.size / 2,

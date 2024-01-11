@@ -41,13 +41,23 @@ export class GameCanvas {
         return this._width;
     }
 
-
+    public set width(value: number) {
+        this._width = value;
+        this._boxAreaWidth = this.width / this.gridColumns;
+        this.htmlCanvas.width = value;
+        this.redraw();
+    }
 
     public get height() {
         return this._height;
     }
 
-
+    public set height(value: number) {
+        this._height = value;
+        this._boxAreaHeight = this.height / this.gridRows;
+        this.htmlCanvas.height = value;
+        this.redraw();
+    }
 
     public get boxes(): BoxComponent[][] {
         return this._boxes;
@@ -76,14 +86,8 @@ export class GameCanvas {
         this._htmlCanvas = value;
     }
 
-    constructor(htmlCanvas: HTMLCanvasElement, context: CanvasRenderingContext2D, gridRows: number, gridColumns: number, winLength: number, width: number, height: number) {
-        const setPropsPromise = new Promise((resolve, reject) => {
+    constructor(htmlCanvas: HTMLCanvasElement, context: CanvasRenderingContext2D, gridRows: number, gridColumns: number, winLength: number) {
             this._htmlCanvas = htmlCanvas;
-            this._height = height;
-            this.htmlCanvas.height = height;
-            this._width = width;
-            this.htmlCanvas.width = width;
-
             this.gridColumns = gridColumns;
             this.gridRows = gridRows;
             this._boxAreaHeight = this.height / this.gridRows;
@@ -91,11 +95,8 @@ export class GameCanvas {
             this._winLength = winLength;
             console.log(this.htmlCanvas);
             this.context = context;
-            resolve(0);
-        });
-        setPropsPromise.then(() => {
             this.drawGrid();
-        })
+
     }
 
     private drawGrid() {
@@ -125,6 +126,17 @@ export class GameCanvas {
             this._context.stroke();
         }
         this.createBoxes();
+    }
+
+    public redraw() {
+        console.log("redrawing")
+        this.drawGrid()
+        for (let i = 0; i < this.gridColumns; i++) {
+            for (let j = 0; j < this.gridRows; j++) {
+                this.boxes[i][j].recalculateDrawPos(i * this._boxAreaWidth, j * this._boxAreaHeight)
+                this.boxes[i][j].draw();
+            }
+        }
     }
 
     private createBoxes() {
@@ -160,10 +172,10 @@ export class GameCanvas {
         for (let i = 0; i < this._boxes.length; i++) {
             for (let j = 0; j < this._boxes[i].length; j++) {
                 if (
-                    x > this._boxes[i][j].AreaXBegin &&
-                    x < this._boxes[i][j].AreaXBegin + this._boxAreaWidth &&
-                    y > this._boxes[i][j].AreaYBegin &&
-                    y < this._boxes[i][j].AreaYBegin + this._boxAreaHeight
+                    x > this._boxes[i][j].areaXBegin &&
+                    x < this._boxes[i][j].areaXBegin + this._boxAreaWidth &&
+                    y > this._boxes[i][j].areaYBegin &&
+                    y < this._boxes[i][j].areaYBegin + this._boxAreaHeight
                 ) {
                     boxCol = i;
                     boxRow = j;
@@ -185,10 +197,10 @@ export class GameCanvas {
         let box = this.boxes[boxPos.boxCol][boxPos.boxRow];
         if (box !== null && !box.drawn) {
             if (this.playerTurn === 1) {
-                box = new XComponent(box.AreaXBegin, box.AreaYBegin, this);
+                box = new XComponent(box.areaXBegin, box.areaYBegin, this);
                 this.playerTurn = 2;
             } else if (this.playerTurn === 2) {
-                box = new OComponent(box.AreaXBegin, box.AreaYBegin, this);
+                box = new OComponent(box.areaXBegin, box.areaYBegin, this);
                 this.playerTurn = 1;
             }
         }
