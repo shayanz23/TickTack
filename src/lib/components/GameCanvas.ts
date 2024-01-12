@@ -110,7 +110,7 @@ export class GameCanvas {
         let occumilatedLineHeight = 0;
         let occumilatedLineWidth = 0;
         this._context.strokeStyle = 'black';
-        this._context.lineWidth = 5;
+        this._context.lineWidth = Math.min(this.boxAreaHeight, this.boxAreaWidth) / 12;
         for (let i = 0; i < this.gridRows - 1; i++) {
             occumilatedLineHeight += this._boxAreaHeight;
             this._context.beginPath();

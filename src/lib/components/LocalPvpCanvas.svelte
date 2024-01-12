@@ -13,7 +13,6 @@
 	let width = 600;
 	let left = 0;
 	let top = 0;
-	let isSmallDevice = false;
 	let htmlCanvas: HTMLCanvasElement;
 	let gameCanvas: LocalPvpCanvas;
 
@@ -101,7 +100,7 @@
 
 <canvas id="game-canvas" bind:this={htmlCanvas} on:click={handleCanvasClick}></canvas>
 
-<!-- <button on:click={resizeCanvas}></button> -->
+<button on:click={resizeCanvas}></button>
 
 <style>
 	#game-canvas {
