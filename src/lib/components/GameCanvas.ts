@@ -11,8 +11,8 @@ export class GameCanvas {
     private gridRows: number = 5;
     private gridColumns: number = 5;
     private _winLength = 4;
-    private _height = 600;
-    private _width = 600;
+    private _height: number;
+    private _width: number;
     private _htmlCanvas: HTMLCanvasElement;
     private _context?: CanvasRenderingContext2D;
     private _boxes: BoxComponent[][] = [];
@@ -86,15 +86,17 @@ export class GameCanvas {
         this._htmlCanvas = value;
     }
 
-    constructor(htmlCanvas: HTMLCanvasElement, context: CanvasRenderingContext2D, gridRows: number, gridColumns: number, winLength: number) {
+    constructor(htmlCanvas: HTMLCanvasElement, gridRows: number, gridColumns: number, winLength: number) {
             this._htmlCanvas = htmlCanvas;
             this.gridColumns = gridColumns;
             this.gridRows = gridRows;
+            this._width = htmlCanvas.width;
+            this._height = htmlCanvas.height;
             this._boxAreaHeight = this.height / this.gridRows;
             this._boxAreaWidth = this.width / this.gridColumns;
             this._winLength = winLength;
             console.log(this.htmlCanvas);
-            this.context = context;
+            this.context = htmlCanvas.getContext('2d')!;
             this.drawGrid();
 
     }

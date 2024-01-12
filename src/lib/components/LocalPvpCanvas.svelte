@@ -5,15 +5,17 @@
 	import { browser } from '$app/environment';
 	import { GameCanvas } from './GameCanvas';
 	import { XComponent, OComponent } from './BoxComponent';
+
+	export let winner = 0;
+	export let gameOver = false;
+
 	let height = 600;
 	let width = 600;
 	let left = 0;
 	let top = 0;
 	let isSmallDevice = false;
-	export let winner = 0;
-	export let gameOver = false;
-
 	let htmlCanvas: HTMLCanvasElement;
+	let gameCanvas: LocalPvpCanvas;
 
 	export const screens = {
 		sm: 640,
@@ -41,9 +43,9 @@
 		}
 	}
 
-	let gameCanvas: LocalPvpCanvas;
-
+	// Code inside ran once the component has been mounted (created and inserted in)to the dom.
 	onMount(() => {
+		// Insure html canvas and its context aren't null.
 		if (htmlCanvas === null) {
 			console.error('game Canvas is null');
 			return;
@@ -51,18 +53,17 @@
 			console.error('game Canvas context is null');
 			return;
 		}
-		gameCanvas = new LocalPvpCanvas(htmlCanvas,htmlCanvas.getContext('2d')!, 5, 5, 4);
+
+		// Change HTMLCanvas Size to match screen size before drawing anything.
 		if (browser) {
 			if (window.outerWidth <= screens.md) {
-				gameCanvas.width = 300
-			gameCanvas.height = 300
+				width = 300;
+				height = 300;
 			}
-			console.log(width);
-			console.log(htmlCanvas.width)
-			
-			console.log(htmlCanvas.width)
-			console.log(htmlCanvas.height)
-
+			htmlCanvas.width = width;
+			htmlCanvas.height = height;
+			// Initialize gameCanvas with the ready htmlCanvas injected.
+			gameCanvas = new LocalPvpCanvas(htmlCanvas, 5, 5, 4);
 		}
 	});
 
@@ -89,16 +90,18 @@
 		}
 	}
 
-	function redraw() {
-		gameCanvas.width = 400
+	/**
+	 * Resize the gameCanvas, and it automatically redraws all  its contents.
+	 */
+	function resizeCanvas() {
+		gameCanvas.width = 400;
 		gameCanvas.height = 350;
 	}
 </script>
 
-<canvas id="game-canvas" {width} {height} bind:this={htmlCanvas} on:click={handleCanvasClick}
-></canvas>
+<canvas id="game-canvas" bind:this={htmlCanvas} on:click={handleCanvasClick}></canvas>
 
-<button on:click={redraw}></button>
+<!-- <button on:click={resizeCanvas}></button> -->
 
 <style>
 	#game-canvas {

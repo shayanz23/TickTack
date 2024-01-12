@@ -1,3 +1,3 @@
 <footer>
-	<p>2023 - Shayan Zahedanaraki</p>
+	<p>2024 - Shayan Zahedanaraki</p>
 </footer>

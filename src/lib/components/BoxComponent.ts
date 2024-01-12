@@ -44,6 +44,8 @@ export class BoxComponent {
     public recalculateDrawPos(areaXBegin: number, areaYBegin: number) {
         this.areaXBegin = areaXBegin
         this.areaYBegin = areaYBegin;
+        this.lineWidth = Math.min(this.canvas.boxAreaHeight, this.canvas.boxAreaWidth) / 7;
+        this.padding = this.lineWidth;
         this.size = Math.min(this.canvas.boxAreaHeight, this.canvas.boxAreaWidth) - this.padding * 2;
         this.drawPosX = this.areaXBegin + (this.canvas.boxAreaWidth - this.size) / 2;
         this.drawPosY = this.areaYBegin + (this.canvas.boxAreaHeight - this.size) / 2;
