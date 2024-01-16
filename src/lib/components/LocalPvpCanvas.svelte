@@ -66,6 +66,10 @@
 		}
 	});
 
+	/**
+	 * 
+	 * @param event
+	 */
 	function handleCanvasClick(event: MouseEvent) {
 		if (!gameOver) {
 			if (htmlCanvas === null) {
@@ -78,6 +82,8 @@
 			}
 			left = htmlCanvas.getBoundingClientRect().left;
 			top = htmlCanvas.getBoundingClientRect().top;
+
+			// Set the mouse x, y coordinates relative to the canvas\
 			const x = event.clientX - left;
 			const y = event.clientY - top;
 			const boxPos = gameCanvas.findBox(x, y);
@@ -85,7 +91,9 @@
 			gameCanvas.drawBox(boxPos);
 			gameCanvas.findWinner();
 			winner = gameCanvas.winner;
-			winner !== 0 ? (gameOver = true) : null;
+			winner !== 0 ? gameOver = true : null;
+			const tie = gameCanvas.checkTie()
+			tie === true ? gameOver = true : null;
 		}
 	}
 

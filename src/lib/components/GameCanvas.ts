@@ -14,11 +14,10 @@ export class GameCanvas {
     private _height: number;
     private _width: number;
     private _htmlCanvas: HTMLCanvasElement;
-    private _context?: CanvasRenderingContext2D;
+    private _context!: CanvasRenderingContext2D;
     private _boxes: BoxComponent[][] = [];
     protected playerTurn = 1;
     private _winner = 0;
-    private isSmallDevice = false;
     private _boxAreaHeight: number;
     private _boxAreaWidth: number;
 
@@ -98,14 +97,10 @@ export class GameCanvas {
             console.log(this.htmlCanvas);
             this.context = htmlCanvas.getContext('2d')!;
             this.drawGrid();
-
     }
 
     private drawGrid() {
-        if (this._context == null) {
-            console.error('game Canvas this.context is null');
-            return;
-        }
+        
         this._context.font = this._boxAreaWidth + 'px serif';
         let occumilatedLineHeight = 0;
         let occumilatedLineWidth = 0;
@@ -166,6 +161,19 @@ export class GameCanvas {
             }
         }
     }
+
+    public checkTie(): boolean {
+        for (let i = 0; i < this._boxes.length; i++) {
+            for (let j = 0; j < this._boxes[i].length; j++) {
+                if (this._boxes[i][j].player === 0) {
+                    return false;
+                    console.log('++++Winner: ', this.winner);
+                }
+            }
+        }
+        return true;
+    }
+    
 
     public findBox(x: number, y: number) {
         let found = false;

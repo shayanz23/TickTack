@@ -28,7 +28,11 @@
 	<GameOverModal bind:showModal bind:restartState>
 		<div>
 			<h2>Game Over!</h2>
-			<p>Player {winner} wins!</p>
+			{#if winner === 0}
+				<p>Game is a tie...</p>
+			{:else}
+			 	<p>Player {winner} wins!</p>
+			{/if}
 		</div>
 	</GameOverModal>
 </div>
