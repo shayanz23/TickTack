@@ -9,7 +9,7 @@ export class BoxComponent {
     drawPosX: number = 0;
     drawPosY: number = 0;
     drawn: boolean = false;
-    player: number = 0;
+    player: string = "empty box";
     canvas: GameCanvas;
     constructor(areaXBegin: number, areaYBegin: number, canvas: GameCanvas) {
         this.areaXBegin = areaXBegin;
@@ -46,9 +46,8 @@ export class BoxComponent {
         this.areaYBegin = areaYBegin;
         this.lineWidth = Math.min(this.canvas.boxAreaHeight, this.canvas.boxAreaWidth) / 7;
         this.padding = this.lineWidth;
-        this.size = Math.min(this.canvas.boxAreaHeight, this.canvas.boxAreaWidth) - this.padding * 2;
-        this.drawPosX = this.areaXBegin + (this.canvas.boxAreaWidth - this.size) / 2;
-        this.drawPosY = this.areaYBegin + (this.canvas.boxAreaHeight - this.size) / 2;
+        //TODO replace duplicate code
+        this.calculateDrawPos();
     }
 
     public draw(): void {
@@ -57,7 +56,7 @@ export class BoxComponent {
 
     public checkWinnerBase(col: number, row: number): boolean {
         console.log('---checking wonner---');
-        if (this.player === 0) {
+        if (this.player === "empty box") {
             return false;
         }
         let diagToRightWinner = this.checkWinner(col, row, 0, 1);
@@ -96,10 +95,10 @@ export class BoxComponent {
     }
 }
 
-export class XComponent extends BoxComponent {
-    constructor(AreaXBegin: number, AreaYBegin: number, canvas: GameCanvas) {
+export class Component0 extends BoxComponent {
+    constructor(AreaXBegin: number, AreaYBegin: number, canvas: GameCanvas, player: string) {
         super(AreaXBegin, AreaYBegin, canvas);
-        this.player = 1;
+        this.player = player;
         this.draw();
     }
 
@@ -113,10 +112,10 @@ export class XComponent extends BoxComponent {
     }
 }
 
-export class OComponent extends BoxComponent {
-    constructor(AreaXBegin: number, AreaYBegin: number, canvas: GameCanvas) {
+export class Component1 extends BoxComponent {
+    constructor(AreaXBegin: number, AreaYBegin: number, canvas: GameCanvas, player: string) {
         super(AreaXBegin, AreaYBegin, canvas);
-        this.player = 2;
+        this.player = player;
         this.draw();
     }
 

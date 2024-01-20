@@ -2,7 +2,7 @@ import { onMount } from 'svelte';
 import { navigating } from '$app/stores';
 import { writable } from 'svelte/store';
 import { browser } from '$app/environment';
-import { BoxComponent, XComponent, OComponent } from './BoxComponent';
+import { BoxComponent, Component0, Component1 } from './BoxComponents';
 
 
 
@@ -16,8 +16,7 @@ export class GameCanvas {
     private _htmlCanvas: HTMLCanvasElement;
     private _context!: CanvasRenderingContext2D;
     private _boxes: BoxComponent[][] = [];
-    protected playerTurn = 1;
-    private _winner = 0;
+    
     private _boxAreaHeight: number;
     private _boxAreaWidth: number;
 
@@ -29,12 +28,7 @@ export class GameCanvas {
         return this._boxAreaWidth!;
     }
 
-    public get winner() {
-        return this._winner;
-    }
-    public set winner(value) {
-        this._winner = value;
-    }
+    
 
     public get width() {
         return this._width;
@@ -148,33 +142,6 @@ export class GameCanvas {
         }
     }
 
-    public findWinner() {
-        console.log('********Finding wonner********');
-        console.log('********Finding wonner********');
-        for (let i = 0; i < this._boxes.length; i++) {
-            for (let j = 0; j < this._boxes[i].length; j++) {
-                if (this._boxes[i][j].checkWinnerBase(i, j) === true) {
-                    this.winner = this._boxes[i][j].player;
-
-                    console.log('++++Winner: ', this.winner);
-                }
-            }
-        }
-    }
-
-    public checkTie(): boolean {
-        for (let i = 0; i < this._boxes.length; i++) {
-            for (let j = 0; j < this._boxes[i].length; j++) {
-                if (this._boxes[i][j].player === 0) {
-                    return false;
-                    console.log('++++Winner: ', this.winner);
-                }
-            }
-        }
-        return true;
-    }
-    
-
     public findBox(x: number, y: number) {
         let found = false;
         let boxCol = null;
@@ -200,21 +167,6 @@ export class GameCanvas {
         return { boxCol, boxRow };
     }
 
-    public drawBox(boxPos: { boxCol: number | null; boxRow: number | null }) {
-        if (boxPos.boxCol === null || boxPos.boxRow === null) {
-            return new Error("");
-        }
-        let box = this.boxes[boxPos.boxCol][boxPos.boxRow];
-        if (box !== null && !box.drawn) {
-            if (this.playerTurn === 1) {
-                box = new XComponent(box.areaXBegin, box.areaYBegin, this);
-                this.playerTurn = 2;
-            } else if (this.playerTurn === 2) {
-                box = new OComponent(box.areaXBegin, box.areaYBegin, this);
-                this.playerTurn = 1;
-            }
-        }
-        this.boxes[boxPos.boxCol][boxPos.boxRow] = box;
-    }
+    
 
 }

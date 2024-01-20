@@ -4,17 +4,27 @@
 	import { writable } from 'svelte/store';
 	import { browser } from '$app/environment';
 	import { GameCanvas } from './GameCanvas';
-	import { XComponent, OComponent } from './BoxComponent';
+	import { Component0, Component1 } from './BoxComponents';
+	import { TickTackGame } from './TickTackGame';
 
-	export let winner = 0;
+	export let winner = '';
 	export let gameOver = false;
+	export let currentPlayer: string = '';
+	export let player1Name: string;
+	export let player2Name: string;
 
 	let height = 600;
 	let width = 600;
 	let left = 0;
 	let top = 0;
 	let htmlCanvas: HTMLCanvasElement;
-	let gameCanvas: LocalPvpCanvas;
+	let gameCanvas: GameCanvas;
+	let game: TickTackGame;
+	let playerTurn = 0;
+
+	const player1DefaultName = 'Player 1';
+	const player2DefaultName = 'Player 2';
+	const maxPlayers = 2;
 
 	export const screens = {
 		sm: 640,
@@ -22,25 +32,6 @@
 		lg: 1024,
 		xl: 1280
 	};
-
-	class LocalPvpCanvas extends GameCanvas {
-		public drawBox(boxPos: { boxCol: number | null; boxRow: number | null }) {
-			if (boxPos.boxCol === null || boxPos.boxRow === null) {
-				return new Error('');
-			}
-			let box = this.boxes[boxPos.boxCol][boxPos.boxRow];
-			if (box !== null && !box.drawn) {
-				if (this.playerTurn === 1) {
-					box = new XComponent(box.areaXBegin, box.areaYBegin, this);
-					this.playerTurn = 2;
-				} else if (this.playerTurn === 2) {
-					box = new OComponent(box.areaXBegin, box.areaYBegin, this);
-					this.playerTurn = 1;
-				}
-			}
-			this.boxes[boxPos.boxCol][boxPos.boxRow] = box;
-		}
-	}
 
 	// Code inside ran once the component has been mounted (created and inserted in)to the dom.
 	onMount(() => {
@@ -62,12 +53,24 @@
 			htmlCanvas.width = width;
 			htmlCanvas.height = height;
 			// Initialize gameCanvas with the ready htmlCanvas injected.
-			gameCanvas = new LocalPvpCanvas(htmlCanvas, 5, 5, 4);
+			gameCanvas = new GameCanvas(htmlCanvas, 5, 5, 4);
+			setDefaultPlayerName();
+			game = new TickTackGame(gameCanvas, [player1Name, player2Name]);
+			currentPlayer = game.getCurrentPlayer();
 		}
 	});
 
+	function setDefaultPlayerName() {
+		if (player1Name === '') {
+			player1Name = player1DefaultName;
+		}
+		if (player2Name === '') {
+			player2Name = player2DefaultName;
+		}
+	}
+
 	/**
-	 * 
+	 *
 	 * @param event
 	 */
 	function handleCanvasClick(event: MouseEvent) {
@@ -88,12 +91,18 @@
 			const y = event.clientY - top;
 			const boxPos = gameCanvas.findBox(x, y);
 
-			gameCanvas.drawBox(boxPos);
-			gameCanvas.findWinner();
-			winner = gameCanvas.winner;
-			winner !== 0 ? gameOver = true : null;
-			const tie = gameCanvas.checkTie()
-			tie === true ? gameOver = true : null;
+			game.replaceEmptyBox(boxPos, playerTurn);
+			playerTurn++;
+			if (playerTurn >= maxPlayers) {
+				playerTurn = 0;
+			}
+			currentPlayer = game.getCurrentPlayer();
+			game.findWinner();
+			winner = game.winnerName;
+			console.log('winner: ' + game.winnerName);
+			winner !== '' ? (gameOver = true) : null;
+			const tie = game.checkCanvasFull();
+			tie === true ? (gameOver = true) : null;
 		}
 	}
 
