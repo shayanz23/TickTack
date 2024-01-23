@@ -13,12 +13,23 @@ export class GameCanvas {
     private _winLength = 4;
     private _height: number;
     private _width: number;
+    private _scale: number = 1;
     private _htmlCanvas: HTMLCanvasElement;
     private _context!: CanvasRenderingContext2D;
     private _boxes: BoxComponent[][] = [];
-    
+
     private _boxAreaHeight: number;
     private _boxAreaWidth: number;
+
+    public get scale() {
+        return this._scale;
+    }
+
+    public set scale(value: number) {
+        this._scale = value;
+        this.htmlCanvas.style.width = (this.width * this._scale) + "px";
+        this.htmlCanvas.style.height = (this.height * this._scale) + "px";
+    }
 
     public get boxAreaHeight(): number {
         return this._boxAreaHeight!;
@@ -27,8 +38,6 @@ export class GameCanvas {
     public get boxAreaWidth(): number {
         return this._boxAreaWidth!;
     }
-
-    
 
     public get width() {
         return this._width;
@@ -79,22 +88,24 @@ export class GameCanvas {
         this._htmlCanvas = value;
     }
 
-    constructor(htmlCanvas: HTMLCanvasElement, gridRows: number, gridColumns: number, winLength: number) {
-            this._htmlCanvas = htmlCanvas;
-            this.gridColumns = gridColumns;
-            this.gridRows = gridRows;
-            this._width = htmlCanvas.width;
-            this._height = htmlCanvas.height;
-            this._boxAreaHeight = this.height / this.gridRows;
-            this._boxAreaWidth = this.width / this.gridColumns;
-            this._winLength = winLength;
-            console.log(this.htmlCanvas);
-            this.context = htmlCanvas.getContext('2d')!;
-            this.drawGrid();
+    constructor(htmlCanvas: HTMLCanvasElement, width: number, height: number, gridRows: number, gridColumns: number, winLength: number) {
+        this._htmlCanvas = htmlCanvas;
+        this.gridColumns = gridColumns;
+        this.gridRows = gridRows;
+        this._width = width;
+        this._height = height;
+        this.htmlCanvas.width = width;
+        this.htmlCanvas.height = height;
+        this._boxAreaHeight = this.height / this.gridRows;
+        this._boxAreaWidth = this.width / this.gridColumns;
+        this._winLength = winLength;
+        console.log(this.htmlCanvas);
+        this.context = htmlCanvas.getContext('2d')!;
+        this.drawGrid();
     }
 
     private drawGrid() {
-        
+
         this._context.font = this._boxAreaWidth + 'px serif';
         let occumilatedLineHeight = 0;
         let occumilatedLineWidth = 0;
@@ -120,11 +131,11 @@ export class GameCanvas {
     }
 
     public redraw() {
-        console.log("redrawing")
-        this.drawGrid()
+        console.log("redrawing");
+        this.drawGrid();
         for (let i = 0; i < this.gridColumns; i++) {
             for (let j = 0; j < this.gridRows; j++) {
-                this.boxes[i][j].recalculateDrawPos(i * this._boxAreaWidth, j * this._boxAreaHeight)
+                this.boxes[i][j].recalculateDrawPos(i * this._boxAreaWidth, j * this._boxAreaHeight);
                 this.boxes[i][j].draw();
             }
         }
@@ -149,10 +160,10 @@ export class GameCanvas {
         for (let i = 0; i < this._boxes.length; i++) {
             for (let j = 0; j < this._boxes[i].length; j++) {
                 if (
-                    x > this._boxes[i][j].areaXBegin &&
-                    x < this._boxes[i][j].areaXBegin + this._boxAreaWidth &&
-                    y > this._boxes[i][j].areaYBegin &&
-                    y < this._boxes[i][j].areaYBegin + this._boxAreaHeight
+                    x / this._scale > this._boxes[i][j].areaXBegin &&
+                    x / this._scale < this._boxes[i][j].areaXBegin + this._boxAreaWidth &&
+                    y / this._scale > this._boxes[i][j].areaYBegin &&
+                    y / this._scale < this._boxes[i][j].areaYBegin + this._boxAreaHeight
                 ) {
                     boxCol = i;
                     boxRow = j;
@@ -166,7 +177,5 @@ export class GameCanvas {
         }
         return { boxCol, boxRow };
     }
-
-    
 
 }

@@ -46,14 +46,11 @@
 
 		// Change HTMLCanvas Size to match screen size before drawing anything.
 		if (browser) {
-			if (window.outerWidth <= screens.md) {
-				width = 300;
-				height = 300;
-			}
-			htmlCanvas.width = width;
-			htmlCanvas.height = height;
 			// Initialize gameCanvas with the ready htmlCanvas injected.
-			gameCanvas = new GameCanvas(htmlCanvas, 5, 5, 4);
+			gameCanvas = new GameCanvas(htmlCanvas, width, height, 5, 5, 4);
+			if (window.outerWidth <= screens.md) {
+				gameCanvas.scale = 0.5;
+			}
 			setDefaultPlayerName();
 			game = new TickTackGame(gameCanvas, [player1Name, player2Name]);
 			currentPlayer = game.getCurrentPlayer();
@@ -85,12 +82,14 @@
 			}
 			left = htmlCanvas.getBoundingClientRect().left;
 			top = htmlCanvas.getBoundingClientRect().top;
+			console.log("Left, Top: ",left, ", ", top)
 
 			// Set the mouse x, y coordinates relative to the canvas\
 			const x = event.clientX - left;
 			const y = event.clientY - top;
 			const boxPos = gameCanvas.findBox(x, y);
-
+			console.log("X, Y: ", x, ", ", y);
+			console.log("Boxpos: " + boxPos.boxCol, ", ", boxPos.boxRow); 
 			game.replaceEmptyBox(boxPos, playerTurn);
 			playerTurn++;
 			if (playerTurn >= maxPlayers) {
@@ -110,8 +109,7 @@
 	 * Resize the gameCanvas, and it automatically redraws all  its contents.
 	 */
 	function resizeCanvas() {
-		gameCanvas.width = 400;
-		gameCanvas.height = 350;
+		gameCanvas.scale = 0.5;
 	}
 </script>
 

@@ -12,8 +12,13 @@
 </div>
 
 <style>
-    #main-div {
-        display: grid;
-        grid-template-rows: 50px auto 100px;
-    }
+	#main-div {
+		display: grid;
+		grid-template-rows: 70px auto 100px;
+	}
+
+	* {
+		font-size: 13pt;
+		font-family: Helvetica;
+	}
 </style>

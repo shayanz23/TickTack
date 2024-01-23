@@ -46,7 +46,6 @@ export class BoxComponent {
         this.areaYBegin = areaYBegin;
         this.lineWidth = Math.min(this.canvas.boxAreaHeight, this.canvas.boxAreaWidth) / 7;
         this.padding = this.lineWidth;
-        //TODO replace duplicate code
         this.calculateDrawPos();
     }
 
@@ -55,7 +54,6 @@ export class BoxComponent {
     }
 
     public checkWinnerBase(col: number, row: number): boolean {
-        console.log('---checking wonner---');
         if (this.player === "empty box") {
             return false;
         }
@@ -73,7 +71,6 @@ export class BoxComponent {
 
     private checkWinner(col: number, row: number, len: number, type: number): boolean {
         let won = false;
-        console.log(len);
         if (len >= this.canvas.winLength) {
             return true;
         }

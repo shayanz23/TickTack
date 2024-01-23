@@ -47,8 +47,6 @@ export class TickTackGame {
     * @returns winnerFound
     */
     public findWinner() {
-        console.log('********Finding wonner********');
-        console.log('********Finding wonner********');
         for (let i = 0; i < this.gameCanvas.boxes.length; i++) {
             for (let j = 0; j < this.gameCanvas.boxes[i].length; j++) {
                 if (this.gameCanvas.boxes[i][j].checkWinnerBase(i, j) === true) {
