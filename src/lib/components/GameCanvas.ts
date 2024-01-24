@@ -27,8 +27,8 @@ export class GameCanvas {
 
     public set scale(value: number) {
         this._scale = value/2;
-        this.htmlCanvas.style.width = (this.width * this._scale) + "px";
-        this.htmlCanvas.style.height = (this.height * this._scale) + "px";
+        this.htmlCanvas.style.width = (this._width * this._scale) + "px";
+        this.htmlCanvas.style.height = (this._height * this._scale) + "px";
     }
 
     public get boxAreaHeight(): number {
@@ -83,10 +83,10 @@ export class GameCanvas {
         this.htmlCanvas.width = this._width;
         this.htmlCanvas.height = this._height;
         this._scale = scale/2;
-        this.htmlCanvas.style.width = (this.width * this._scale) + "px";
-        this.htmlCanvas.style.height = (this.height * this._scale) + "px";
-        this._boxAreaHeight = this.height / this.gridRows;
-        this._boxAreaWidth = this.width / this.gridColumns;
+        this.htmlCanvas.style.width = (this._width * this._scale) + "px";
+        this.htmlCanvas.style.height = (this._height * this._scale) + "px";
+        this._boxAreaHeight = this._height / this.gridRows;
+        this._boxAreaWidth = this._width / this.gridColumns;
         this._winLength = winLength;
         console.log(this.htmlCanvas);
         this.context = htmlCanvas.getContext('2d')!;
@@ -104,7 +104,7 @@ export class GameCanvas {
             occumilatedLineHeight += this._boxAreaHeight;
             this._context.beginPath();
             this._context.moveTo(0, occumilatedLineHeight);
-            this._context.lineTo(this.width, occumilatedLineHeight);
+            this._context.lineTo(this._width, occumilatedLineHeight);
             this._context.closePath();
             this._context.stroke();
         }
@@ -112,7 +112,7 @@ export class GameCanvas {
             occumilatedLineWidth += this._boxAreaWidth!;
             this._context.beginPath();
             this._context.moveTo(occumilatedLineWidth, 0);
-            this._context.lineTo(occumilatedLineWidth, this.height);
+            this._context.lineTo(occumilatedLineWidth, this._height);
             this._context.closePath();
             this._context.stroke();
         }

@@ -19,6 +19,6 @@
 
 	* {
 		font-size: 13pt;
-		font-family: Helvetica;
+		font-family: Arial;
 	}
 </style>
