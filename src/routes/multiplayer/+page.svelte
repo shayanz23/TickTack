@@ -12,8 +12,6 @@
 	let player1Name = '';
 	let player2Name = '';
 
-	export const prerender = true;
-
 	function restart() {
 		unique = [{}];
 		showpickPlayerModal = true;

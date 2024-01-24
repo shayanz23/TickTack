@@ -47,7 +47,7 @@
 		// Change HTMLCanvas Size to match screen size before drawing anything.
 		if (browser) {
 			// Initialize gameCanvas with the ready htmlCanvas injected.
-			gameCanvas = new GameCanvas(htmlCanvas, width, height, 5, 5, 4);
+			gameCanvas = new GameCanvas(htmlCanvas, width, height, 5, 5, 4, 1);
 			if (window.outerWidth <= screens.md) {
 				gameCanvas.scale = 0.5;
 			}
@@ -105,17 +105,9 @@
 		}
 	}
 
-	/**
-	 * Resize the gameCanvas, and it automatically redraws all  its contents.
-	 */
-	function resizeCanvas() {
-		gameCanvas.scale = 0.5;
-	}
 </script>
 
 <canvas id="game-canvas" bind:this={htmlCanvas} on:click={handleCanvasClick}></canvas>
-
-<button on:click={resizeCanvas}></button>
 
 <style>
 	#game-canvas {

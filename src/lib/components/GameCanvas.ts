@@ -26,7 +26,7 @@ export class GameCanvas {
     }
 
     public set scale(value: number) {
-        this._scale = value;
+        this._scale = value/2;
         this.htmlCanvas.style.width = (this.width * this._scale) + "px";
         this.htmlCanvas.style.height = (this.height * this._scale) + "px";
     }
@@ -40,25 +40,11 @@ export class GameCanvas {
     }
 
     public get width() {
-        return this._width;
-    }
-
-    public set width(value: number) {
-        this._width = value;
-        this._boxAreaWidth = this.width / this.gridColumns;
-        this.htmlCanvas.width = value;
-        this.redraw();
+        return this._width/2;
     }
 
     public get height() {
-        return this._height;
-    }
-
-    public set height(value: number) {
-        this._height = value;
-        this._boxAreaHeight = this.height / this.gridRows;
-        this.htmlCanvas.height = value;
-        this.redraw();
+        return this._height/2;
     }
 
     public get boxes(): BoxComponent[][] {
@@ -88,14 +74,17 @@ export class GameCanvas {
         this._htmlCanvas = value;
     }
 
-    constructor(htmlCanvas: HTMLCanvasElement, width: number, height: number, gridRows: number, gridColumns: number, winLength: number) {
+    constructor(htmlCanvas: HTMLCanvasElement, width: number, height: number, gridRows: number, gridColumns: number, winLength: number, scale: number) {
         this._htmlCanvas = htmlCanvas;
         this.gridColumns = gridColumns;
         this.gridRows = gridRows;
-        this._width = width;
-        this._height = height;
-        this.htmlCanvas.width = width;
-        this.htmlCanvas.height = height;
+        this._width = width * 2;
+        this._height = height * 2;
+        this.htmlCanvas.width = this._width;
+        this.htmlCanvas.height = this._height;
+        this._scale = scale/2;
+        this.htmlCanvas.style.width = (this.width * this._scale) + "px";
+        this.htmlCanvas.style.height = (this.height * this._scale) + "px";
         this._boxAreaHeight = this.height / this.gridRows;
         this._boxAreaWidth = this.width / this.gridColumns;
         this._winLength = winLength;
