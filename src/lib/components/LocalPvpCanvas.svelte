@@ -17,6 +17,7 @@
 	let gameCanvas: GameCanvas;
 	let game: TickTackGame;
 	let playerTurn = 0;
+	let mouseDownBoxPos: { boxCol: number | null; boxRow: number | null; };
 
 	const player1DefaultName = 'Player 1';
 	const player2DefaultName = 'Player 2';
@@ -66,7 +67,29 @@
 	 *
 	 * @param event
 	 */
-	function handleCanvasClick(event: MouseEvent) {
+	 function handleCanvasMouseDown(event: MouseEvent) {
+		if (gameOver) {
+			return;
+		}
+		if (htmlCanvas === null) {
+			console.error('game Canvas is null');
+			return;
+		}
+
+		// Set the mouse x, y coordinates relative to the canvas
+		const canvasRect = htmlCanvas.getBoundingClientRect();
+		const x = event.clientX - canvasRect.left;
+		const y = event.clientY - canvasRect.top;
+		mouseDownBoxPos = gameCanvas.findBox(x, y);
+
+		
+	}
+
+	/**
+	 *
+	 * @param event
+	 */
+	 function handleCanvasMouseUp(event: MouseEvent) {
 		if (gameOver) {
 			return;
 		}
@@ -81,8 +104,16 @@
 		const y = event.clientY - canvasRect.top;
 		const boxPos = gameCanvas.findBox(x, y);
 
+		console.log(boxPos)
+		console.log(mouseDownBoxPos);
+		if (boxPos.boxCol !== mouseDownBoxPos.boxCol || boxPos.boxRow !== mouseDownBoxPos.boxRow) {
+			return;
+		}
+
 		gameLogic(boxPos);
 	}
+
+
 
 	function gameLogic(boxPos: { boxCol: number | null; boxRow: number | null }) {
 		game.replaceEmptyBox(boxPos, playerTurn);
@@ -107,7 +138,7 @@
 	
 </script>
 
-<canvas id="game-canvas" bind:this={htmlCanvas} on:mouseup={handleCanvasClick}></canvas>
+<canvas id="game-canvas" bind:this={htmlCanvas} on:mouseup={handleCanvasMouseUp} on:mousedown={handleCanvasMouseDown}></canvas>
 
 <style>
 	#game-canvas {

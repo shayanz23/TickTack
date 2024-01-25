@@ -32,7 +32,6 @@
 	{#if !showpickPlayerModal}
 		<div id="canvas-div">
 			{#each unique as key (key)}
-				<Canvas bind:gameOver bind:winner bind:currentPlayer bind:player1Name bind:player2Name />
 			{/each}
 		</div>
 	{/if}

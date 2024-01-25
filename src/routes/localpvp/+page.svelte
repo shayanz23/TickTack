@@ -95,6 +95,7 @@
 		#canvas-div {
 			width: 350px;
 			height: 350px;
+			border-radius: 25px;
 		}
 	}
 </style>
