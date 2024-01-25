@@ -1,7 +1,9 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
+	import darkTheme from '$lib/shared/stores/darkTheme';
+
 	export let showModal: boolean; // boolean
 	export let restartState = false;
-	import { goto } from '$app/navigation';
 
 	let dialog: HTMLDialogElement; // HTMLDialogElement
 
@@ -29,7 +31,7 @@
 	on:click|self={() => dialog.close()}
 >
 	<!-- svelte-ignore a11y-no-static-element-interactions -->
-	<div id="modal-div" on:click|stopPropagation>
+	<div id="modal-div" on:click|stopPropagation class:background-dark={$darkTheme}>
 		<slot id="modal-slot"/>
 		<!-- svelte-ignore a11y-autofocus -->
 		<div id="modal-buttons">

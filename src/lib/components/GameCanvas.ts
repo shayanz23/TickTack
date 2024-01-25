@@ -1,9 +1,6 @@
-import { onMount } from 'svelte';
-import { navigating } from '$app/stores';
-import { writable } from 'svelte/store';
-import { browser } from '$app/environment';
-import { BoxComponent, Component0, Component1 } from './BoxComponents';
-
+import { BoxComponent } from './BoxComponents';
+import { get } from "svelte/store";
+import darkTheme from '$lib/shared/stores/darkTheme';
 
 
 export class GameCanvas {
@@ -17,6 +14,7 @@ export class GameCanvas {
     private _htmlCanvas: HTMLCanvasElement;
     private _context!: CanvasRenderingContext2D;
     private _boxes: BoxComponent[][] = [];
+    private readonly strokeStyles = ["#222222", "#efefef"]
 
     private _boxAreaHeight: number;
     private _boxAreaWidth: number;
@@ -26,7 +24,7 @@ export class GameCanvas {
     }
 
     public set scale(value: number) {
-        this._scale = value/2;
+        this._scale = value / 2;
         this.htmlCanvas.style.width = (this._width * this._scale) + "px";
         this.htmlCanvas.style.height = (this._height * this._scale) + "px";
     }
@@ -40,11 +38,11 @@ export class GameCanvas {
     }
 
     public get width() {
-        return this._width/2;
+        return this._width / 2;
     }
 
     public get height() {
-        return this._height/2;
+        return this._height / 2;
     }
 
     public get boxes(): BoxComponent[][] {
@@ -70,7 +68,8 @@ export class GameCanvas {
     public get htmlCanvas(): HTMLCanvasElement {
         return this._htmlCanvas;
     }
-    public set htmlCanvas(value: HTMLCanvasElement) {
+
+    private set htmlCanvas(value: HTMLCanvasElement) {
         this._htmlCanvas = value;
     }
 
@@ -78,50 +77,59 @@ export class GameCanvas {
         this._htmlCanvas = htmlCanvas;
         this.gridColumns = gridColumns;
         this.gridRows = gridRows;
+
         this._width = width * 2;
         this._height = height * 2;
-        this.htmlCanvas.width = this._width;
-        this.htmlCanvas.height = this._height;
-        this._scale = scale/2;
-        this.htmlCanvas.style.width = (this._width * this._scale) + "px";
-        this.htmlCanvas.style.height = (this._height * this._scale) + "px";
+        this._scale = scale / 2;
+
         this._boxAreaHeight = this._height / this.gridRows;
         this._boxAreaWidth = this._width / this.gridColumns;
+
         this._winLength = winLength;
-        console.log(this.htmlCanvas);
         this.context = htmlCanvas.getContext('2d')!;
-        this.drawGrid();
+        this.initializeCanvas();
     }
 
-    private drawGrid() {
+    private initializeCanvas(): void {
+        this.htmlCanvas.width = this._width;
+        this.htmlCanvas.height = this._height;
+        this.htmlCanvas.style.width = (this._width * this.scale) + "px";
+        this.htmlCanvas.style.height = (this._height * this.scale) + "px";
 
-        this._context.font = this._boxAreaWidth + 'px serif';
+        this.drawBackground();
+        this.createBoxes();
+    }
+
+    private drawBackground() {
         let occumilatedLineHeight = 0;
         let occumilatedLineWidth = 0;
-        this._context.strokeStyle = 'black';
-        this._context.lineWidth = Math.min(this.boxAreaHeight, this.boxAreaWidth) / 12;
+        // Pick the opposite of the current theme for the background.
+        this.context.fillStyle = this.strokeStyles[+!get(darkTheme)];
+        this.context.strokeStyle = this.strokeStyles[+get(darkTheme)];
+        this.context.fillRect(0, 0, this._width, this._height);
+        this.context.lineWidth = Math.min(this.boxAreaHeight, this.boxAreaWidth) / 12;
         for (let i = 0; i < this.gridRows - 1; i++) {
             occumilatedLineHeight += this._boxAreaHeight;
-            this._context.beginPath();
-            this._context.moveTo(0, occumilatedLineHeight);
-            this._context.lineTo(this._width, occumilatedLineHeight);
-            this._context.closePath();
-            this._context.stroke();
+            this.context.beginPath();
+            this.context.moveTo(0, occumilatedLineHeight);
+            this.context.lineTo(this._width, occumilatedLineHeight);
+            this.context.closePath();
+            this.context.stroke();
         }
         for (let i = 0; i < this.gridColumns - 1; i++) {
             occumilatedLineWidth += this._boxAreaWidth!;
-            this._context.beginPath();
-            this._context.moveTo(occumilatedLineWidth, 0);
-            this._context.lineTo(occumilatedLineWidth, this._height);
-            this._context.closePath();
-            this._context.stroke();
+            this.context.beginPath();
+            this.context.moveTo(occumilatedLineWidth, 0);
+            this.context.lineTo(occumilatedLineWidth, this._height);
+            this.context.closePath();
+            this.context.stroke();
         }
-        this.createBoxes();
     }
 
     public redraw() {
         console.log("redrawing");
-        this.drawGrid();
+        this.context.clearRect(0, 0, this.htmlCanvas.width, this.htmlCanvas.height);
+        this.drawBackground();
         for (let i = 0; i < this.gridColumns; i++) {
             for (let j = 0; j < this.gridRows; j++) {
                 this.boxes[i][j].recalculateDrawPos(i * this._boxAreaWidth, j * this._boxAreaHeight);
@@ -133,10 +141,8 @@ export class GameCanvas {
     private createBoxes() {
         for (let i = 0; i < this.gridColumns; i++) {
             this._boxes.push([]);
-            // console.log("column: ", i)
             for (let j = 0; j < this.gridRows; j++) {
                 //for each column add the rows of boxes
-                // console.log("row: ", j)
                 this._boxes[i].push(new BoxComponent(i * this._boxAreaWidth, j * this._boxAreaHeight, this));
             }
         }

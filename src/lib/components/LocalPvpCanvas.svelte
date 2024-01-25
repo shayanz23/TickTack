@@ -1,11 +1,9 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { navigating } from '$app/stores';
-	import { writable } from 'svelte/store';
 	import { browser } from '$app/environment';
 	import { GameCanvas } from './GameCanvas';
-	import { Component0, Component1 } from './BoxComponents';
 	import { TickTackGame } from './TickTackGame';
+	import darkTheme from '$lib/shared/stores/darkTheme';
 
 	export let winner = '';
 	export let gameOver = false;
@@ -15,8 +13,6 @@
 
 	let height = 600;
 	let width = 600;
-	let left = 0;
-	let top = 0;
 	let htmlCanvas: HTMLCanvasElement;
 	let gameCanvas: GameCanvas;
 	let game: TickTackGame;
@@ -71,46 +67,52 @@
 	 * @param event
 	 */
 	function handleCanvasClick(event: MouseEvent) {
-		if (!gameOver) {
-			if (htmlCanvas === null) {
-				console.error('game Canvas is null');
-				return;
-			}
-			if (gameCanvas.context === null) {
-				console.error('context is null');
-				return;
-			}
-			left = htmlCanvas.getBoundingClientRect().left;
-			top = htmlCanvas.getBoundingClientRect().top;
-			console.log("Left, Top: ",left, ", ", top)
+		if (gameOver) {
+			return;
+		}
+		if (htmlCanvas === null) {
+			console.error('game Canvas is null');
+			return;
+		}
 
-			// Set the mouse x, y coordinates relative to the canvas\
-			const x = event.clientX - left;
-			const y = event.clientY - top;
-			const boxPos = gameCanvas.findBox(x, y);
-			console.log("X, Y: ", x, ", ", y);
-			console.log("Boxpos: " + boxPos.boxCol, ", ", boxPos.boxRow); 
-			game.replaceEmptyBox(boxPos, playerTurn);
-			playerTurn++;
-			if (playerTurn >= maxPlayers) {
-				playerTurn = 0;
-			}
-			currentPlayer = game.getCurrentPlayer();
-			game.findWinner();
-			winner = game.winnerName;
-			console.log('winner: ' + game.winnerName);
-			winner !== '' ? (gameOver = true) : null;
-			const tie = game.checkCanvasFull();
-			tie === true ? (gameOver = true) : null;
+		// Set the mouse x, y coordinates relative to the canvas
+		const canvasRect = htmlCanvas.getBoundingClientRect();
+		const x = event.clientX - canvasRect.left;
+		const y = event.clientY - canvasRect.top;
+		const boxPos = gameCanvas.findBox(x, y);
+
+		gameLogic(boxPos);
+	}
+
+	function gameLogic(boxPos: { boxCol: number | null; boxRow: number | null }) {
+		game.replaceEmptyBox(boxPos, playerTurn);
+		playerTurn = (playerTurn + 1) % maxPlayers;
+
+		currentPlayer = game.getCurrentPlayer();
+		game.findWinner();
+		winner = game.winnerName;
+
+		if (winner !== '' || game.checkCanvasFull()) {
+			gameOver = true;
+		}
+	}
+	
+	function redraw() {
+		if (browser && gameCanvas !== undefined) {
+			gameCanvas.redraw();
 		}
 	}
 
+	$: $darkTheme, redraw();
+	
 </script>
 
-<canvas id="game-canvas" bind:this={htmlCanvas} on:click={handleCanvasClick}></canvas>
+<canvas id="game-canvas" bind:this={htmlCanvas} on:mouseup={handleCanvasClick}></canvas>
 
 <style>
 	#game-canvas {
+		padding: 0;
 		margin: auto;
+
 	}
 </style>

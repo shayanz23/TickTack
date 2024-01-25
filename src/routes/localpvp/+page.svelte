@@ -2,6 +2,8 @@
 	import Canvas from '$lib/components/LocalPvpCanvas.svelte';
 	import GameOverModal from '$lib/components/GameOverModal.svelte';
 	import PickPlayerNames from '$lib/components/PickPlayerNames.svelte';
+	import darkTheme from '$lib/shared/stores/darkTheme';
+
 	let gameOver = false;
 	let winner = '';
 	let restartState = false;
@@ -11,8 +13,6 @@
 	let unique = [{}];
 	let player1Name = '';
 	let player2Name = '';
-
-	 
 
 	function restart() {
 		unique = [{}];
@@ -27,19 +27,19 @@
 	}
 </script>
 
-<div id="page-div">
+<div id="page-div" class:background-dark={$darkTheme}>
 	<p id="player-indicator">
 		Current player is {currentPlayer}
 	</p>
 	{#if !showpickPlayerModal}
-		<div id="canvas-div">
+		<div id="canvas-div" class:object-dark={$darkTheme} class:object-light={!$darkTheme}>
 			{#each unique as key (key)}
 				<Canvas bind:gameOver bind:winner bind:currentPlayer bind:player1Name bind:player2Name />
 			{/each}
 		</div>
 	{/if}
 	<PickPlayerNames bind:showModal={showpickPlayerModal} bind:restartState>
-		<div>
+		<div class:background-dark={$darkTheme}>
 			<h2>Pick Player names</h2>
 			<input type="text" placeholder="player 1" bind:value={player1Name} />
 			<input type="text" placeholder="player 2" bind:value={player2Name} />
@@ -80,10 +80,21 @@
 		grid-template-rows: auto;
 	}
 	#canvas-div {
-		width: fit-content;
-		height: fit-content;
+		width: 700px;
+		height: 700px;
+		min-width: fit-content;
+		min-height: fit-content;
 		margin: auto;
 		margin-top: 0px;
 		margin-bottom: 0px;
+		display: grid;
+		border-radius: 50px;
+	}
+
+	@media (width <= 768px) {
+		#canvas-div {
+			width: 350px;
+			height: 350px;
+		}
 	}
 </style>

@@ -1,0 +1,49 @@
+body {
+    width: 100vw;
+    height: 100vh;
+    margin: 0;
+    display: grid;
+    grid-template-rows: auto;
+}
+p {
+    margin: 0;
+}
+
+.background-dark {
+    color: white;
+    background-color: #121212;
+}
+
+.background-light {
+    color: black;
+    background-color: rgb(216, 216, 216);
+}
+
+.object-dark {
+    color: white;
+    background-color: #222222;
+}
+
+.object-light {
+    color: black;
+    background-color: #efefef;
+}
+
+.text-dark {
+    color: white;
+}
+
+.button {
+    margin: 10px;
+    margin-left: auto;
+    width: 60px;
+    height: 35px;
+    min-width: fit-content;
+    min-height: fit-content;
+    border-width: 0px;
+    border-radius: 7px;
+}
+
+.recommended-button {
+    background-color: rgb(39, 201, 255);
+}

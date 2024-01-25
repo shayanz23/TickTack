@@ -1,9 +1,12 @@
 <script>
 	import Navbar from '$lib/components/Navbar.svelte';
-	import Footer from '$lib/components/Footer.svelte';
+	import Footer from '$lib/components/Footer.svelte'
+	import darkTheme from '$lib/shared/stores/darkTheme';
+
+	$: darkTheme2 = $darkTheme;
 </script>
 
-<div id="main-div">
+<div id="main-div" class:background-dark={darkTheme2}>
 	<Navbar />
 
 	<slot />
@@ -21,4 +24,5 @@
 		font-size: 13pt;
 		font-family: Arial;
 	}
+
 </style>

@@ -22,7 +22,7 @@
 		height: 50px;
 		background-color: white;
 		display: flex;
-		background-color: aquamarine;
+		background-color: rgb(127, 225, 255);
 		margin: 10px;
 		border-radius: 17px;
 	}

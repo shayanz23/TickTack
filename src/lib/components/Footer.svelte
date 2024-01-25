@@ -1,11 +1,15 @@
 <script>
-	import Button from "./Button.svelte";
+	import darkTheme from '$lib/shared/stores/darkTheme';
+
+	function changeTheme() {
+		darkTheme.set(!$darkTheme);
+	}
 
 </script>
-<footer id="footer">
+<footer id="footer" >
 	<p>2024 - Shayan Zahedanaraki</p>
 
-	<Button>Hello</Button>
+	<button class="button" on:click={changeTheme}>Toggle dark mode</button>
 </footer>
 
 <style>
