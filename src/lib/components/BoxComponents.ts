@@ -21,7 +21,6 @@ export class BoxComponent {
     }
 
     protected beginDrawing() {
-        console.log('being drawn');
         this.canvas.context.lineWidth = this.lineWidth;
 
         // this.context.strokeStyle = '#' + Math.floor(Math.random() * 16777215).toString(16);

@@ -81,11 +81,12 @@ export class TickTackGame {
     /**
      * Replaces an empty box with one of the corresponding player. Does this to show game progress.
      * @param boxPos Coordinates for the box column and row being replaced.
-     * @returns undefined
+     * @returns if the box was replaced.
      */
-    public replaceEmptyBox(boxPos: { boxCol: number | null; boxRow: number | null }, playerNum: number) {
+    public replaceEmptyBox(boxPos: { boxCol: number | null; boxRow: number | null }, playerNum: number): boolean {
+        let success = false;
         if (boxPos.boxCol === null || boxPos.boxRow === null) {
-            return new Error("");
+            return success;
         }
         let box = this.gameCanvas.boxes[boxPos.boxCol][boxPos.boxRow];
 
@@ -97,6 +98,7 @@ export class TickTackGame {
                 console.error(e);
             }
             this.playerTurnNum++;
+            success = true;
         }
 
         this.gameCanvas.boxes[boxPos.boxCol][boxPos.boxRow] = box;
@@ -104,6 +106,7 @@ export class TickTackGame {
         if (this.playerTurnNum >= this.maxPlayers) {
             this.playerTurnNum = 0;
         }
+        return success;
     }
     
 }
