@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import darkTheme from '$lib/shared/stores/darkTheme';
+	import {darkTheme} from '$lib/shared/stores/appTheme';
 
 	export let showModal: boolean; // boolean
 	export let restartState = false;

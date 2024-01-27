@@ -1,12 +1,11 @@
 <script>
 	import Navbar from '$lib/components/Navbar.svelte';
 	import Footer from '$lib/components/Footer.svelte'
-	import darkTheme from '$lib/shared/stores/darkTheme';
+	import {darkTheme} from '$lib/shared/stores/appTheme';
 
-	$: darkTheme2 = $darkTheme;
 </script>
 
-<div id="main-div" class:background-dark={darkTheme2}>
+<div id="main-div" class:background-dark={$darkTheme}>
 	<Navbar />
 
 	<slot />

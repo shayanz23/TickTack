@@ -2,7 +2,7 @@
 	import Canvas from '$lib/components/LocalPvpCanvas.svelte';
 	import GameOverModal from '$lib/components/GameOverModal.svelte';
 	import PickPlayerNames from '$lib/components/PickPlayerNames.svelte';
-	import darkTheme from '$lib/shared/stores/darkTheme';
+	import {darkTheme} from '$lib/shared/stores/appTheme';
 
 	let gameOver = false;
 	let winner = '';

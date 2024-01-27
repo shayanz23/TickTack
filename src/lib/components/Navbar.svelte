@@ -20,7 +20,6 @@
 		width: -moz-calc(100% - 20px);
 		width: calc(100% - 20px);
 		height: 50px;
-		background-color: white;
 		display: flex;
 		background-color: rgb(127, 225, 255);
 		margin: 10px;

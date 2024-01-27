@@ -1,20 +1,34 @@
-<script>
-	import darkTheme from '$lib/shared/stores/darkTheme';
+<script lang="ts">
+	import appTheme from '$lib/shared/stores/appTheme';
+	
+	let theme: string;
 
-	function changeTheme() {
-		darkTheme.set(!$darkTheme);
+	$: if ($appTheme === 0) {
+		theme = 'default';
+	} else if ($appTheme === 1) {
+		theme = 'dark';
+	} else {
+		theme = 'light';
 	}
 
+	function changeTheme() {
+		if ($appTheme >= 2) {
+			$appTheme = 0;
+		} else {
+			$appTheme += 1;
+		}
+	}
 </script>
-<footer id="footer" >
+
+<footer id="footer">
 	<p>2024 - Shayan Zahedanaraki</p>
 
 	<button class="button" on:click={changeTheme}>Toggle dark mode</button>
+	<p>Theme: {theme}</p>
 </footer>
 
 <style>
 	#footer {
-		display: flex;
+		display: grid;
 	}
-
 </style>

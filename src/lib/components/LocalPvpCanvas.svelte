@@ -3,7 +3,7 @@
 	import { browser } from '$app/environment';
 	import { GameCanvas } from './GameCanvas';
 	import { TickTackGame } from './TickTackGame';
-	import darkTheme from '$lib/shared/stores/darkTheme';
+	import { darkTheme } from '$lib/shared/stores/appTheme';
 
 	export let winner = '';
 	export let gameOver = false;

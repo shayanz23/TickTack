@@ -1,6 +1,6 @@
 import { BoxComponent } from './BoxComponents';
 import { get } from "svelte/store";
-import darkTheme from '$lib/shared/stores/darkTheme';
+import {darkTheme} from '$lib/shared/stores/appTheme';
 
 
 export class GameCanvas {
