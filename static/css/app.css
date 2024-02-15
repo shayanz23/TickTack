@@ -24,6 +24,10 @@ p {
     background-color: #222222;
 }
 
+.object-dark a {
+    color: aqua;
+}
+
 .object-light {
     color: black;
     background-color: #efefef;

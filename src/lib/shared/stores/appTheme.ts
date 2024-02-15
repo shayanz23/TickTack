@@ -1,7 +1,7 @@
 // Done with the help of https://rodneylab.com/using-local-storage-sveltekit/,
 // https://m2.material.io/design/color/dark-theme.html,
 // https://www.w3schools.com/howto/howto_js_media_queries.asp,
-// and https://stackoverflow.com/questions/50840168/how-to-detect-if-the-os-is-in-dark-mode-in-browsers,
+// and https://stackoverflow.com/questions/50840168/how-to-detect-if-the-os-is-in-dark-mode-in-browsers.
 
 import { writable } from 'svelte/store';
 import { browser } from '$app/environment';

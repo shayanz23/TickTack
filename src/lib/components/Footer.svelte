@@ -21,14 +21,17 @@
 </script>
 
 <footer id="footer">
-	<p>2024 - Shayan Zahedanaraki</p>
+	<p id="copyright" >2024 - Shayan Zahedanaraki</p>
 
-	<button class="button" on:click={changeTheme}>Toggle dark mode</button>
-	<p>Theme: {theme}</p>
+	<button id="theme-switch" class="button" on:click={changeTheme}>Toggle dark mode</button>
+	<p id="theme-indicator">Theme: {theme}</p>
 </footer>
 
 <style>
 	#footer {
 		display: grid;
+		padding-bottom: 10px;
+		padding-left: 10px;
+		padding-right: 10px;
 	}
 </style>
