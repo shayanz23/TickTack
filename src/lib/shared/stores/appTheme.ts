@@ -23,8 +23,8 @@ const appInitialValue: number = (() => {
     pickPreferedTheme);
 
   let localval = window.localStorage.getItem("appTheme");
-  if (localval !== null && typeof localval === 'number') {
-    return localval;
+  if (localval !== null && typeof +localval === 'number') {
+    return +localval;
   } else {
     return appDefaultValue;
   }
