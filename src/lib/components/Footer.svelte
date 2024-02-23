@@ -4,7 +4,7 @@
 	let theme: string;
 
 	$: if ($appTheme === 0) {
-		theme = 'default';
+		theme = 'system';
 	} else if ($appTheme === 1) {
 		theme = 'dark';
 	} else {
