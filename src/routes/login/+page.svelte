@@ -50,7 +50,7 @@
 			{#if winner === ''}
 				<p>Game is a tie...</p>
 			{:else}
-				<p>Player {winner} wins!</p>
+				<p> {winner} wins!</p>
 			{/if}
 		</div>
 	</GameOverModal>

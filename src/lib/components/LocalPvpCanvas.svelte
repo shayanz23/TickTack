@@ -117,7 +117,7 @@
 	}
 
 	function rescaleCanvas() {
-		if (window.outerWidth <= screens.md) {
+		if (window.outerWidth <= screens.md || window.innerHeight <= screens.md) {
 			gameCanvas.scale = 0.5;
 		} else {
 			gameCanvas.scale = 1;

@@ -51,7 +51,7 @@
 			{#if winner === ''}
 				<p>Game is a tie...</p>
 			{:else}
-				<p>Player {winner} wins!</p>
+				<p>{winner} wins!</p>
 			{/if}
 		</div>
 	</GameOverModal>
@@ -92,6 +92,14 @@
 	}
 
 	@media (width <= 768px) {
+		#canvas-div {
+			width: 350px;
+			height: 350px;
+			border-radius: 25px;
+		}
+	}
+
+	@media (height <= 768px) {
 		#canvas-div {
 			width: 350px;
 			height: 350px;

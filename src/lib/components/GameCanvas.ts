@@ -1,176 +1,207 @@
 import { BoxComponent } from './BoxComponents';
-import { get } from "svelte/store";
-import {darkTheme} from '$lib/shared/stores/appTheme';
-
+import { get } from 'svelte/store';
+import { darkTheme } from '$lib/shared/stores/appTheme';
 
 export class GameCanvas {
+	private gridRows: number = 5;
+	private gridColumns: number = 5;
+	private _winLength = 4;
+	private _height: number;
+	private _width: number;
+	private _scale: number = 1;
+	private _htmlCanvas: HTMLCanvasElement;
+	private _context!: CanvasRenderingContext2D;
+	private _boxes: BoxComponent[][] = [];
+	private readonly strokeStyles = ['#222222', '#efefef'];
 
-    private gridRows: number = 5;
-    private gridColumns: number = 5;
-    private _winLength = 4;
-    private _height: number;
-    private _width: number;
-    private _scale: number = 1;
-    private _htmlCanvas: HTMLCanvasElement;
-    private _context!: CanvasRenderingContext2D;
-    private _boxes: BoxComponent[][] = [];
-    private readonly strokeStyles = ["#222222", "#efefef"]
+	private _boxAreaHeight: number;
+	private _boxAreaWidth: number;
 
-    private _boxAreaHeight: number;
-    private _boxAreaWidth: number;
+	public get scale() {
+		return this._scale;
+	}
 
-    public get scale() {
-        return this._scale;
-    }
+	public set scale(value: number) {
+		this._scale = value / 2;
+		this.htmlCanvas.style.width = this._width * this._scale + 'px';
+		this.htmlCanvas.style.height = this._height * this._scale + 'px';
+	}
 
-    public set scale(value: number) {
-        this._scale = value / 2;
-        this.htmlCanvas.style.width = (this._width * this._scale) + "px";
-        this.htmlCanvas.style.height = (this._height * this._scale) + "px";
-    }
+	public get boxAreaHeight(): number {
+		return this._boxAreaHeight!;
+	}
 
-    public get boxAreaHeight(): number {
-        return this._boxAreaHeight!;
-    }
+	public get boxAreaWidth(): number {
+		return this._boxAreaWidth!;
+	}
 
-    public get boxAreaWidth(): number {
-        return this._boxAreaWidth!;
-    }
+	public get width() {
+		return this._width / 2;
+	}
 
-    public get width() {
-        return this._width / 2;
-    }
+	public get height() {
+		return this._height / 2;
+	}
 
-    public get height() {
-        return this._height / 2;
-    }
+	public get boxes(): BoxComponent[][] {
+		return this._boxes;
+	}
+	public set boxes(value: BoxComponent[][]) {
+		this._boxes = value;
+	}
 
-    public get boxes(): BoxComponent[][] {
-        return this._boxes;
-    }
-    public set boxes(value: BoxComponent[][]) {
-        this._boxes = value;
-    }
+	public get winLength(): number {
+		return this._winLength;
+	}
 
-    public get winLength(): number {
-        return this._winLength;
-    }
+	public get context(): CanvasRenderingContext2D {
+		return this._context!;
+	}
 
-    public get context(): CanvasRenderingContext2D {
-        return this._context!;
-    }
+	public set context(value: CanvasRenderingContext2D) {
+		this._context = value;
+	}
 
-    public set context(value: CanvasRenderingContext2D) {
-        this._context = value;
+	public get htmlCanvas(): HTMLCanvasElement {
+		return this._htmlCanvas;
+	}
 
-    }
+	private set htmlCanvas(value: HTMLCanvasElement) {
+		this._htmlCanvas = value;
+	}
 
-    public get htmlCanvas(): HTMLCanvasElement {
-        return this._htmlCanvas;
-    }
+	constructor(
+		htmlCanvas: HTMLCanvasElement,
+		width: number,
+		height: number,
+		gridRows: number,
+		gridColumns: number,
+		winLength: number,
+		scale: number
+	) {
+		this._htmlCanvas = htmlCanvas;
+		this.gridColumns = gridColumns;
+		this.gridRows = gridRows;
 
-    private set htmlCanvas(value: HTMLCanvasElement) {
-        this._htmlCanvas = value;
-    }
+		this._width = width * 2;
+		this._height = height * 2;
+		this._scale = scale / 2;
 
-    constructor(htmlCanvas: HTMLCanvasElement, width: number, height: number, gridRows: number, gridColumns: number, winLength: number, scale: number) {
-        this._htmlCanvas = htmlCanvas;
-        this.gridColumns = gridColumns;
-        this.gridRows = gridRows;
+		this._boxAreaHeight = this._height / this.gridRows;
+		this._boxAreaWidth = this._width / this.gridColumns;
 
-        this._width = width * 2;
-        this._height = height * 2;
-        this._scale = scale / 2;
+		this._winLength = winLength;
+		this.context = htmlCanvas.getContext('2d')!;
+		this.initializeCanvas();
+	}
 
-        this._boxAreaHeight = this._height / this.gridRows;
-        this._boxAreaWidth = this._width / this.gridColumns;
+	private initializeCanvas(): void {
+		this.htmlCanvas.width = this._width;
+		this.htmlCanvas.height = this._height;
+		this.htmlCanvas.style.width = this._width * this.scale + 'px';
+		this.htmlCanvas.style.height = this._height * this.scale + 'px';
 
-        this._winLength = winLength;
-        this.context = htmlCanvas.getContext('2d')!;
-        this.initializeCanvas();
-    }
+		this.drawBackground();
+		this.createBoxes();
+	}
 
-    private initializeCanvas(): void {
-        this.htmlCanvas.width = this._width;
-        this.htmlCanvas.height = this._height;
-        this.htmlCanvas.style.width = (this._width * this.scale) + "px";
-        this.htmlCanvas.style.height = (this._height * this.scale) + "px";
+	protected beginDrawing() {
+		this.context.beginPath();
+		return true;
+	}
 
-        this.drawBackground();
-        this.createBoxes();
-    }
+	protected endDrawing() {
+		this.context.closePath();
+		this.context.stroke();
+	}
 
-    private drawBackground() {
-        let occumilatedLineHeight = 0;
-        let occumilatedLineWidth = 0;
-        // Pick the opposite of the current theme for the background.
-        this.context.fillStyle = this.strokeStyles[+!get(darkTheme)];
-        this.context.strokeStyle = this.strokeStyles[+get(darkTheme)];
-        this.context.fillRect(0, 0, this._width, this._height);
-        this.context.lineWidth = Math.min(this.boxAreaHeight, this.boxAreaWidth) / 12;
-        for (let i = 0; i < this.gridRows - 1; i++) {
-            occumilatedLineHeight += this._boxAreaHeight;
-            this.context.beginPath();
-            this.context.moveTo(0, occumilatedLineHeight);
-            this.context.lineTo(this._width, occumilatedLineHeight);
-            this.context.closePath();
-            this.context.stroke();
-        }
-        for (let i = 0; i < this.gridColumns - 1; i++) {
-            occumilatedLineWidth += this._boxAreaWidth!;
-            this.context.beginPath();
-            this.context.moveTo(occumilatedLineWidth, 0);
-            this.context.lineTo(occumilatedLineWidth, this._height);
-            this.context.closePath();
-            this.context.stroke();
-        }
-    }
+	public drawWinLine(winCoords: { x: number; y: number }[], orientation: number) {
+		this.context.strokeStyle = this.strokeStyles[+get(darkTheme)];
+		this.beginDrawing();
+		this.context.moveTo(
+			this.boxes[winCoords[0].x][winCoords[0].y].areaXBegin + this.boxAreaWidth / 2,
+			this.boxes[winCoords[0].x][winCoords[0].y].areaYBegin + this.boxAreaHeight / 2
+		);
+		this.context.lineTo(
+			this.boxes[winCoords[winCoords.length - 1].x][winCoords[winCoords.length - 1].y].areaXBegin +
+				this.boxAreaWidth / 2,
+			this.boxes[winCoords[winCoords.length - 1].x][winCoords[winCoords.length - 1].y].areaYBegin +
+				this.boxAreaHeight / 2
+		);
+		this.endDrawing();
+	}
 
-    public redraw() {
-        console.log("redrawing");
-        this.context.clearRect(0, 0, this.htmlCanvas.width, this.htmlCanvas.height);
-        this.drawBackground();
-        for (let i = 0; i < this.gridColumns; i++) {
-            for (let j = 0; j < this.gridRows; j++) {
-                this.boxes[i][j].recalculateDrawPos(i * this._boxAreaWidth, j * this._boxAreaHeight);
-                this.boxes[i][j].draw();
-            }
-        }
-    }
+	private drawBackground() {
+		let occumilatedLineHeight = 0;
+		let occumilatedLineWidth = 0;
+		// Pick the opposite of the current theme for the background.
+		this.context.fillStyle = this.strokeStyles[+!get(darkTheme)];
+		this.context.strokeStyle = this.strokeStyles[+get(darkTheme)];
+		this.context.fillRect(0, 0, this._width, this._height);
+		this.context.lineWidth = Math.min(this.boxAreaHeight, this.boxAreaWidth) / 12;
+		for (let i = 0; i < this.gridRows - 1; i++) {
+			occumilatedLineHeight += this._boxAreaHeight;
+			this.context.beginPath();
+			this.context.moveTo(0, occumilatedLineHeight);
+			this.context.lineTo(this._width, occumilatedLineHeight);
+			this.context.closePath();
+			this.context.stroke();
+		}
+		for (let i = 0; i < this.gridColumns - 1; i++) {
+			occumilatedLineWidth += this._boxAreaWidth!;
+			this.context.beginPath();
+			this.context.moveTo(occumilatedLineWidth, 0);
+			this.context.lineTo(occumilatedLineWidth, this._height);
+			this.context.closePath();
+			this.context.stroke();
+		}
+	}
 
-    private createBoxes() {
-        for (let i = 0; i < this.gridColumns; i++) {
-            this._boxes.push([]);
-            for (let j = 0; j < this.gridRows; j++) {
-                //for each column add the rows of boxes
-                this._boxes[i].push(new BoxComponent(i * this._boxAreaWidth, j * this._boxAreaHeight, this));
-            }
-        }
-    }
+	public redraw() {
+		this.context.clearRect(0, 0, this.htmlCanvas.width, this.htmlCanvas.height);
+		this.drawBackground();
+		for (let i = 0; i < this.gridColumns; i++) {
+			for (let j = 0; j < this.gridRows; j++) {
+				this.boxes[i][j].recalculateDrawPos(i * this._boxAreaWidth, j * this._boxAreaHeight);
+				this.boxes[i][j].draw();
+			}
+		}
+	}
 
-    public findBox(x: number, y: number) {
-        let found = false;
-        let boxCol = null;
-        let boxRow = null;
-        for (let i = 0; i < this._boxes.length; i++) {
-            for (let j = 0; j < this._boxes[i].length; j++) {
-                if (
-                    x / this._scale > this._boxes[i][j].areaXBegin &&
-                    x / this._scale < this._boxes[i][j].areaXBegin + this._boxAreaWidth &&
-                    y / this._scale > this._boxes[i][j].areaYBegin &&
-                    y / this._scale < this._boxes[i][j].areaYBegin + this._boxAreaHeight
-                ) {
-                    boxCol = i;
-                    boxRow = j;
-                    found = true;
-                    break;
-                }
-            }
-            if (found) {
-                break;
-            }
-        }
-        return { boxCol, boxRow };
-    }
+	private createBoxes() {
+		for (let i = 0; i < this.gridColumns; i++) {
+			this._boxes.push([]);
+			for (let j = 0; j < this.gridRows; j++) {
+				//for each column add the rows of boxes
+				this._boxes[i].push(
+					new BoxComponent(i * this._boxAreaWidth, j * this._boxAreaHeight, this)
+				);
+			}
+		}
+	}
 
+	public findBox(x: number, y: number) {
+		let found = false;
+		let boxCol = null;
+		let boxRow = null;
+		for (let i = 0; i < this._boxes.length; i++) {
+			for (let j = 0; j < this._boxes[i].length; j++) {
+				if (
+					x / this._scale > this._boxes[i][j].areaXBegin &&
+					x / this._scale < this._boxes[i][j].areaXBegin + this._boxAreaWidth &&
+					y / this._scale > this._boxes[i][j].areaYBegin &&
+					y / this._scale < this._boxes[i][j].areaYBegin + this._boxAreaHeight
+				) {
+					boxCol = i;
+					boxRow = j;
+					found = true;
+					break;
+				}
+			}
+			if (found) {
+				break;
+			}
+		}
+		return { boxCol, boxRow };
+	}
 }

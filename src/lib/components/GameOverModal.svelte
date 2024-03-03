@@ -22,19 +22,23 @@
 	function routeToPage(route: string, replaceState: boolean) {
 		goto(`/${route}`, { replaceState });
 	}
+
+	function dismissClickHandler() {
+		dialog.close()
+	}
 </script>
 
 <!-- svelte-ignore a11y-click-events-have-key-events a11y-no-noninteractive-element-interactions -->
 <dialog
 	bind:this={dialog}
 	on:close={() => (showModal = false)}
-	on:click|self={() => dialog.close()}
 >
 	<!-- svelte-ignore a11y-no-static-element-interactions -->
 	<div id="modal-div" on:click|stopPropagation class:background-dark={$darkTheme}>
 		<slot id="modal-slot"/>
 		<!-- svelte-ignore a11y-autofocus -->
 		<div id="modal-buttons">
+			<button id="modal-dismiss-button" autofocus on:click={() => dismissClickHandler()}>Dismiss</button>
 			<button id="modal-home-button" autofocus on:click={() => toHome()}>Home</button>
 			<button id="modal-restart-button" autofocus on:click={() => restart()}>Play Again</button>
 		</div>
@@ -65,7 +69,11 @@
 		grid-row: 1;
 	}
 
-	
+	#modal-home-button {
+		grid-column: 4;
+		margin-left: 60%;
+		margin-right: 0%;
+	}
 
 	#modal-home-button {
 		grid-column: 4;
