@@ -7,8 +7,7 @@
 		<a href="/localpvp">Local PvP</a>
 		<a href="/multiplayer">Multiplayer</a>
 		<a href="/about">About</a>
-		<a id="right-item" href="/login">Login</a>
-		<a id="right-end-item" href="/signup">Sign Up</a>
+		<a class="right-item" href="/login">Login</a>
 	</nav>
 </div>
 
@@ -23,7 +22,7 @@
 		display: flex;
 		background-color: rgb(127, 225, 255);
 		margin: 10px;
-		border-radius: 17px;
+		border-radius: 14px;
 	}
 
 	#navbar * {
@@ -35,12 +34,10 @@
 		height: fit-content;
 	}
 
-	#right-item {
-		margin-left: auto !important;
-	}
 
-	#right-end-item {
-		margin-right: 20px;
+	.right-item {
+		margin-left: auto !important;
+		padding-right: 10px;
 	}
 
 	#left-end-item {
