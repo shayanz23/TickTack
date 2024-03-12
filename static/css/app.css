@@ -57,6 +57,26 @@ p {
     background-color: rgb(118, 221, 255);
 }
 
+.input-dark {
+    background-color: #222222;
+    border: 2px solid rgb(94, 94, 94) ;
+    color: white;
+}
+
+.input-light {
+    background-color: rgb(216, 216, 216);
+    border: 2px solid rgb(123, 123, 123) ;
+    color: black;
+}
+
+.input-dark[type=text]:hover {
+    border: 2px solid rgb(94, 94, 94);
+}
+
+.input-light[type=text]:hover {
+    border: 2px solid rgb(123, 123, 123);
+}
+
 
 input[type=text] {
     width: 100%;
@@ -64,7 +84,7 @@ input[type=text] {
     margin: 8px 0;
     box-sizing: border-box;
     border-color: #00000000;
-    border-width: 3px;
+    border-width: 2px;
     -webkit-transition: 0.5s;
     transition: 0.5s;
     outline: none;
@@ -72,15 +92,15 @@ input[type=text] {
 }
 
 input[type=text]:focus {
-    border: 3px solid rgb(39, 201, 255);
+    border: 2px solid rgb(39, 201, 255);
     border-radius: 10px;
 }
 
 input[type=text]:hover {
-    border: 3px solid rgb(94, 94, 94);
+    
 }
 
 input[type=text]:focus:hover {
-    border: 3px solid rgb(39, 201, 255);
+    border: 2px solid rgb(39, 201, 255);
     border-radius: 10px;
 }

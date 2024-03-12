@@ -4,17 +4,19 @@
 
 <div id="page-div">
 	<form action="" id="login-form" class:object-dark={$darkTheme} class:object-light={!$darkTheme}>
+		<h1>Sign in</h1>
+		<br>
 		<input
 			id="username-input"
-			class:object-dark={$darkTheme}
-			class:object-light={!$darkTheme}
+			class:input-dark={$darkTheme}
+			class:input-light={!$darkTheme}
 			type="text"
 			placeholder="username"
 		/>
 		<input
 			id="password-input"
-			class:object-dark={$darkTheme}
-			class:object-light={!$darkTheme}
+			class:input-dark={$darkTheme}
+			class:input-light={!$darkTheme}
 			type="text"
 			placeholder="password"
 		/>
@@ -25,19 +27,32 @@
 </div>
 
 <style>
+h1 {
+	padding-top: 10px;
+	margin: 0;
+}
+
 	#login-form {
 		padding: 20px;
 		margin-right: auto;
 		margin: auto;
-		height: fit-content;
-		width: 300px;
+		min-height: fit-content;
+		height: 275px;
+		width: 275px;
 		border-radius: 20px;
 		display: grid;
+	}
+
+	#login-form input {
+		width: 275px;
+		margin: auto;
 	}
 
 	#login-button {
 		margin-left: auto !important; 
 	margin-right: 0 !important;
+		margin-top: auto !important;
+		margin-bottom: 0 !important;
 	}
 
 	#page-div {
