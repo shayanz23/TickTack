@@ -5,7 +5,7 @@
 <div id="page-div">
 	<form action="" id="login-form" class:object-dark={$darkTheme} class:object-light={!$darkTheme}>
 		<h1>Sign in</h1>
-		<br />
+
 		<input
 			id="username-input"
 			class:input-dark={$darkTheme}
@@ -20,6 +20,7 @@
 			type="password"
 			placeholder="Password"
 		/>
+		<p id="forgot-pw">Forgot Password? <a href="">Reset</a></p>
 		<button id="login-button" class="button recommended-button"> Sign In </button>
 	</form>
 </div>
@@ -28,6 +29,11 @@
 	h1 {
 		padding-top: 10px;
 		margin: 0;
+	}
+
+	#forgot-pw {
+		margin-top: auto;
+		margin-bottom: auto;
 	}
 
 	#login-form {

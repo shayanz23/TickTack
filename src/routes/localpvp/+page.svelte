@@ -43,7 +43,7 @@
 	{/if}
 	<PickPlayerNames bind:showModal={showpickPlayerModal} bind:restartState>
 		<div class:background-dark={$darkTheme}>
-			<h2>Pick Player names</h2>
+			<h2>Game Settings</h2>
 			<input type="text" placeholder="player 1" bind:value={player1Name} />
 			<input type="text" placeholder="player 2" bind:value={player2Name} />
 			<input id="modal-row-input" type="number" bind:value={gridRows}/>
