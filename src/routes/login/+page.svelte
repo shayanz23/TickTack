@@ -5,32 +5,30 @@
 <div id="page-div">
 	<form action="" id="login-form" class:object-dark={$darkTheme} class:object-light={!$darkTheme}>
 		<h1>Sign in</h1>
-		<br>
+		<br />
 		<input
 			id="username-input"
 			class:input-dark={$darkTheme}
 			class:input-light={!$darkTheme}
 			type="text"
-			placeholder="username"
+			placeholder="Username"
 		/>
 		<input
 			id="password-input"
 			class:input-dark={$darkTheme}
 			class:input-light={!$darkTheme}
-			type="text"
-			placeholder="password"
+			type="password"
+			placeholder="Password"
 		/>
-		<button id="login-button" class="button recommended-button">
-			Sign In
-		</button>
+		<button id="login-button" class="button recommended-button"> Sign In </button>
 	</form>
 </div>
 
 <style>
-h1 {
-	padding-top: 10px;
-	margin: 0;
-}
+	h1 {
+		padding-top: 10px;
+		margin: 0;
+	}
 
 	#login-form {
 		padding: 20px;
@@ -49,8 +47,8 @@ h1 {
 	}
 
 	#login-button {
-		margin-left: auto !important; 
-	margin-right: 0 !important;
+		margin-left: auto !important;
+		margin-right: 0 !important;
 		margin-top: auto !important;
 		margin-bottom: 0 !important;
 	}
@@ -61,4 +59,26 @@ h1 {
 		grid-template-rows: auto;
 	}
 
+	input {
+		width: 100%;
+		padding: 12px 20px;
+		margin: 8px 0;
+		box-sizing: border-box;
+		border-color: #00000000;
+		border-width: 2px;
+		-webkit-transition: 0.5s;
+		transition: 0.5s;
+		outline: none;
+		border-radius: 10px;
+	}
+
+	input:focus {
+		border: 2px solid rgb(39, 201, 255) !important;
+		border-radius: 10px;
+	}
+
+	input:focus:hover {
+		border: 2px solid rgb(39, 201, 255) !important;
+		border-radius: 10px;
+	}
 </style>

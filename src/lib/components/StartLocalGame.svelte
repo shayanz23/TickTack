@@ -9,7 +9,7 @@
 
 	$: if (dialog && showModal) dialog.showModal();
 
-	function restart() {
+	function play() {
 		restartState = true;
 		dialog.close();
 	}
@@ -36,18 +36,16 @@
 		<!-- svelte-ignore a11y-autofocus -->
 		<div id="modal-buttons">
 			<button id="modal-home-button" autofocus on:click={() => toHome()}>Home</button>
-			<button id="modal-restart-button" autofocus on:click={() => restart()}>Play</button>
+			<button id="modal-restart-button" autofocus on:click={() => play()}>Play</button>
 		</div>
 	</div>
 </dialog>
 
 <style>
 
-
-
 	#modal-div {
 		display: grid;
-		grid-template-rows: 5;
+		grid-template-rows: 7;
 		grid-template-columns: 1;
 		height:auto;
 	}
@@ -59,13 +57,9 @@
 
 	}
 
-	
-
 	#modal-slot {
 		grid-row: 1;
 	}
-
-	
 
 	#modal-home-button {
 		grid-column: 4;
@@ -94,15 +88,19 @@
 		border: none;
 		padding: 0;
 	}
+
 	dialog::backdrop {
 		background: rgba(0, 0, 0, 0.3);
 	}
+
 	dialog > div {
 		padding: 1em;
 	}
+
 	dialog[open] {
 		animation: zoom 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
 	}
+
 	@keyframes zoom {
 		from {
 			transform: scale(0.95);
@@ -111,9 +109,11 @@
 			transform: scale(1);
 		}
 	}
+
 	dialog[open]::backdrop {
 		animation: fade 0.2s ease-out;
 	}
+
 	@keyframes fade {
 		from {
 			opacity: 0;
@@ -122,6 +122,7 @@
 			opacity: 1;
 		}
 	}
+
 	button {
 		display: block;
 	}

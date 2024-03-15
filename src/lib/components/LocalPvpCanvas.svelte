@@ -10,6 +10,9 @@
 	export let currentPlayer: string = '';
 	export let player1Name: string;
 	export let player2Name: string;
+	export let gridColumns = 5;
+	export let gridRows = 5;
+	export let winLength = 4;
 
 	const height = 600;
 	const width = 600;
@@ -138,7 +141,7 @@
 		// Change HTMLCanvas Size to match screen size before drawing anything.
 		if (browser) {
 			// Initialize gameCanvas with the ready htmlCanvas injected.
-			gameCanvas = new GameCanvas(htmlCanvas, width, height, 5, 5, 4, 1);
+			gameCanvas = new GameCanvas(htmlCanvas, width, height, gridRows, gridColumns, winLength, 1);
 			setDefaultPlayerName();
 			game = new TickTackGame(gameCanvas, [player1Name, player2Name]);
 			currentPlayer = game.getCurrentPlayer();

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Canvas from '$lib/components/LocalPvpCanvas.svelte';
 	import GameOverModal from '$lib/components/GameOverModal.svelte';
-	import PickPlayerNames from '$lib/components/PickPlayerNames.svelte';
+	import PickPlayerNames from '$lib/components/StartLocalGame.svelte';
 	import {darkTheme} from '$lib/shared/stores/appTheme';
 
 	let gameOver = false;
@@ -13,6 +13,9 @@
 	let unique = [{}];
 	let player1Name = '';
 	let player2Name = '';
+	let gridColumns = 5;
+	let gridRows = 5;
+	let winLength = 4;
 
 	function restart() {
 		unique = [{}];
@@ -34,7 +37,7 @@
 	{#if !showpickPlayerModal}
 		<div id="canvas-div" class:object-dark={$darkTheme} class:object-light={!$darkTheme}>
 			{#each unique as key (key)}
-				<Canvas bind:gameOver bind:winner bind:currentPlayer bind:player1Name bind:player2Name />
+				<Canvas bind:gameOver bind:winner bind:currentPlayer bind:player1Name bind:player2Name bind:gridColumns bind:gridRows bind:winLength/>
 			{/each}
 		</div>
 	{/if}
@@ -43,6 +46,9 @@
 			<h2>Pick Player names</h2>
 			<input type="text" placeholder="player 1" bind:value={player1Name} />
 			<input type="text" placeholder="player 2" bind:value={player2Name} />
+			<input id="modal-row-input" type="number" bind:value={gridRows}/>
+			<input id="modal-column-input" type="number" bind:value={gridColumns}/>
+			<input id="modal-winLength-input" type="number" bind:value={winLength}/>
 		</div>
 	</PickPlayerNames>
 	<GameOverModal bind:showModal={showGameOverModal} bind:restartState>
