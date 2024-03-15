@@ -34,6 +34,7 @@
 	#forgot-pw {
 		margin-top: auto;
 		margin-bottom: auto;
+		font-size: 10pt;
 	}
 
 	#login-form {
