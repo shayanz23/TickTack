@@ -23,7 +23,9 @@ const appInitialValue: number = (() => {
 	setcolorPrefMedQuery();
 
 	colorPrefMedQuery!.addEventListener("change", () => {
-		darkTheme.set(isDark());
+		if (get(pickedTheme) === 0) {
+			darkTheme.set(isDark());
+		}
 	})
 
 	let localval = window.localStorage.getItem('pickedTheme');
