@@ -5,8 +5,6 @@
 
 import { get, writable } from 'svelte/store';
 import { browser } from '$app/environment';
-import { onMount } from 'svelte';
-
 
 // Color pref to get system theme.
 let colorPrefMedQuery: MediaQueryList;
@@ -24,6 +22,10 @@ const appInitialValue: number = (() => {
 
 	setcolorPrefMedQuery();
 
+	colorPrefMedQuery!.addEventListener("change", () => {
+		darkTheme.set(isDark());
+	})
+
 	let localval = window.localStorage.getItem('pickedTheme');
 	if (localval !== null && !isNaN(+localval) && +localval < 3) {
 		return +localval;
@@ -31,10 +33,6 @@ const appInitialValue: number = (() => {
 		return appDefaultValue;
 	}
 })();
-
-
-
-
 
 // Creating the svelte store and setting its value to the initial value.
 const pickedTheme = writable<number>(appInitialValue);
@@ -44,36 +42,35 @@ const darkInitValue: boolean = (() => {
 		return darkDefaultVal;
 	}
 
-  let value = get(pickedTheme)
+	let value = get(pickedTheme);
 
 	if (value === 0) {
-    return isDark();
-  } else if (value === 1) {
-    return true;
-  } else {
-    return false;
-  }
+		return isDark();
+	} else if (value === 1) {
+		return true;
+	} else {
+		return false;
+	}
 })();
 
 export const darkTheme = writable<boolean>(darkInitValue);
 
 function setcolorPrefMedQuery() {
-  if (browser) {
-    if (colorPrefMedQuery === undefined) {
-      colorPrefMedQuery = window.matchMedia('(prefers-color-scheme: dark)');
-    }
-  }
-  
+	if (browser) {
+		if (colorPrefMedQuery === undefined) {
+			colorPrefMedQuery = window.matchMedia('(prefers-color-scheme: dark)');
+		}
+	}
 }
 
 // sets the theme to the system one.
 function isDark(): boolean {
-  let bool = false;
-  setcolorPrefMedQuery();
+	let bool = false;
+	setcolorPrefMedQuery();
 	if (colorPrefMedQuery.matches) {
-    bool = true;
+		bool = true;
 	}
-  return bool;
+	return bool;
 }
 
 // Everytime the pickedTheme changes, the value in localstorage and the darktheme state is changed.
@@ -89,5 +86,7 @@ pickedTheme.subscribe((value) => {
 		}
 	}
 });
+
+
 
 export default pickedTheme;

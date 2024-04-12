@@ -117,6 +117,8 @@ export class GameCanvas {
 
 	public drawWinLine(winCoords: { x: number; y: number }[], orientation: number) {
 		this.context.strokeStyle = this.strokeStyles[+get(darkTheme)];
+		const startPoint = this.determinStartPoint({ x: winCoords[0].x, y: winCoords[0].y }, orientation);
+		const endPoint = this.determinEndPoint({ x: winCoords[winCoords.length - 1].x, y: winCoords[winCoords.length - 1].y }, orientation);
 		this.beginDrawing();
 		this.context.moveTo(
 			this.boxes[winCoords[0].x][winCoords[0].y].areaXBegin + this.boxAreaWidth / 2,
@@ -129,6 +131,14 @@ export class GameCanvas {
 				this.boxAreaHeight / 2
 		);
 		this.endDrawing();
+	}
+
+	public determinStartPoint(startCoords: { x: number, y: number }, orientation: number) {
+		return { x: 1, y: 2 };
+	}
+
+	public determinEndPoint(endCoords: { x: number, y: number }, orientation: number) {
+		
 	}
 
 	private drawBackground() {

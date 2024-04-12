@@ -23,6 +23,7 @@
 		<p id="forgot-pw">Forgot Password? <a href="">Reset</a></p>
 		<button id="login-button" class="button recommended-button"> Sign In </button>
 	</form>
+	<p id="no-account" class:object-dark={$darkTheme}>Don't have an account? <a href="">Sign up</a></p>
 </div>
 
 <style>
@@ -37,10 +38,19 @@
 		font-size: 10pt;
 	}
 
+	#no-account {
+		margin-top: 0;
+		margin-bottom: auto;
+		font-size: 10pt;
+		margin-left: auto;
+		margin-right: auto;
+	}
+
 	#login-form {
 		padding: 20px;
 		margin-right: auto;
 		margin: auto;
+		margin-bottom: 12px;
 		min-height: fit-content;
 		height: 275px;
 		width: 275px;
