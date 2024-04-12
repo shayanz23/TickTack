@@ -49,12 +49,58 @@ export class TickTackGame {
 			for (let j = 0; j < this.gameCanvas.boxes[i].length; j++) {
 				if (this.gameCanvas.boxes[i][j].isWinnerBase(i, j) === true) {
 					this.winnerName = this.gameCanvas.boxes[i][j].player;
-					this.gameCanvas.drawWinLine(this.gameCanvas.boxes[i][j].winnerCoords, this.gameCanvas.boxes[i][j].winOrientation);
+					this.gameCanvas.drawWinLine(this.determineCoords(
+						this.gameCanvas.boxes[i][j].winnerCoords,
+						this.gameCanvas.boxes[i][j].winOrientation
+					));
 					return true;
 				}
 			}
 		}
 		return false;
+	}
+
+	private determineCoords(winGridCoords: { x: number; y: number }[], orientation: number) {
+		const firstBox = this.gameCanvas.boxes[winGridCoords[0].x][winGridCoords[0].y];
+		const lastBox =
+			this.gameCanvas.boxes[winGridCoords[winGridCoords.length - 1].x][
+				winGridCoords[winGridCoords.length - 1].y
+			];
+		
+		let firstBoxCanvasX = null;
+		let firstBoxCanvasY = null;
+
+		let lastBoxCanvasX = null;
+		let lastBoxCanvasY = null;
+
+		if (orientation === 1) {
+			firstBoxCanvasX = firstBox.areaXBegin;
+			firstBoxCanvasY = firstBox.areaYBegin;
+
+			lastBoxCanvasX = lastBox.areaXBegin + this.gameCanvas.boxAreaWidth;
+			lastBoxCanvasY = lastBox.areaYBegin + this.gameCanvas.boxAreaHeight;
+		} else if (orientation === 2) {
+			firstBoxCanvasX = firstBox.areaXBegin + this.gameCanvas.boxAreaWidth;
+			console.log(firstBox.areaXBegin)
+			firstBoxCanvasY = firstBox.areaYBegin;
+
+			lastBoxCanvasX = lastBox.areaXBegin;
+			lastBoxCanvasY = lastBox.areaYBegin + this.gameCanvas.boxAreaHeight;
+		} else if (orientation === 3) {
+			firstBoxCanvasX = firstBox.areaXBegin;
+			firstBoxCanvasY = firstBox.areaYBegin + this.gameCanvas.boxAreaHeight/2;
+
+			lastBoxCanvasX = lastBox.areaXBegin + this.gameCanvas.boxAreaWidth;
+			lastBoxCanvasY = lastBox.areaYBegin + this.gameCanvas.boxAreaHeight/2;
+		} else if (orientation === 4) {
+			firstBoxCanvasX = firstBox.areaXBegin + this.gameCanvas.boxAreaHeight/2;
+			firstBoxCanvasY = firstBox.areaYBegin;
+
+			lastBoxCanvasX = lastBox.areaXBegin + this.gameCanvas.boxAreaWidth/2;
+			lastBoxCanvasY = lastBox.areaYBegin + this.gameCanvas.boxAreaHeight;
+		}
+
+		return {firstBoxCanvasX, firstBoxCanvasY, lastBoxCanvasX, lastBoxCanvasY};
 	}
 
 	/**

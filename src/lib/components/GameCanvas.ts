@@ -115,30 +115,20 @@ export class GameCanvas {
 		this.context.stroke();
 	}
 
-	public drawWinLine(winCoords: { x: number; y: number }[], orientation: number) {
+	public drawWinLine(winnerCanvasCoords: {firstBoxCanvasX: number | null, firstBoxCanvasY: number | null, lastBoxCanvasX: number | null, lastBoxCanvasY: number | null}) {
+		if (winnerCanvasCoords.firstBoxCanvasX == null || winnerCanvasCoords.firstBoxCanvasY == null || winnerCanvasCoords.lastBoxCanvasX == null || winnerCanvasCoords.lastBoxCanvasY == null) {
+			return
+		}
+		
 		this.context.strokeStyle = this.strokeStyles[+get(darkTheme)];
-		const startPoint = this.determinStartPoint({ x: winCoords[0].x, y: winCoords[0].y }, orientation);
-		const endPoint = this.determinEndPoint({ x: winCoords[winCoords.length - 1].x, y: winCoords[winCoords.length - 1].y }, orientation);
+
 		this.beginDrawing();
 		this.context.moveTo(
-			this.boxes[winCoords[0].x][winCoords[0].y].areaXBegin + this.boxAreaWidth / 2,
-			this.boxes[winCoords[0].x][winCoords[0].y].areaYBegin + this.boxAreaHeight / 2
+			winnerCanvasCoords.firstBoxCanvasX,
+			winnerCanvasCoords.firstBoxCanvasY
 		);
-		this.context.lineTo(
-			this.boxes[winCoords[winCoords.length - 1].x][winCoords[winCoords.length - 1].y].areaXBegin +
-				this.boxAreaWidth / 2,
-			this.boxes[winCoords[winCoords.length - 1].x][winCoords[winCoords.length - 1].y].areaYBegin +
-				this.boxAreaHeight / 2
-		);
+		this.context.lineTo(winnerCanvasCoords.lastBoxCanvasX, winnerCanvasCoords.lastBoxCanvasY);
 		this.endDrawing();
-	}
-
-	public determinStartPoint(startCoords: { x: number, y: number }, orientation: number) {
-		return { x: 1, y: 2 };
-	}
-
-	public determinEndPoint(endCoords: { x: number, y: number }, orientation: number) {
-		
 	}
 
 	private drawBackground() {
