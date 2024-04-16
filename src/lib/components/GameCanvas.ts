@@ -13,14 +13,35 @@ export class GameCanvas {
 	private _context!: CanvasRenderingContext2D;
 	private _boxes: BoxComponent[][] = [];
 	private readonly strokeStyles = ['#222222', '#efefef'];
-
+	private _winnerCanvasCoords: {
+		firstBoxCanvasX: number | null;
+		firstBoxCanvasY: number | null;
+		lastBoxCanvasX: number | null;
+		lastBoxCanvasY: number | null;
+	} = { firstBoxCanvasX: null, firstBoxCanvasY: null, lastBoxCanvasX: null, lastBoxCanvasY: null };
 	private _boxAreaHeight: number;
 	private _boxAreaWidth: number;
+
+	public get winnerCanvasCoords(): {
+		firstBoxCanvasX: number | null;
+		firstBoxCanvasY: number | null;
+		lastBoxCanvasX: number | null;
+		lastBoxCanvasY: number | null;
+	} {
+		return this._winnerCanvasCoords;
+	}
+	public set winnerCanvasCoords(value: {
+		firstBoxCanvasX: number | null;
+		firstBoxCanvasY: number | null;
+		lastBoxCanvasX: number | null;
+		lastBoxCanvasY: number | null;
+	}) {
+		this._winnerCanvasCoords = value;
+	}
 
 	public get scale() {
 		return this._scale;
 	}
-
 	public set scale(value: number) {
 		this._scale = value / 2;
 		this.htmlCanvas.style.width = this._width * this._scale + 'px';
@@ -115,19 +136,21 @@ export class GameCanvas {
 		this.context.stroke();
 	}
 
-	public drawWinLine(winnerCanvasCoords: {firstBoxCanvasX: number | null, firstBoxCanvasY: number | null, lastBoxCanvasX: number | null, lastBoxCanvasY: number | null}) {
-		if (winnerCanvasCoords.firstBoxCanvasX == null || winnerCanvasCoords.firstBoxCanvasY == null || winnerCanvasCoords.lastBoxCanvasX == null || winnerCanvasCoords.lastBoxCanvasY == null) {
-			return
+	public drawWinLine() {
+		if (
+			this.winnerCanvasCoords.firstBoxCanvasX == null ||
+			this.winnerCanvasCoords.firstBoxCanvasY == null ||
+			this.winnerCanvasCoords.lastBoxCanvasX == null ||
+			this.winnerCanvasCoords.lastBoxCanvasY == null
+		) {
+			return;
 		}
-		
+
 		this.context.strokeStyle = this.strokeStyles[+get(darkTheme)];
 
 		this.beginDrawing();
-		this.context.moveTo(
-			winnerCanvasCoords.firstBoxCanvasX,
-			winnerCanvasCoords.firstBoxCanvasY
-		);
-		this.context.lineTo(winnerCanvasCoords.lastBoxCanvasX, winnerCanvasCoords.lastBoxCanvasY);
+		this.context.moveTo(this.winnerCanvasCoords.firstBoxCanvasX, this.winnerCanvasCoords.firstBoxCanvasY);
+		this.context.lineTo(this.winnerCanvasCoords.lastBoxCanvasX, this.winnerCanvasCoords.lastBoxCanvasY);
 		this.endDrawing();
 	}
 
@@ -162,10 +185,10 @@ export class GameCanvas {
 		this.drawBackground();
 		for (let i = 0; i < this.gridColumns; i++) {
 			for (let j = 0; j < this.gridRows; j++) {
-				this.boxes[i][j].recalculateDrawPos(i * this._boxAreaWidth, j * this._boxAreaHeight);
 				this.boxes[i][j].draw();
 			}
 		}
+		this.drawWinLine();
 	}
 
 	private createBoxes() {
