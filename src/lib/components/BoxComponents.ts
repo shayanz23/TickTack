@@ -10,7 +10,7 @@ export class BoxComponent {
 	drawPosY: number = 0;
 	drawn: boolean = false;
 	player: string = 'empty box';
-	canvas: GameCanvas;
+	gameCanvas: GameCanvas;
 	private _winOrientation: number = 0;
 	private _winnerCoords: { x: number; y: number; }[] = [];
 
@@ -24,37 +24,37 @@ export class BoxComponent {
 	constructor(areaXBegin: number, areaYBegin: number, canvas: GameCanvas) {
 		this.areaXBegin = areaXBegin;
 		this.areaYBegin = areaYBegin;
-		this.canvas = canvas;
-		this.lineWidth = Math.min(this.canvas.boxAreaHeight, this.canvas.boxAreaWidth) / 7;
+		this.gameCanvas = canvas;
+		this.lineWidth = Math.min(this.gameCanvas.boxAreaHeight, this.gameCanvas.boxAreaWidth) / 7;
 		this.padding = this.lineWidth;
 		this.calculateDrawPos();
 	}
 
 	protected beginDrawing() {
-		this.canvas.context.lineWidth = this.lineWidth;
+		this.gameCanvas.context.lineWidth = this.lineWidth;
 
 		// this.context.strokeStyle = '#' + Math.floor(Math.random() * 16777215).toString(16);
-		this.canvas.context.beginPath();
+		this.gameCanvas.context.beginPath();
 		return true;
 	}
 
 	protected endDrawing() {
-		this.canvas.context.closePath();
-		this.canvas.context.stroke();
+		this.gameCanvas.context.closePath();
+		this.gameCanvas.context.stroke();
 		this.drawn = true;
 	}
 
 	public calculateDrawPos() {
 		this.drawSize =
-			Math.min(this.canvas.boxAreaHeight, this.canvas.boxAreaWidth) - this.padding * 2;
-		this.drawPosX = this.areaXBegin + (this.canvas.boxAreaWidth - this.drawSize) / 2;
-		this.drawPosY = this.areaYBegin + (this.canvas.boxAreaHeight - this.drawSize) / 2;
+			Math.min(this.gameCanvas.boxAreaHeight, this.gameCanvas.boxAreaWidth) - this.padding * 2;
+		this.drawPosX = this.areaXBegin + (this.gameCanvas.boxAreaWidth - this.drawSize) / 2;
+		this.drawPosY = this.areaYBegin + (this.gameCanvas.boxAreaHeight - this.drawSize) / 2;
 	}
 
 	public recalculateDrawPos(areaXBegin: number, areaYBegin: number) {
 		this.areaXBegin = areaXBegin;
 		this.areaYBegin = areaYBegin;
-		this.lineWidth = Math.min(this.canvas.boxAreaHeight, this.canvas.boxAreaWidth) / 7;
+		this.lineWidth = Math.min(this.gameCanvas.boxAreaHeight, this.gameCanvas.boxAreaWidth) / 7;
 		this.padding = this.lineWidth;
 		this.calculateDrawPos();
 	}
@@ -81,16 +81,16 @@ export class BoxComponent {
 		tempCoords: { x: number; y: number }[]
 	): boolean {
 		let won = false;
-		if (len >= this.canvas.winLength) {
+		if (len >= this.gameCanvas.winLength) {
 			this._winOrientation = orientation;
 			this._winnerCoords = tempCoords;
 			console.log(this.winOrientation)
 			return true;
 		}
-		if (this.canvas.boxes[col] === undefined || this.canvas.boxes[col][row] === undefined) {
+		if (this.gameCanvas.boxes[col] === undefined || this.gameCanvas.boxes[col][row] === undefined) {
 			return false;
 		}
-		if (this.canvas.boxes[col][row].player === this.player) {
+		if (this.gameCanvas.boxes[col][row].player === this.player) {
 			tempCoords.push({ x: col, y: row });
 			if (orientation === 1) {
 				won = this.isWinner(col + 1, row + 1, len + 1, 1, tempCoords);
@@ -115,10 +115,10 @@ export class Component0 extends BoxComponent {
 
 	public draw() {
 		this.beginDrawing();
-		this.canvas.context.moveTo(this.drawPosX, this.drawPosY);
-		this.canvas.context.lineTo(this.drawPosX + this.drawSize, this.drawPosY + this.drawSize);
-		this.canvas.context.moveTo(this.drawPosX + this.drawSize, this.drawPosY);
-		this.canvas.context.lineTo(this.drawPosX, this.drawPosY + this.drawSize);
+		this.gameCanvas.context.moveTo(this.drawPosX, this.drawPosY);
+		this.gameCanvas.context.lineTo(this.drawPosX + this.drawSize, this.drawPosY + this.drawSize);
+		this.gameCanvas.context.moveTo(this.drawPosX + this.drawSize, this.drawPosY);
+		this.gameCanvas.context.lineTo(this.drawPosX, this.drawPosY + this.drawSize);
 		this.endDrawing();
 	}
 }
@@ -132,7 +132,7 @@ export class Component1 extends BoxComponent {
 
 	public draw() {
 		this.beginDrawing();
-		this.canvas.context.arc(
+		this.gameCanvas.context.arc(
 			this.drawPosX + this.drawSize / 2,
 			this.drawPosY + this.drawSize / 2,
 			this.drawSize / 2,

@@ -21,7 +21,8 @@ export class GameCanvas {
 	} = { firstBoxCanvasX: null, firstBoxCanvasY: null, lastBoxCanvasX: null, lastBoxCanvasY: null };
 	private _boxAreaHeight: number;
 	private _boxAreaWidth: number;
-
+	private gridLineWidth: number;
+	private winLineWidth: number;
 	public get winnerCanvasCoords(): {
 		firstBoxCanvasX: number | null;
 		firstBoxCanvasY: number | null;
@@ -110,7 +111,8 @@ export class GameCanvas {
 
 		this._boxAreaHeight = this._height / this.gridRows;
 		this._boxAreaWidth = this._width / this.gridColumns;
-
+		this.gridLineWidth = Math.min(this.boxAreaHeight, this.boxAreaWidth) / 9;
+		this.winLineWidth = Math.min(this.boxAreaHeight, this.boxAreaWidth) / 5.5;
 		this._winLength = winLength;
 		this.context = htmlCanvas.getContext('2d')!;
 		this.initializeCanvas();
@@ -145,9 +147,8 @@ export class GameCanvas {
 		) {
 			return;
 		}
-
+		this.context.lineWidth = this.winLineWidth;
 		this.context.strokeStyle = this.strokeStyles[+get(darkTheme)];
-
 		this.beginDrawing();
 		this.context.moveTo(this.winnerCanvasCoords.firstBoxCanvasX, this.winnerCanvasCoords.firstBoxCanvasY);
 		this.context.lineTo(this.winnerCanvasCoords.lastBoxCanvasX, this.winnerCanvasCoords.lastBoxCanvasY);
@@ -161,7 +162,7 @@ export class GameCanvas {
 		this.context.fillStyle = this.strokeStyles[+!get(darkTheme)];
 		this.context.strokeStyle = this.strokeStyles[+get(darkTheme)];
 		this.context.fillRect(0, 0, this._width, this._height);
-		this.context.lineWidth = Math.min(this.boxAreaHeight, this.boxAreaWidth) / 12;
+		this.context.lineWidth = this.gridLineWidth;
 		for (let i = 0; i < this.gridRows - 1; i++) {
 			occumilatedLineHeight += this._boxAreaHeight;
 			this.context.beginPath();

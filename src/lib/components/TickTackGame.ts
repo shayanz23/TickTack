@@ -49,10 +49,10 @@ export class TickTackGame {
 			for (let j = 0; j < this.gameCanvas.boxes[i].length; j++) {
 				if (this.gameCanvas.boxes[i][j].isWinnerBase(i, j) === true) {
 					this.winnerName = this.gameCanvas.boxes[i][j].player;
-					this.determineCoords(
+					this.determineWinnerCoords(
 						this.gameCanvas.boxes[i][j].winnerCoords,
 						this.gameCanvas.boxes[i][j].winOrientation
-					)
+					);
 					this.gameCanvas.drawWinLine();
 					return true;
 				}
@@ -61,7 +61,7 @@ export class TickTackGame {
 		return false;
 	}
 
-	private determineCoords(winGridCoords: { x: number; y: number }[], orientation: number) {
+	private determineWinnerCoords(winGridCoords: { x: number; y: number }[], orientation: number) {
 		const firstBox = this.gameCanvas.boxes[winGridCoords[0].x][winGridCoords[0].y];
 		const lastBox =
 			this.gameCanvas.boxes[winGridCoords[winGridCoords.length - 1].x][
@@ -74,33 +74,36 @@ export class TickTackGame {
 		let lastBoxCanvasX = null;
 		let lastBoxCanvasY = null;
 
+		
 		if (orientation === 1) {
-			firstBoxCanvasX = firstBox.areaXBegin;
-			firstBoxCanvasY = firstBox.areaYBegin;
-
-			lastBoxCanvasX = lastBox.areaXBegin + this.gameCanvas.boxAreaWidth;
-			lastBoxCanvasY = lastBox.areaYBegin + this.gameCanvas.boxAreaHeight;
+			firstBoxCanvasX = firstBox.drawPosX;
+			firstBoxCanvasY = firstBox.drawPosY;
+			console.log(1);
+			lastBoxCanvasX = lastBox.drawPosX + lastBox.drawSize;
+			lastBoxCanvasY = lastBox.drawPosY + lastBox.drawSize;
 		} else if (orientation === 2) {
-			firstBoxCanvasX = firstBox.areaXBegin + this.gameCanvas.boxAreaWidth;
-			console.log(firstBox.areaXBegin);
-			firstBoxCanvasY = firstBox.areaYBegin;
-
-			lastBoxCanvasX = lastBox.areaXBegin;
-			lastBoxCanvasY = lastBox.areaYBegin + this.gameCanvas.boxAreaHeight;
+			firstBoxCanvasX = firstBox.drawPosX + firstBox.drawSize;
+			firstBoxCanvasY = firstBox.drawPosY;
+			console.log(2);
+			lastBoxCanvasX = lastBox.drawPosX;
+			lastBoxCanvasY = lastBox.drawPosY + lastBox.drawSize;
 		} else if (orientation === 3) {
-			firstBoxCanvasX = firstBox.areaXBegin;
-			firstBoxCanvasY = firstBox.areaYBegin + this.gameCanvas.boxAreaHeight / 2;
-
-			lastBoxCanvasX = lastBox.areaXBegin + this.gameCanvas.boxAreaWidth;
+			let HoriLineStart = firstBox.areaXBegin + (this.gameCanvas.boxAreaWidth - firstBox.drawSize) / 3;
+			let HoriLineEnd = lastBox.areaXBegin + this.gameCanvas.boxAreaWidth - (this.gameCanvas.boxAreaWidth - lastBox.drawSize) / 3;
+			firstBoxCanvasX = HoriLineStart;
+			firstBoxCanvasY = firstBox.drawPosY + firstBox.drawSize / 2;
+			console.log(3);
+			lastBoxCanvasX = HoriLineEnd;
 			lastBoxCanvasY = lastBox.areaYBegin + this.gameCanvas.boxAreaHeight / 2;
 		} else if (orientation === 4) {
-			firstBoxCanvasX = firstBox.areaXBegin + this.gameCanvas.boxAreaHeight / 2;
-			firstBoxCanvasY = firstBox.areaYBegin;
-
+			let VertLineStart = firstBox.areaYBegin + (this.gameCanvas.boxAreaHeight - firstBox.drawSize) / 3;
+			let VertLineEnd = lastBox.areaYBegin + this.gameCanvas.boxAreaHeight - (this.gameCanvas.boxAreaHeight - lastBox.drawSize) / 3;
+			firstBoxCanvasX = firstBox.areaXBegin + this.gameCanvas.boxAreaWidth / 2;
+			firstBoxCanvasY = VertLineStart;
+			console.log(4);
 			lastBoxCanvasX = lastBox.areaXBegin + this.gameCanvas.boxAreaWidth / 2;
-			lastBoxCanvasY = lastBox.areaYBegin + this.gameCanvas.boxAreaHeight;
+			lastBoxCanvasY = VertLineEnd;
 		}
-
 		this.gameCanvas.winnerCanvasCoords = { firstBoxCanvasX, firstBoxCanvasY, lastBoxCanvasX, lastBoxCanvasY };
 	}
 
