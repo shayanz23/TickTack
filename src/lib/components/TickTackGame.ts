@@ -76,33 +76,33 @@ export class TickTackGame {
 
 		
 		if (orientation === 1) {
-			firstBoxCanvasX = firstBox.drawPosX;
-			firstBoxCanvasY = firstBox.drawPosY;
+			firstBoxCanvasX = firstBox.drawPosX - 1;
+			firstBoxCanvasY = firstBox.drawPosY - 1;
 			console.log(1);
-			lastBoxCanvasX = lastBox.drawPosX + lastBox.drawSize;
-			lastBoxCanvasY = lastBox.drawPosY + lastBox.drawSize;
+			lastBoxCanvasX = lastBox.drawPosX + lastBox.drawSize + 1;
+			lastBoxCanvasY = lastBox.drawPosY + lastBox.drawSize + 1;
 		} else if (orientation === 2) {
-			firstBoxCanvasX = firstBox.drawPosX + firstBox.drawSize;
-			firstBoxCanvasY = firstBox.drawPosY;
+			firstBoxCanvasX = firstBox.drawPosX + firstBox.drawSize + 1;
+			firstBoxCanvasY = firstBox.drawPosY - 1;
 			console.log(2);
-			lastBoxCanvasX = lastBox.drawPosX;
-			lastBoxCanvasY = lastBox.drawPosY + lastBox.drawSize;
+			lastBoxCanvasX = lastBox.drawPosX - 1;
+			lastBoxCanvasY = lastBox.drawPosY + lastBox.drawSize + 1;
 		} else if (orientation === 3) {
 			let HoriLineStart = firstBox.areaXBegin + (this.gameCanvas.boxAreaWidth - firstBox.drawSize) / 3;
 			let HoriLineEnd = lastBox.areaXBegin + this.gameCanvas.boxAreaWidth - (this.gameCanvas.boxAreaWidth - lastBox.drawSize) / 3;
-			firstBoxCanvasX = HoriLineStart;
+			firstBoxCanvasX = HoriLineStart - 1;
 			firstBoxCanvasY = firstBox.drawPosY + firstBox.drawSize / 2;
 			console.log(3);
-			lastBoxCanvasX = HoriLineEnd;
+			lastBoxCanvasX = HoriLineEnd + 1;
 			lastBoxCanvasY = lastBox.areaYBegin + this.gameCanvas.boxAreaHeight / 2;
 		} else if (orientation === 4) {
 			let VertLineStart = firstBox.areaYBegin + (this.gameCanvas.boxAreaHeight - firstBox.drawSize) / 3;
 			let VertLineEnd = lastBox.areaYBegin + this.gameCanvas.boxAreaHeight - (this.gameCanvas.boxAreaHeight - lastBox.drawSize) / 3;
 			firstBoxCanvasX = firstBox.areaXBegin + this.gameCanvas.boxAreaWidth / 2;
-			firstBoxCanvasY = VertLineStart;
+			firstBoxCanvasY = VertLineStart - 1;
 			console.log(4);
 			lastBoxCanvasX = lastBox.areaXBegin + this.gameCanvas.boxAreaWidth / 2;
-			lastBoxCanvasY = VertLineEnd;
+			lastBoxCanvasY = VertLineEnd + 1;
 		}
 		this.gameCanvas.winnerCanvasCoords = { firstBoxCanvasX, firstBoxCanvasY, lastBoxCanvasX, lastBoxCanvasY };
 	}

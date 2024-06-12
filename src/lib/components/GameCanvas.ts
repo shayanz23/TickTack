@@ -139,6 +139,7 @@ export class GameCanvas {
 	}
 
 	public drawWinLine() {
+		requestAnimationFrame(this.drawWinLine);
 		if (
 			this.winnerCanvasCoords.firstBoxCanvasX == null ||
 			this.winnerCanvasCoords.firstBoxCanvasY == null ||
@@ -148,12 +149,39 @@ export class GameCanvas {
 			return;
 		}
 		this.context.lineWidth = this.winLineWidth;
-		this.context.strokeStyle = this.strokeStyles[+get(darkTheme)];
+		//this.context.strokeStyle = this.strokeStyles[+get(darkTheme)];
+		this.context.strokeStyle = "#FFFF00";
 		this.beginDrawing();
 		this.context.moveTo(this.winnerCanvasCoords.firstBoxCanvasX, this.winnerCanvasCoords.firstBoxCanvasY);
 		this.context.lineTo(this.winnerCanvasCoords.lastBoxCanvasX, this.winnerCanvasCoords.lastBoxCanvasY);
 		this.endDrawing();
 	}
+
+	private WinLineWaypoints(vertices: [ {x: number, y: number } ]){
+		var waypoints=[];
+		for(var i=1;i<vertices.length;i++){
+			var pt0=vertices[i-1];
+			var pt1=vertices[i];
+			var dx=pt1.x-pt0.x;
+			var dy=pt1.y-pt0.y;
+			for(var j=0;j<100;j++){
+				var x=pt0.x+dx*j/100;
+				var y=pt0.y+dy*j/100;
+				waypoints.push({x:x,y:y});
+			}
+		}
+		return(waypoints);
+	}
+
+	// private animate() {
+	// 	requestAnimationFrame(this.animate);
+    // // draw a line segment from the last waypoint
+    // // to the current waypoint
+    // c.beginPath();
+    // ctx.moveTo(points[t-1].x,points[t-1].y);
+    // ctx.lineTo(points[t].x,points[t].y);
+    // ctx.stroke();
+	// }
 
 	private drawBackground() {
 		let occumilatedLineHeight = 0;
