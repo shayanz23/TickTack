@@ -8,7 +8,7 @@
 	let winner = '';
 	let restartState = false;
 	let currentPlayer: string = '';
-	$: showGameOverModal = gameOver;
+	let showGameOverModal = false;
 	let showpickPlayerModal = true;
 	let unique = [{}];
 	let player1Name = '';
@@ -27,6 +27,14 @@
 		restartState = false;
 		winner = '';
 		gameOver = false;
+	}
+
+	$: if (gameOver) {
+		setTimeout(() => {
+			showGameOverModal = gameOver;
+		}, 750);
+	} else {
+		showGameOverModal = gameOver
 	}
 </script>
 

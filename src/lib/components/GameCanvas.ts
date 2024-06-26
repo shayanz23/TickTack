@@ -2,6 +2,8 @@ import { BoxComponent } from './BoxComponents';
 import { get } from 'svelte/store';
 import { darkTheme } from '$lib/shared/stores/appTheme';
 
+let thisGameCanvas: GameCanvas;
+
 export class GameCanvas {
 	private gridRows: number = 5;
 	private gridColumns: number = 5;
@@ -13,16 +15,36 @@ export class GameCanvas {
 	private _context!: CanvasRenderingContext2D;
 	private _boxes: BoxComponent[][] = [];
 	private readonly strokeStyles = ['#222222', '#efefef'];
+	private _boxAreaHeight: number;
+	private _boxAreaWidth: number;
+	private gridLineWidth: number;
+	private _winLineWidth: number;
+	private _winLnPts = [] as { x: number; y: number; }[];
+	private _lnAnimateT = 1;
+	public get winLineWidth(): number {
+		return this._winLineWidth;
+	}
+	public set winLineWidth(value: number) {
+		this._winLineWidth = value;
+	}
+	public get winLnPts() {
+		return this._winLnPts;
+	}
+	public set winLnPts(value) {
+		this._winLnPts = value;
+	}
+	public get lnAnimateT() {
+		return this._lnAnimateT;
+	}
+	public set lnAnimateT(value) {
+		this._lnAnimateT = value;
+	}
 	private _winnerCanvasCoords: {
 		firstBoxCanvasX: number | null;
 		firstBoxCanvasY: number | null;
 		lastBoxCanvasX: number | null;
 		lastBoxCanvasY: number | null;
 	} = { firstBoxCanvasX: null, firstBoxCanvasY: null, lastBoxCanvasX: null, lastBoxCanvasY: null };
-	private _boxAreaHeight: number;
-	private _boxAreaWidth: number;
-	private gridLineWidth: number;
-	private winLineWidth: number;
 	public get winnerCanvasCoords(): {
 		firstBoxCanvasX: number | null;
 		firstBoxCanvasY: number | null;
@@ -112,10 +134,11 @@ export class GameCanvas {
 		this._boxAreaHeight = this._height / this.gridRows;
 		this._boxAreaWidth = this._width / this.gridColumns;
 		this.gridLineWidth = Math.min(this.boxAreaHeight, this.boxAreaWidth) / 9;
-		this.winLineWidth = Math.min(this.boxAreaHeight, this.boxAreaWidth) / 5.5;
+		this._winLineWidth = Math.min(this.boxAreaHeight, this.boxAreaWidth) / 5.5;
 		this._winLength = winLength;
 		this.context = htmlCanvas.getContext('2d')!;
 		this.initializeCanvas();
+		thisGameCanvas = this;
 	}
 
 	private initializeCanvas(): void {
@@ -128,18 +151,26 @@ export class GameCanvas {
 		this.createBoxes();
 	}
 
-	protected beginDrawing() {
+	public beginDrawing() {
 		this.context.beginPath();
 		return true;
 	}
 
-	protected endDrawing() {
+	public endDrawing() {
 		this.context.closePath();
 		this.context.stroke();
 	}
 
-	public drawWinLine() {
-		requestAnimationFrame(this.drawWinLine);
+	public preDrawWinLine() {
+		var points = this.calcWinLnPts();
+		if (points == undefined) { return; }
+		this.winLnPts = points;
+		drawWinLine();
+	}
+
+	
+
+	private calcWinLnPts(){
 		if (
 			this.winnerCanvasCoords.firstBoxCanvasX == null ||
 			this.winnerCanvasCoords.firstBoxCanvasY == null ||
@@ -148,40 +179,18 @@ export class GameCanvas {
 		) {
 			return;
 		}
-		this.context.lineWidth = this.winLineWidth;
-		//this.context.strokeStyle = this.strokeStyles[+get(darkTheme)];
-		this.context.strokeStyle = "#FFFF00";
-		this.beginDrawing();
-		this.context.moveTo(this.winnerCanvasCoords.firstBoxCanvasX, this.winnerCanvasCoords.firstBoxCanvasY);
-		this.context.lineTo(this.winnerCanvasCoords.lastBoxCanvasX, this.winnerCanvasCoords.lastBoxCanvasY);
-		this.endDrawing();
-	}
+		var waypoints = [] as {x: number, y: number}[];
 
-	private WinLineWaypoints(vertices: [ {x: number, y: number } ]){
-		var waypoints=[];
-		for(var i=1;i<vertices.length;i++){
-			var pt0=vertices[i-1];
-			var pt1=vertices[i];
-			var dx=pt1.x-pt0.x;
-			var dy=pt1.y-pt0.y;
-			for(var j=0;j<100;j++){
-				var x=pt0.x+dx*j/100;
-				var y=pt0.y+dy*j/100;
+			var dx=this.winnerCanvasCoords.lastBoxCanvasX-this.winnerCanvasCoords.firstBoxCanvasX;
+			var dy=this.winnerCanvasCoords.lastBoxCanvasY-this.winnerCanvasCoords.firstBoxCanvasY;
+			for(var j=0;j<40;j++){
+				var x=this.winnerCanvasCoords.firstBoxCanvasX+dx*j/40;
+				var y=this.winnerCanvasCoords.firstBoxCanvasY+dy*j/40;
 				waypoints.push({x:x,y:y});
 			}
-		}
+			waypoints.push({x:this.winnerCanvasCoords.lastBoxCanvasX,y:this.winnerCanvasCoords.lastBoxCanvasY});
 		return(waypoints);
 	}
-
-	// private animate() {
-	// 	requestAnimationFrame(this.animate);
-    // // draw a line segment from the last waypoint
-    // // to the current waypoint
-    // c.beginPath();
-    // ctx.moveTo(points[t-1].x,points[t-1].y);
-    // ctx.lineTo(points[t].x,points[t].y);
-    // ctx.stroke();
-	// }
 
 	private drawBackground() {
 		let occumilatedLineHeight = 0;
@@ -217,7 +226,7 @@ export class GameCanvas {
 				this.boxes[i][j].draw();
 			}
 		}
-		this.drawWinLine();
+		drawWinLine();
 	}
 
 	private createBoxes() {
@@ -256,4 +265,16 @@ export class GameCanvas {
 		}
 		return { boxCol, boxRow };
 	}
+}
+
+function drawWinLine() {
+	if(thisGameCanvas.lnAnimateT<thisGameCanvas.winLnPts.length-1){ requestAnimationFrame(drawWinLine); }
+	thisGameCanvas.context.lineWidth = thisGameCanvas.winLineWidth;
+	//thisGameCanvas.context.strokeStyle = thisGameCanvas.strokeStyles[+get(darkTheme)];
+	thisGameCanvas.context.strokeStyle = "#FFFF00";
+	thisGameCanvas.beginDrawing();
+	thisGameCanvas.context.moveTo(thisGameCanvas.winLnPts[thisGameCanvas.lnAnimateT-1].x,thisGameCanvas.winLnPts[thisGameCanvas.lnAnimateT-1].y);
+	thisGameCanvas.context.lineTo(thisGameCanvas.winLnPts[thisGameCanvas.lnAnimateT].x,thisGameCanvas.winLnPts[thisGameCanvas.lnAnimateT].y);
+	thisGameCanvas.endDrawing();
+	thisGameCanvas.lnAnimateT++;
 }

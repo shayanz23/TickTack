@@ -53,7 +53,7 @@ export class TickTackGame {
 						this.gameCanvas.boxes[i][j].winnerCoords,
 						this.gameCanvas.boxes[i][j].winOrientation
 					);
-					this.gameCanvas.drawWinLine();
+					this.gameCanvas.preDrawWinLine();
 					return true;
 				}
 			}
