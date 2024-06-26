@@ -162,6 +162,7 @@ export class GameCanvas {
 	}
 
 	public preDrawWinLine() {
+		this.lnAnimateT = 1;
 		var points = this.calcWinLnPts();
 		if (points == undefined) { return; }
 		this.winLnPts = points;
@@ -226,7 +227,10 @@ export class GameCanvas {
 				this.boxes[i][j].draw();
 			}
 		}
-		drawWinLine();
+		if (this.winnerCanvasCoords === undefined) {
+			return;
+		}
+		this.preDrawWinLine();
 	}
 
 	private createBoxes() {
