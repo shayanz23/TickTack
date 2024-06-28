@@ -1,8 +1,9 @@
 <script lang="ts">
-	import Canvas from '$lib/components/LocalPvpCanvas.svelte';
+	import Canvas from '$lib/components/LocalPvpGame.svelte';
 	import GameOverModal from '$lib/components/GameOverModal.svelte';
-	import PickPlayerNames from '$lib/components/StartLocalGame.svelte';
+	import StartGameModal from '$lib/components/StartLocalGame.svelte';
 	import {darkTheme} from '$lib/shared/stores/appTheme';
+	import gameDefaults from '$lib/shared/gameDefaults.json'
 
 	let gameOver = false;
 	let winner = '';
@@ -11,11 +12,14 @@
 	let showGameOverModal = false;
 	let showpickPlayerModal = true;
 	let unique = [{}];
-	let player1Name = '';
-	let player2Name = '';
-	let gridColumns = 5;
-	let gridRows = 5;
-	let winLength = 4;
+	let players: string[] = [];
+	let gridX = gameDefaults.gridX;
+	let gridY = gameDefaults.gridY;
+	let winLength = gameDefaults.winLength;
+
+	for (let index = 0; index < gameDefaults.localPvp.playerNum; index++) {
+		players.push("");
+	}
 
 	function restart() {
 		unique = [{}];
@@ -45,20 +49,21 @@
 	{#if !showpickPlayerModal}
 		<div id="canvas-div" class:object-dark={$darkTheme} class:object-light={!$darkTheme}>
 			{#each unique as key (key)}
-				<Canvas bind:gameOver bind:winner bind:currentPlayer bind:player1Name bind:player2Name bind:gridColumns bind:gridRows bind:winLength/>
+				<Canvas bind:gameOver bind:winner bind:currentPlayer bind:players bind:gridX={gridX} bind:gridY={gridY} bind:winLength/>
 			{/each}
 		</div>
 	{/if}
-	<PickPlayerNames bind:showModal={showpickPlayerModal} bind:restartState>
+	<StartGameModal bind:showModal={showpickPlayerModal} bind:restartState>
 		<div class:background-dark={$darkTheme}>
 			<h2>Game Settings</h2>
-			<input type="text" placeholder="player 1" bind:value={player1Name} />
-			<input type="text" placeholder="player 2" bind:value={player2Name} />
-			<input id="modal-row-input" type="number" bind:value={gridRows}/>
-			<input id="modal-column-input" type="number" bind:value={gridColumns}/>
+			{#each players as player, i}
+			<input type="text" placeholder={"player " + (i+1)}  bind:value={player} />
+			{/each}
+			<input id="modal-row-input" type="number" bind:value={gridY}/>
+			<input id="modal-column-input" type="number" bind:value={gridX}/>
 			<input id="modal-winLength-input" type="number" bind:value={winLength}/>
 		</div>
-	</PickPlayerNames>
+	</StartGameModal>
 	<GameOverModal bind:showModal={showGameOverModal} bind:restartState>
 		<div>
 			<h2>Game Over!</h2>

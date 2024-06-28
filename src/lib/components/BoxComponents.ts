@@ -142,3 +142,43 @@ export class Component1 extends BoxComponent {
 		this.endDrawing();
 	}
 }
+
+export class Component2 extends BoxComponent {
+	constructor(AreaXBegin: number, AreaYBegin: number, canvas: GameCanvas, player: string) {
+		super(AreaXBegin, AreaYBegin, canvas);
+		this.player = player;
+		this.draw();
+	}
+
+	public draw() {
+		this.beginDrawing();
+		this.gameCanvas.context.arc(
+			this.drawPosX + this.drawSize / 2,
+			this.drawPosY + this.drawSize / 2,
+			this.drawSize / 2,
+			0,
+			2 * Math.PI
+		);
+		this.endDrawing();
+	}
+}
+
+export class Component3 extends BoxComponent {
+	constructor(AreaXBegin: number, AreaYBegin: number, canvas: GameCanvas, player: string) {
+		super(AreaXBegin, AreaYBegin, canvas);
+		this.player = player;
+		this.draw();
+	}
+
+	public draw() {
+		this.beginDrawing();
+		this.gameCanvas.context.arc(
+			this.drawPosX + this.drawSize / 2,
+			this.drawPosY + this.drawSize / 2,
+			this.drawSize / 2,
+			0,
+			2 * Math.PI
+		);
+		this.endDrawing();
+	}
+}

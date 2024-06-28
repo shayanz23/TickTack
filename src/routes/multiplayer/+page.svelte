@@ -1,5 +1,5 @@
 <script lang="ts">
-	import Canvas from '$lib/components/LocalPvpCanvas.svelte';
+	import Canvas from '$lib/components/LocalPvpGame.svelte';
 	import GameOverModal from '$lib/components/GameOverModal.svelte';
 	import PickPlayerNames from '$lib/components/StartLocalGame.svelte';
 	let gameOver = false;

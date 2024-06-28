@@ -4,41 +4,30 @@
 	import { GameCanvas } from './GameCanvas';
 	import { TickTackGame } from './TickTackGame';
 	import { darkTheme } from '$lib/shared/stores/appTheme';
+	import gameDefaults from '$lib/shared/gameDefaults.json'
 
 	export let winner = '';
 	export let gameOver = false;
 	export let currentPlayer: string = '';
-	export let player1Name: string;
-	export let player2Name: string;
-	export let gridColumns = 5;
-	export let gridRows = 5;
-	export let winLength = 4;
+	export let players:string[];
+	export let gridX = gameDefaults.gridX;
+	export let gridY = gameDefaults.gridY;
+	export let winLength = gameDefaults.winLength;
 
-	const height = 600;
-	const width = 600;
+	const height = gameDefaults.localPvp.height;
+	const width = gameDefaults.localPvp.width;
 	let htmlCanvas: HTMLCanvasElement;
 	let gameCanvas: GameCanvas;
 	let game: TickTackGame;
 	let playerTurn = 0;
 	let mouseDownBoxPos: { boxCol: number | null; boxRow: number | null };
 
-	const player1DefaultName = 'Player 1';
-	const player2DefaultName = 'Player 2';
-	const maxPlayers = 2;
-
-	export const screens = {
-		sm: 640,
-		md: 768,
-		lg: 1024,
-		xl: 1280
-	};
 
 	function setDefaultPlayerName() {
-		if (player1Name === '') {
-			player1Name = player1DefaultName;
-		}
-		if (player2Name === '') {
-			player2Name = player2DefaultName;
+		for (let index = 0; index < players.length; index++) {
+			if (players[index] === '') {
+				players[index] = gameDefaults.genPrePlNm + (index + 1);
+			}
 		}
 	}
 
@@ -52,10 +41,9 @@
 			return;
 		}
 		if (htmlCanvas === null) {
-			console.error('game Canvas is null');
+			console.error(gameDefaults.errors.gameCanvNull);
 			return;
 		}
-
 		// Set the mouse x, y coordinates relative to the canvas
 		const canvasRect = htmlCanvas.getBoundingClientRect();
 		const x = event.clientX - canvasRect.left;
@@ -73,7 +61,7 @@
 			return;
 		}
 		if (htmlCanvas === null) {
-			console.error('game Canvas is null');
+			console.error(gameDefaults.errors.gameCanvNull);
 			return;
 		}
 
@@ -102,7 +90,7 @@
 		if (!success) {
 			return;
 		}
-		playerTurn = (playerTurn + 1) % maxPlayers;
+		playerTurn = (playerTurn + 1) % players.length;
 
 		currentPlayer = game.getCurrentPlayer();
 		game.findWinner();
@@ -120,8 +108,8 @@
 	}
 
 	function rescaleCanvas() {
-		if (window.outerWidth <= screens.md || window.innerHeight <= screens.md) {
-			gameCanvas.scale = 0.5;
+		if (window.outerWidth <= gameDefaults.screens.md || window.innerHeight <= gameDefaults.screens.md) {
+			gameCanvas.scale = gameDefaults.halfScale;
 		} else {
 			gameCanvas.scale = 1;
 		}
@@ -131,19 +119,19 @@
 	onMount(() => {
 		// Insure html canvas and its context aren't null.
 		if (htmlCanvas === null) {
-			console.error('game Canvas is null');
+			console.error(gameDefaults.errors.gameCanvNull);
 			return;
 		} else if (htmlCanvas.getContext('2d') === null) {
-			console.error('game Canvas context is null');
+			console.error(gameDefaults.errors.gameCanvCtxNull);
 			return;
 		}
 
 		// Change HTMLCanvas Size to match screen size before drawing anything.
 		if (browser) {
 			// Initialize gameCanvas with the ready htmlCanvas injected.
-			gameCanvas = new GameCanvas(htmlCanvas, width, height, gridRows, gridColumns, winLength, 1);
+			gameCanvas = new GameCanvas(htmlCanvas, width, height, gridY, gridX, winLength, 1);
 			setDefaultPlayerName();
-			game = new TickTackGame(gameCanvas, [player1Name, player2Name]);
+			game = new TickTackGame(gameCanvas, players);
 			currentPlayer = game.getCurrentPlayer();
 
 			// Rescale canvas incase the window size is smaller or is changed.

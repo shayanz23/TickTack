@@ -1,9 +1,11 @@
-import { BoxComponent, Component0, Component1 } from "./BoxComponents";
+import { BoxComponent, Component0, Component1, Component2, Component3 } from "./BoxComponents";
 import { GameCanvas } from "./GameCanvas";
 
 export const Components: any = {
     Component0,
-    Component1
+    Component1,
+    Component2,
+    Component3
 }
 
 export class DynamicComponent {

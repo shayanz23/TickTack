@@ -2,12 +2,13 @@ import { GameCanvas } from './GameCanvas';
 
 import { BoxComponent } from './BoxComponents';
 import { DynamicComponent } from './DynamicComponent';
+import gameDefaults from '$lib/shared/gameDefaults.json';
 
 const defaultMaxPlayers = 2;
 
 export class TickTackGame {
 	private gameCanvas: GameCanvas;
-	private _playerTurn = 0;
+	private _playerTurnNum = 0;
 	private _winnerName = '';
 	private playerNames: string[];
 	private _maxPlayers: number = defaultMaxPlayers;
@@ -27,16 +28,17 @@ export class TickTackGame {
 	}
 
 	public get playerTurnNum() {
-		return this._playerTurn;
+		return this._playerTurnNum;
 	}
 
 	private set playerTurnNum(value) {
-		this._playerTurn = value;
+		this._playerTurnNum = value;
 	}
 
 	constructor(gameCanvas: GameCanvas, players: string[]) {
 		this.gameCanvas = gameCanvas;
 		this.playerNames = players;
+		this._maxPlayers = players.length
 	}
 
 	/**
@@ -74,7 +76,11 @@ export class TickTackGame {
 		let lastBoxCanvasX = null;
 		let lastBoxCanvasY = null;
 
-		
+		/**
+		 * The -1 and +1s are for making the line slightly longer on both ends to make the X not show from underneeth.
+		 * The /2 is for making the line go in the middle of the boxes if the line vertical or horizontal.
+		 * The /3 is for vertical and horizonttal line being shortened to be within the padding area of the boxes.
+		 */
 		if (orientation === 1) {
 			firstBoxCanvasX = firstBox.drawPosX - 1;
 			firstBoxCanvasY = firstBox.drawPosY - 1;
@@ -89,7 +95,7 @@ export class TickTackGame {
 			lastBoxCanvasY = lastBox.drawPosY + lastBox.drawSize + 1;
 		} else if (orientation === 3) {
 			let HoriLineStart = firstBox.areaXBegin + (this.gameCanvas.boxAreaWidth - firstBox.drawSize) / 3;
-			let HoriLineEnd = lastBox.areaXBegin + this.gameCanvas.boxAreaWidth - (this.gameCanvas.boxAreaWidth - lastBox.drawSize) / 3;
+			let HoriLineEnd = lastBox.areaXBegin + this.gameCanvas.boxAreaWidth - ((this.gameCanvas.boxAreaWidth - lastBox.drawSize) / 3);
 			firstBoxCanvasX = HoriLineStart - 1;
 			firstBoxCanvasY = firstBox.drawPosY + firstBox.drawSize / 2;
 			console.log(3);
@@ -97,7 +103,7 @@ export class TickTackGame {
 			lastBoxCanvasY = lastBox.areaYBegin + this.gameCanvas.boxAreaHeight / 2;
 		} else if (orientation === 4) {
 			let VertLineStart = firstBox.areaYBegin + (this.gameCanvas.boxAreaHeight - firstBox.drawSize) / 3;
-			let VertLineEnd = lastBox.areaYBegin + this.gameCanvas.boxAreaHeight - (this.gameCanvas.boxAreaHeight - lastBox.drawSize) / 3;
+			let VertLineEnd = lastBox.areaYBegin + this.gameCanvas.boxAreaHeight - ((this.gameCanvas.boxAreaHeight - lastBox.drawSize) / 3);
 			firstBoxCanvasX = firstBox.areaXBegin + this.gameCanvas.boxAreaWidth / 2;
 			firstBoxCanvasY = VertLineStart - 1;
 			console.log(4);
@@ -115,7 +121,7 @@ export class TickTackGame {
 	public checkCanvasFull(): boolean {
 		for (let i = 0; i < this.gameCanvas.boxes.length; i++) {
 			for (let j = 0; j < this.gameCanvas.boxes[i].length; j++) {
-				if (this.gameCanvas.boxes[i][j].player === 'empty box') {
+				if (this.gameCanvas.boxes[i][j].player === gameDefaults.emptyBoxPlayer) {
 					return false;
 				}
 			}
@@ -141,11 +147,10 @@ export class TickTackGame {
 			return success;
 		}
 		let box = this.gameCanvas.boxes[boxPos.boxCol][boxPos.boxRow];
-
 		if (box !== null && !box.drawn && playerNum === this.playerTurnNum) {
 			try {
 				box = new DynamicComponent(
-					'Component' + this.playerTurnNum,
+					gameDefaults.compoAntecedent + this.playerTurnNum,
 					box.areaXBegin,
 					box.areaYBegin,
 					this.gameCanvas,

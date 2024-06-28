@@ -1,0 +1,33 @@
+{
+    "gridX": 5,
+    "gridY": 5,
+    "winLength": 4,
+    "emptyBoxPlayer": "empty box",
+    "compoAntecedent": "Component",
+    "darkGreyColor": "#222222",
+    "almostWhiteColor": "#efefef",
+    "winLineColor": "#FFFF00",
+    "pxHtml": "px",
+    "scaling": 2,
+    "gridLineFactor": 9,
+    "winLineFactor": 5.5,
+    "winLnDrawIncr": 40,
+    "genPrePlNm": "Player ",
+    "halfScale": 0.5,
+    "screens" : {
+        "sm": 640,
+        "md": 768,
+        "lg": 1024,
+        "xl": 1280
+    },
+    "localPvp": {
+        "playerNum": 1,
+        "height": 600,
+        "width": 600
+    },
+    "errors": {
+        "gameCanvFull": "game Canvas is null",
+        "gameCanvNull": "game Canvas is null",
+        "gameCanvCtxNull": "game Canvas context is null"
+    }
+}
