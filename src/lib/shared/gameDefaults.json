@@ -21,7 +21,7 @@
         "xl": 1280
     },
     "localPvp": {
-        "playerNum": 1,
+        "playerNum": 20,
         "height": 600,
         "width": 600
     },

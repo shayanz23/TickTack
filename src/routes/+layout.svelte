@@ -2,7 +2,7 @@
 	import Navbar from '$lib/components/Navbar.svelte';
 	import Footer from '$lib/components/Footer.svelte'
 	import {darkTheme} from '$lib/shared/stores/appTheme';
-
+	import '../app.css'
 </script>
 
 <div id="main-div" class:background-dark={$darkTheme}>
