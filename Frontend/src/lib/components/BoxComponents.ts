@@ -152,13 +152,10 @@ export class Component2 extends BoxComponent {
 
 	public draw() {
 		this.beginDrawing();
-		this.gameCanvas.context.arc(
-			this.drawPosX + this.drawSize / 2,
-			this.drawPosY + this.drawSize / 2,
-			this.drawSize / 2,
-			0,
-			2 * Math.PI
-		);
+		this.gameCanvas.context.moveTo(this.drawPosX + this.drawSize/2, this.drawPosY);
+		this.gameCanvas.context.lineTo(this.drawPosX + this.drawSize/2, this.drawPosY + this.drawSize);
+		this.gameCanvas.context.moveTo(this.drawPosX + this.drawSize, this.drawPosY + this.drawSize/2);
+		this.gameCanvas.context.lineTo(this.drawPosX, this.drawPosY + this.drawSize/2);
 		this.endDrawing();
 	}
 }
@@ -172,13 +169,8 @@ export class Component3 extends BoxComponent {
 
 	public draw() {
 		this.beginDrawing();
-		this.gameCanvas.context.arc(
-			this.drawPosX + this.drawSize / 2,
-			this.drawPosY + this.drawSize / 2,
-			this.drawSize / 2,
-			0,
-			2 * Math.PI
-		);
+		this.gameCanvas.context.moveTo(this.drawPosX + this.drawSize, this.drawPosY + this.drawSize/2);
+		this.gameCanvas.context.lineTo(this.drawPosX, this.drawPosY + this.drawSize/2);
 		this.endDrawing();
 	}
 }

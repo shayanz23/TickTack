@@ -6,12 +6,12 @@ import gameDefaults from '$lib/shared/gameDefaults.json';
 let thisGameCanvas: GameCanvas;
 
 export class GameCanvas {
-	private gridY: number = 5;
-	private gridX: number = 5;
-	private _winLength = 4;
+	private gridY: number;
+	private gridX: number;
+	private _winLength;
 	private _height: number;
 	private _width: number;
-	private _scale: number = 1;
+	private _scale: number;
 	private _htmlCanvas: HTMLCanvasElement;
 	private _context!: CanvasRenderingContext2D;
 	private _boxes: BoxComponent[][] = [];

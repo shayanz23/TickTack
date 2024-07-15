@@ -7,10 +7,10 @@
 		<h1>Sign in</h1>
 
 		<input
-			id="username-input"
+			id="email-input"
 			class:input-dark={$darkTheme}
 			class:input-light={!$darkTheme}
-			type="text"
+			type="email"
 			placeholder="Username"
 		/>
 		<input
@@ -23,7 +23,7 @@
 		<p id="forgot-pw">Forgot Password? <a href="">Reset</a></p>
 		<button id="login-button" class="button recommended-button"> Sign In </button>
 	</form>
-	<p id="no-account" class:object-dark={$darkTheme}>Don't have an account? <a href="">Sign up</a></p>
+	<p id="no-account" class:object-dark={$darkTheme}>Don't have an account? <a href="/signup">Sign up</a></p>
 </div>
 
 <style>
@@ -90,11 +90,6 @@
 	}
 
 	input:focus {
-		border: 2px solid rgb(39, 201, 255) !important;
-		border-radius: 10px;
-	}
-
-	input:focus:hover {
 		border: 2px solid rgb(39, 201, 255) !important;
 		border-radius: 10px;
 	}

@@ -18,7 +18,9 @@
 	let winLength = gameDefaults.winLength;
 
 	for (let index = 0; index < gameDefaults.localPvp.playerNum; index++) {
-		players.push("");
+		if (index < gameDefaults.maxPlayers) {
+			players.push("");
+		}
 	}
 
 	function restart() {

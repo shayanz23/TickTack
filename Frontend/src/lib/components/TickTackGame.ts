@@ -4,21 +4,11 @@ import { BoxComponent } from './BoxComponents';
 import { DynamicComponent } from './DynamicComponent';
 import gameDefaults from '$lib/shared/gameDefaults.json';
 
-const defaultMaxPlayers = 2;
-
 export class TickTackGame {
 	private gameCanvas: GameCanvas;
 	private _playerTurnNum = 0;
 	private _winnerName = '';
-	private playerNames: string[];
-	private _maxPlayers: number = defaultMaxPlayers;
-
-	public get maxPlayers(): number {
-		return this._maxPlayers;
-	}
-	public set maxPlayers(value: number) {
-		this._maxPlayers = value;
-	}
+	private players: string[];
 
 	public get winnerName() {
 		return this._winnerName;
@@ -37,8 +27,7 @@ export class TickTackGame {
 
 	constructor(gameCanvas: GameCanvas, players: string[]) {
 		this.gameCanvas = gameCanvas;
-		this.playerNames = players;
-		this._maxPlayers = players.length
+		this.players = players;
 	}
 
 	/**
@@ -130,7 +119,7 @@ export class TickTackGame {
 	}
 
 	public getCurrentPlayer(): string {
-		return this.playerNames[this.playerTurnNum];
+		return this.players[this.playerTurnNum];
 	}
 
 	/**
@@ -154,7 +143,7 @@ export class TickTackGame {
 					box.areaXBegin,
 					box.areaYBegin,
 					this.gameCanvas,
-					this.playerNames[this.playerTurnNum]
+					this.players[this.playerTurnNum]
 				) as BoxComponent;
 			} catch (e) {
 				console.error(e);
@@ -165,7 +154,7 @@ export class TickTackGame {
 
 		this.gameCanvas.boxes[boxPos.boxCol][boxPos.boxRow] = box;
 
-		if (this.playerTurnNum >= this.maxPlayers) {
+		if (this.playerTurnNum >= this.players.length) {
 			this.playerTurnNum = 0;
 		}
 		return success;
