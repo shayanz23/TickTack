@@ -1,7 +1,7 @@
 <script lang="ts">
-	import Canvas from '$lib/components/LocalPvpGame.svelte';
-	import GameOverModal from '$lib/components/GameOverModal.svelte';
-	import StartGameModal from '$lib/components/StartLocalGame.svelte';
+	import Canvas from '$lib/components/gameTypes/OnlineCanvas.svelte';
+	import GameOverModal from '$lib/components/GameComponents/GameOverModal.svelte';
+	import StartGameModal from '$lib/components/GameComponents/LocalPvp/StartGameModal.svelte';
 	import {darkTheme} from '$lib/shared/stores/appTheme';
 	import gameDefaults from '$lib/shared/gameDefaults.json'
 
@@ -16,6 +16,7 @@
 	let gridX = gameDefaults.gridX;
 	let gridY = gameDefaults.gridY;
 	let winLength = gameDefaults.winLength;
+	let startStr = "Create"
 
 	for (let index = 0; index < gameDefaults.localPvp.playerNum; index++) {
 		if (index < gameDefaults.maxPlayers) {
@@ -55,7 +56,7 @@
 			{/each}
 		</div>
 	{/if}
-	<StartGameModal bind:showModal={showpickPlayerModal} bind:restartState>
+	<StartGameModal bind:showModal={showpickPlayerModal} bind:restartState bind:startStr>
 		<div class:background-dark={$darkTheme}>
 			<h2>Game Settings</h2>
 			{#each players as player, i}

@@ -1,10 +1,10 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { browser } from '$app/environment';
-	import { GameCanvas } from './GameCanvas';
-	import { TickTackGame } from './TickTackGame';
+	import { GameCanvas } from '../GameComponents/GameCanvas';
+	import { TickTackGame } from '../GameComponents/TickTackGame';
 	import { darkTheme } from '$lib/shared/stores/appTheme';
-	import gameDefaults from '$lib/shared/gameDefaults.json'
+	import gameDefaults from '$lib/shared/gameDefaults.json';
 
 	export let winner = '';
 	export let gameOver = false;
@@ -76,7 +76,7 @@
 		}
 
 		//Run the game logics for each round.
-		gameLogic(boxPos);
+		gameTurnLogic(boxPos);
 	}
 
 	/**
@@ -85,7 +85,7 @@
 	 * or the canvas is full.
 	 * @param boxPos
 	 */
-	function gameLogic(boxPos: { boxCol: number | null; boxRow: number | null }) {
+	function gameTurnLogic(boxPos: { boxCol: number | null; boxRow: number | null }) {
 		let success = game.replaceEmptyBox(boxPos, playerTurn);
 		if (!success) {
 			return;

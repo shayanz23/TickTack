@@ -11,10 +11,10 @@
     "scaling": 2,
     "gridLineFactor": 9,
     "winLineFactor": 5.5,
-    "winLnDrawIncr": 40,
+    "winLnDrawIncrement": 40,
     "genPrePlNm": "Player ",
     "halfScale": 0.5,
-    "maxPlayers": 4,
+    "maxPlayers": 400,
     "screens" : {
         "sm": 640,
         "md": 768,
@@ -22,7 +22,12 @@
         "xl": 1280
     },
     "localPvp": {
-        "playerNum": 2,
+        "playerNum": 4,
+        "height": 600,
+        "width": 600
+    },
+    "onlinePvp": {
+        "playerNum": 4,
         "height": 600,
         "width": 600
     },

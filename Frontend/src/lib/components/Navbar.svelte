@@ -4,8 +4,8 @@
 <div>
 	<nav id="navbar">
 		<a id="left-end-item" href="/">Home</a>
-		<a href="/localpvp">Local PvP</a>
-		<a href="/multiplayer">Online PvP</a>
+		<a href="/local">Local PvP</a>
+		<a href="/online">Online PvP</a>
 		<a href="/about">About</a>
 		<a class="right-item" href="/login">Login</a>
 	</nav>

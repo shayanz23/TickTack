@@ -1,7 +1,8 @@
 package com.shayan.ticktackbackend.service;
 
+import com.shayan.ticktackbackend.api.model.LoginRes;
 import com.shayan.ticktackbackend.api.model.User;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Controller;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -9,17 +10,13 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-@Service
+@Controller
 public class UserService {
 
-    private List<User> userList;
     private int nextID = 2;
     private final Connection connection;
 
     public UserService() {
-        userList = new ArrayList<User>();
-        userList.add(new User(0, "donkey21", "monkey", "donkey21@monkey.com"));
-        userList.add(new User(1, "mo", "lester", "monkey21@donkey.com"));
         DbService dbService = DbService.getInstance();
         connection = dbService.getConnection();
     }
@@ -30,11 +27,9 @@ public class UserService {
             Statement statement = connection.createStatement();
             statement.execute("SET search_path TO ticktack_schema;");
             ResultSet resultSet = statement.executeQuery("SELECT * FROM account");
-            ResultSetMetaData rsmd = resultSet.getMetaData();
-            int columnsNumber = rsmd.getColumnCount();
             while (resultSet.next()) {
                 users.add(new User(resultSet.getInt(1), resultSet.getString(2),
-                        resultSet.getString(3), resultSet.getString(4)));
+                        resultSet.getString(3), resultSet.getString(4), resultSet.getInt(5), resultSet.getBoolean(6)));
             }
         } catch (SQLException e) {
             System.out.println("Error: " + e.getMessage());
@@ -44,24 +39,20 @@ public class UserService {
         return optional;
     }
 
-    public Optional<User> getUserWPw(String username, String password) {
-        Optional<User> optional = Optional.empty();
+    public Optional<LoginRes> login(String username, String password) {
+        Optional<LoginRes> optional = Optional.empty();
         try {
             Statement statement = connection.createStatement();
             statement.execute("SET search_path TO ticktack_schema;");
-            ResultSet resultSet = statement.executeQuery("SELECT * FROM account");
-//            ResultSetMetaData rsMd = resultSet.getMetaData();
-//            int columnsNumber = rsMd.getColumnCount();
-            while (resultSet.next()) {
-                System.out.println(resultSet.getString(3));
-                if (Objects.equals(username, resultSet.getString(3))) {
-                    System.out.println(resultSet.getString(3));
-                    if (Objects.equals(password, resultSet.getString(4))) {
-                        optional = Optional.of(new User(resultSet.getInt(1), resultSet.getString(2),
-                                resultSet.getString(3), resultSet.getString(4)));
-                        break;
-                    }
-                }
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM account WHERE (username=? OR email=?) AND hashed_pw=?");
+            ps.setString(1, username);
+            ps.setString(2, username);
+            ps.setString(3, password);
+            ResultSet resultSet = ps.executeQuery();
+            if (resultSet.next()) {
+                LoginRes loginRes = new LoginRes(new User(resultSet.getInt(1), resultSet.getString(2),
+                        resultSet.getString(3), resultSet.getString(4), resultSet.getInt(5), resultSet.getBoolean(6)), "12345");
+                optional = Optional.of(loginRes);
             }
         } catch (SQLException e) {
             System.out.println("Error: " + e.getMessage());
@@ -72,48 +63,63 @@ public class UserService {
 
     public Optional<User> patchUser(User user) throws SQLException {
         Optional<User> optional = Optional.empty();
-            PreparedStatement ps = connection.prepareStatement("UPDATE account SET email =?, accountname=? where id=? RETURNING *;");
+            PreparedStatement ps = connection.prepareStatement("UPDATE account SET email = ?, username = ?, hashed_pw = ?, xp = ? where id = ? RETURNING *;");
             ps.setString(1, user.getEmail());
             ps.setString(2, user.getUsername());
-            ps.setInt(3, user.getId());
+            ps.setString(3, user.getHashedPw());
+            ps.setInt(4, user.getXp());
+            ps.setInt(5, user.getId());
             Statement statement = connection.createStatement();
             statement.execute("SET search_path TO ticktack_schema;");
             ResultSet resultSet = ps.executeQuery();
-            resultSet.next();
-//            ResultSetMetaData rsMd = resultSet.getMetaData();
-//            int columnsNumber = rsMd.getColumnCount();
+            if (!resultSet.next()) {
+                return optional;
+            }
             optional = Optional.of(new User(resultSet.getInt(1), resultSet.getString(2),
-                    resultSet.getString(3), resultSet.getString(4)));
+                    resultSet.getString(3), resultSet.getString(4), resultSet.getInt(5), resultSet.getBoolean(6)));
 
         return optional;
     }
 
-    public Optional<User> deleteUser(int id) {
-        Optional<User> optional = Optional.empty();
-        for (int i = 0; i < userList.size(); i++) {
-            if (id == userList.get(i).getId()) {
-                optional = Optional.of(userList.remove(id));
-                break;
-            }
-        }
-        return optional;
+    public Optional<Integer> deleteUser(int id) throws SQLException {
+        Optional<Integer> oId;
+        Statement statement = connection.createStatement();
+        statement.execute("SET search_path TO ticktack_schema;");
+        PreparedStatement ps = connection.prepareStatement("DELETE FROM account WHERE ID = ?");
+        ps.setInt(1, id);
+        ps.execute();
+        return Optional.of(id);
     }
 
-    public Optional<User> postUser(User newUser) {
-        Optional<User> optional = Optional.empty();
-        boolean userNameExists = false;
-        for (User user : userList) {
-            if (Objects.equals(user.getUsername(), newUser.getUsername())) {
-                userNameExists = true;
-                break;
-            }
-        }
-        if (!userNameExists) {
-            newUser.setId(nextID);
-            userList.add(newUser);
-            optional = Optional.of(newUser);
-            nextID++;
-        }
-        return optional;
+    public Optional<User> postUser(User newUser) throws SQLException {
+        Optional<User> user;
+        Statement statement = connection.createStatement();
+        statement.execute("SET search_path TO ticktack_schema;");
+        PreparedStatement ps = connection.prepareStatement("INSERT INTO account (email, username, hashed_pw, admin) VALUES (?, ?, ?, ?) RETURNING *;");
+        ps.setString(1, newUser.getEmail());
+        ps.setString(2, newUser.getUsername());
+        ps.setString(3, newUser.getHashedPw());
+        ps.setBoolean(4, newUser.isAdmin());
+        ResultSet resultSet = ps.executeQuery();
+        resultSet.next();
+        user = Optional.of(new User(resultSet.getInt(1), resultSet.getString(2),
+                resultSet.getString(3), resultSet.getString(4), resultSet.getInt(5), resultSet.getBoolean(6)));
+        return user;
+    }
+
+    public Optional<LoginRes> signUp(User newUser) throws SQLException {
+        Optional<LoginRes> oLoginRes;
+        Statement statement = connection.createStatement();
+        statement.execute("SET search_path TO ticktack_schema;");
+        PreparedStatement ps = connection.prepareStatement("INSERT INTO account (email, username, hashed_pw, admin) VALUES (?, ?, ?, false) RETURNING *;");
+        ps.setString(1, newUser.getEmail());
+        ps.setString(2, newUser.getUsername());
+        ps.setString(3, newUser.getHashedPw());
+        ResultSet resultSet = ps.executeQuery();
+        resultSet.next();
+        LoginRes loginRes = new LoginRes(new User(resultSet.getInt(1), resultSet.getString(2),
+                resultSet.getString(3), resultSet.getString(4), resultSet.getInt(5), resultSet.getBoolean(6)), "12345");
+        oLoginRes = Optional.of(loginRes);
+        return oLoginRes;
     }
 }

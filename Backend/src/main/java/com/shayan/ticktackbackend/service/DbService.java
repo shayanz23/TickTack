@@ -14,23 +14,24 @@ public class DbService {
 
     private static DbService single_instance = null;
 
-    private DbService() throws IOException, SQLException {
-        String connectionPath = Objects.requireNonNull(Thread.currentThread().getContextClassLoader().getResource("")).getPath() + ConnectionName + ConnNameSuffix;
-        FileInputStream dbPropFileStream = new FileInputStream(connectionPath);
-        connProps.load(dbPropFileStream);
-        url = connProps.getProperty("url");
-        connection = DriverManager.getConnection(url, connProps);
-        dbPropFileStream.close();
+    private DbService() {
+        try {
+            String connectionPath = Objects.requireNonNull(Thread.currentThread().getContextClassLoader().getResource("")).getPath() + ConnectionName + ConnNameSuffix;
+            FileInputStream dbPropFileStream = new FileInputStream(connectionPath);
+            connProps.load(dbPropFileStream);
+            url = connProps.getProperty("url");
+            connection = DriverManager.getConnection(url, connProps);
+            dbPropFileStream.close();
+        } catch (SQLException | IOException e) {
+            System.out.println("******" + e.getMessage() + "******");
+        }
+
     }
 
     public static synchronized DbService getInstance()
     {
         if (single_instance == null) {
-            try {
-                single_instance = new DbService();
-            } catch (IOException | SQLException e) {
-                throw new RuntimeException(e);
-            }
+            single_instance = new DbService();
         }
 
         return single_instance;

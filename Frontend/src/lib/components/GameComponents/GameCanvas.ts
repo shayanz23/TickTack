@@ -185,9 +185,9 @@ export class GameCanvas {
 
 			var dx=this.winnerCanvasCoords.lastBoxCanvasX-this.winnerCanvasCoords.firstBoxCanvasX;
 			var dy=this.winnerCanvasCoords.lastBoxCanvasY-this.winnerCanvasCoords.firstBoxCanvasY;
-			for(var j=0;j<gameDefaults.winLnDrawIncr;j++){
-				var x=this.winnerCanvasCoords.firstBoxCanvasX+dx*j/gameDefaults.winLnDrawIncr;
-				var y=this.winnerCanvasCoords.firstBoxCanvasY+dy*j/gameDefaults.winLnDrawIncr;
+			for(var j=0;j<gameDefaults.winLnDrawIncrement;j++){
+				var x=this.winnerCanvasCoords.firstBoxCanvasX+dx*j/gameDefaults.winLnDrawIncrement;
+				var y=this.winnerCanvasCoords.firstBoxCanvasY+dy*j/gameDefaults.winLnDrawIncrement;
 				waypoints.push({x:x,y:y});
 			}
 			waypoints.push({x:this.winnerCanvasCoords.lastBoxCanvasX,y:this.winnerCanvasCoords.lastBoxCanvasY});
@@ -271,6 +271,7 @@ export class GameCanvas {
 		return { boxCol, boxRow };
 	}
 }
+
 
 function drawWinLine() {
 	if(thisGameCanvas.lnAnimateT<thisGameCanvas.winLnPts.length-1){ requestAnimationFrame(drawWinLine); }

@@ -1,9 +1,12 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
+    import { goto } from '$app/navigation';
 	import {darkTheme} from '$lib/shared/stores/appTheme';
 
 	export let showModal: boolean; // boolean
 	export let restartState = false;
+	export let startStr = "Start"
+
+    let gameList = [];
 
 	let dialog: HTMLDialogElement; // HTMLDialogElement
 
@@ -24,25 +27,28 @@
 	}
 </script>
 
-<!-- svelte-ignore a11y-click-events-have-key-events a11y-no-noninteractive-element-interactions -->
+<!-- svelte-ignore a11y-click-events-have-key-events -->
+<!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
 <dialog
 	bind:this={dialog}
 	on:close={() => (showModal = false)}
 	on:click|self={() => dialog.close()}
 >
 	<!-- svelte-ignore a11y-no-static-element-interactions -->
+	<!-- svelte-ignore a11y-click-events-have-key-events -->
 	<div id="modal-div" on:click|stopPropagation class:background-dark={$darkTheme}>
-		<slot id="modal-slot"/>
+		<table> 
+            
+        </table>
 		<!-- svelte-ignore a11y-autofocus -->
 		<div id="modal-buttons">
 			<button id="modal-home-button" autofocus on:click={() => toHome()}>Home</button>
-			<button id="modal-restart-button" autofocus on:click={() => play()}>Play</button>
+			<button id="modal-restart-button" autofocus on:click={() => play()}>{startStr}</button>
 		</div>
 	</div>
 </dialog>
 
 <style>
-
 	#modal-div {
 		display: grid;
 		grid-template-rows: 7;
@@ -82,7 +88,7 @@
 	}
 
 	dialog {
-		width: 26em;
+		width: 28em;
 		height: fit-content;
 		border-radius: 0.5em;
 		border: none;

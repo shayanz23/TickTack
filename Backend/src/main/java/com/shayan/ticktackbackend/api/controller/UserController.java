@@ -1,5 +1,6 @@
 package com.shayan.ticktackbackend.api.controller;
 
+import com.shayan.ticktackbackend.api.model.LoginRes;
 import com.shayan.ticktackbackend.api.model.User;
 import com.shayan.ticktackbackend.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,12 +23,28 @@ public class UserController {
     }
 
     @GetMapping("/login")
-        public ResponseEntity login(@RequestHeader String username, @RequestHeader String password) {
-        Optional<User> user = userService.getUserWPw(username, password);
-        if (user.isPresent()) {
-            return ResponseEntity.status(HttpStatus.OK).body(user.get());
+    public ResponseEntity login(@RequestHeader String username, @RequestHeader String password) {
+        Optional<LoginRes> loginRes = userService.login(username, password);
+        if (loginRes.isPresent()) {
+            return ResponseEntity.status(HttpStatus.OK).body(loginRes.get());
         } else {
+            System.out.println("no!!!!!");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User Not Found");
+        }
+    }
+
+    @PostMapping ("/signup")
+    public ResponseEntity signUp(@RequestBody User newUser) {
+        Optional<LoginRes> loginRes;
+        try {
+            loginRes = userService.signUp(newUser);
+        } catch (SQLException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+        if (loginRes.isPresent()) {
+            return ResponseEntity.status(HttpStatus.OK).body(loginRes.get());
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Error while adding: " + newUser.getUsername());
         }
     }
 
@@ -54,9 +71,14 @@ public class UserController {
 
     @DeleteMapping("/user")
     public ResponseEntity deleteUser(@RequestParam int id) {
-        Optional<User> user = userService.deleteUser(id);
-        if (user.isPresent()) {
-            return ResponseEntity.status(HttpStatus.OK).body(user.get());
+        Optional<Integer> oId;
+        try {
+            oId = userService.deleteUser(id);
+        } catch (SQLException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+        if (oId.isPresent()) {
+            return ResponseEntity.status(HttpStatus.OK).body(oId.get());
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Error while removing: " + id);
         }
@@ -64,7 +86,12 @@ public class UserController {
 
     @PostMapping ("/user")
     public ResponseEntity postUser(@RequestBody User newUser) {
-        Optional<User> user = userService.postUser(newUser);
+        Optional<User> user;
+        try {
+            user = userService.postUser(newUser);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
         if (user.isPresent()) {
             return ResponseEntity.status(HttpStatus.OK).body(user.get());
         } else {
