@@ -52,6 +52,18 @@
 			<artifactId>spring-messaging</artifactId>
 			<version>6.1.12</version>
 		</dependency>
+
+		<dependency>
+			<groupId>at.favre.lib</groupId>
+			<artifactId>bcrypt</artifactId>
+			<version>0.10.2</version>
+		</dependency>
+
+		<dependency>
+			<groupId>commons-validator</groupId>
+			<artifactId>commons-validator</artifactId>
+			<version>1.9.0</version>
+		</dependency>
 	</dependencies>
 
 	<build>

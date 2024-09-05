@@ -1,7 +1,7 @@
 package com.shayan.ticktackbackend.api.controller;
 
 import com.shayan.ticktackbackend.api.model.LoginRes;
-import com.shayan.ticktackbackend.api.model.User;
+import com.shayan.ticktackbackend.api.model.Account;
 import com.shayan.ticktackbackend.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -24,7 +24,13 @@ public class UserController {
 
     @GetMapping("/login")
     public ResponseEntity login(@RequestHeader String username, @RequestHeader String password) {
-        Optional<LoginRes> loginRes = userService.login(username, password);
+        Optional<LoginRes> loginRes;
+        try {
+            loginRes = userService.login(username, password);
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
         if (loginRes.isPresent()) {
             return ResponseEntity.status(HttpStatus.OK).body(loginRes.get());
         } else {
@@ -34,31 +40,39 @@ public class UserController {
     }
 
     @PostMapping ("/signup")
-    public ResponseEntity signUp(@RequestBody User newUser) {
+    public ResponseEntity signUp(@RequestBody Account newAccount) {
+        if (newAccount.getHashedPw().length() >= 16) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Password must be less than 16 characters.");
+        }
+        newAccount.setUsername(newAccount.getUsername().toLowerCase().strip());
+        newAccount.setEmail(newAccount.getEmail().toLowerCase().strip());
+        if (!UserService.isValidEmail(newAccount.getEmail())) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid email.");
+        }
         Optional<LoginRes> loginRes;
         try {
-            loginRes = userService.signUp(newUser);
+            loginRes = userService.signUp(newAccount);
         } catch (SQLException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
         if (loginRes.isPresent()) {
             return ResponseEntity.status(HttpStatus.OK).body(loginRes.get());
         } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Error while adding: " + newUser.getUsername());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Error while adding: " + newAccount.getUsername());
         }
     }
 
     @GetMapping("/users")
     public ResponseEntity getAllUsers() {
-        Optional<List<User>> user = userService.ListUsers();
+        Optional<List<Account>> user = userService.ListUsers();
         return ResponseEntity.status(HttpStatus.OK).body(user.get());
     }
 
     @PatchMapping("/user")
-    public ResponseEntity patchUser(@RequestBody User updatedUser) {
-        Optional<User> user = null;
+    public ResponseEntity patchUser(@RequestBody Account updatedAccount) {
+        Optional<Account> user = null;
         try {
-            user = userService.patchUser(updatedUser);
+            user = userService.patchUser(updatedAccount);
             if (user.isPresent()) {
                 return ResponseEntity.status(HttpStatus.OK).body(user.get());
             } else {
@@ -85,17 +99,17 @@ public class UserController {
     }
 
     @PostMapping ("/user")
-    public ResponseEntity postUser(@RequestBody User newUser) {
-        Optional<User> user;
+    public ResponseEntity postUser(@RequestBody Account newAccount) {
+        Optional<Account> user;
         try {
-            user = userService.postUser(newUser);
+            user = userService.postUser(newAccount);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
         if (user.isPresent()) {
             return ResponseEntity.status(HttpStatus.OK).body(user.get());
         } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Error while adding: " + newUser.getUsername());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Error while adding: " + newAccount.getUsername());
         }
     }
 

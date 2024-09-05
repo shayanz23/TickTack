@@ -1,51 +1,38 @@
 package com.shayan.ticktackbackend.api.model;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.sql.Date;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 
 public class Game {
 
+    @Getter
+    @Setter
     private int id;
+    @Getter
+    @Setter
     private Timestamp startDate;
+    @Getter
+    @Setter
     private int state;
-    private int winnerPlayerId;
+    @Setter
+    @Getter
+    private String winnerUsername;
+    @Setter
+    @Getter
+    private ArrayList<String> playerUsernames;
+    @Setter
+    @Getter
+    private ArrayList<ArrayList<String>> usernameBoxes;
 
-    public Game(int id, Timestamp startDate, int state, int winnerPlayerId) {
+    public Game(int id, Timestamp startDate, int state, String winnerUsername) {
         this.id = id;
         this.startDate = startDate;
         this.state = state;
-        this.winnerPlayerId = winnerPlayerId;
+        this.winnerUsername = winnerUsername;
     }
 
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public Timestamp getStartDate() {
-        return startDate;
-    }
-
-    public void setStartDate(Timestamp startDate) {
-        this.startDate = startDate;
-    }
-
-    public int getState() {
-        return state;
-    }
-
-    public void setState(int state) {
-        this.state = state;
-    }
-
-    public int getWinnerPlayerId() {
-        return winnerPlayerId;
-    }
-
-    public void setWinnerPlayerId(int winnerPlayerId) {
-        this.winnerPlayerId = winnerPlayerId;
-    }
 }

@@ -1,28 +1,19 @@
 package com.shayan.ticktackbackend.api.model;
 
-public class LoginRes {
-    private User user;
+import lombok.Getter;
+import lombok.Setter;
 
+public class LoginRes {
+
+    @Setter
+    @Getter
+    private Account account;
+    @Setter
+    @Getter
     private String sessionToken;
 
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public String getSessionToken() {
-        return sessionToken;
-    }
-
-    public void setSessionToken(String sessionToken) {
-        this.sessionToken = sessionToken;
-    }
-
-    public LoginRes(User user, String sessionToken) {
-        this.user = user;
+    public LoginRes(Account account, String sessionToken) {
+        this.account = account;
         this.sessionToken = sessionToken;
     }
 }

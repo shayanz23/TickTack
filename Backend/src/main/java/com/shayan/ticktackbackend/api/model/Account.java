@@ -1,6 +1,6 @@
 package com.shayan.ticktackbackend.api.model;
 
-public class User {
+public class Account {
 
     private int id;
     private String username;
@@ -9,7 +9,7 @@ public class User {
     private int xp;
     private boolean admin;
 
-    public User(int id, String email, String username, String password, int xp, boolean admin) {
+    public Account(int id, String email, String username, String password, int xp, boolean admin) {
         this.id = id;
         this.username = username;
         this.hashedPw = password;
