@@ -1,0 +1,23 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "TickTack backend for dealing with DB and online multiplayer games",
+  "main": "src/app.ts",
+  "scripts": {
+    "start": "tsc && node ./dist/main.js"
+  },
+  "author": "Shayan Zahedanaraki",
+  "license": "MIT",
+  "type": "module",
+  "devDependencies": {
+    "@types/node": "^22.6.1",
+    "ts-node": "^10.9.2"
+  },
+  "dependencies": {
+    "@types/pg": "^8.11.10",
+    "dotenv": "^16.4.5",
+    "kysely": "^0.27.4",
+    "kysely-codegen": "^0.17.0",
+    "pg": "^8.13.1"
+  }
+}
