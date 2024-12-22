@@ -1,9 +1,8 @@
-import { db } from "./middleware/database.js";
+// import { db } from "./middleware/database.js";
+import { startApi } from "./api/api.js";
 
 async function main() {
-    console.log("hello world");
-    const users = await db.selectFrom('_user').selectAll().execute();
-    console.log(users);
+    startApi();
 }
 
 main();

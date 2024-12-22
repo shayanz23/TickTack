@@ -1,10 +1,10 @@
-class Game {
-  id: number;
-  winnerId: number;
-  typeId: number;
-  date: Date;
-  playerIds: number[];
-  boxIds: number[][];
+export class Game {
+  private id: number;
+  private winnerId: number;
+  private typeId: number;
+  private date: Date;
+  private playerIds: number[];
+  private boxIds: number[][];
 
   constructor(
     id: number,

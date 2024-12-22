@@ -1,50 +1,55 @@
-DROP SCHEMA IF EXISTS ticktack_schema CASCADE;
-CREATE SCHEMA ticktack_schema;
-SET search_path TO ticktack_schema;
+DROP SCHEMA IF EXISTS public CASCADE;
+CREATE SCHEMA public;
+SET search_path TO public;
 
-CREATE TABLE account (
+CREATE TYPE role AS ENUM ('user', 'admin');
+CREATE TYPE theme AS ENUM ('system', 'dark', 'light');
+
+CREATE TABLE _user (
   id INTEGER NOT NULL PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
   email VARCHAR(50) NOT NULL UNIQUE,
   username VARCHAR(20) NOT NULL UNIQUE,
-  hashed_pw VARCHAR(100) NOT NULL,
+  password VARCHAR(100) NOT NULL,
   xp INTEGER NOT NULL DEFAULT 0,
-  admin BOOLEAN NOT NULL DEFAULT false
+  _role role NOT NULL DEFAULT 'user'
 );  
 
 --   dark_theme 0 is system, 1 is dark, 2 is light
-CREATE TABLE account_setting (
-  account_id INTEGER PRIMARY KEY REFERENCES account ON DELETE CASCADE,
-  theme SMALLINT NOT NULL UNIQUE
+CREATE TABLE user_setting (
+  user_id INTEGER PRIMARY KEY REFERENCES _user ON DELETE CASCADE,
+  _theme theme NOT NULL DEFAULT 'system'
 );  
 
 CREATE TABLE game_type (
   id INTEGER NOT NULL PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-  name VARCHAR(25) NOT NULL,
+  name VARCHAR(25) NOT NULL UNIQUE,
   description text
 );  
 
 CREATE TABLE game (
   id INTEGER NOT NULL PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-  winner_username VARCHAR(100),
+  winner_id INTEGER NOT NULL,
   type_id INTEGER NOT NULL REFERENCES game_type,
   date TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  player_usernames VARCHAR(100)[],
-  box_usernames VARCHAR(100)[][]
+  player_ids INTEGER[],
+  box_ids INTEGER[][]
 );  
 
 -- CREATE TABLE account_game (
---   account_id INTEGER NOT NULL,
+--   user_id INTEGER NOT NULL,
 --   game_id INTEGER NOT NULL REFERENCES game ON DELETE CASCADE,
---   PRIMARY KEY(account_id, game_id)
+--   PRIMARY KEY(user_id, game_id)
 -- );  
 
-INSERT INTO account (email, username, hashed_pw, admin) VALUES ('donkey@donkey.ca', 'donkey', 'donkey', true);
-INSERT INTO account (email, username, hashed_pw) VALUES ('monkey@monkey.ca', 'monkey', 'monkey');
-INSERT INTO account_setting (account_id, theme) VALUES (1, 0); 
-INSERT INTO account_setting (account_id, theme) VALUES (2, 2); 
-INSERT INTO game_type (name, description) VALUES ('local_pvp', 'Local multiplayer tictactoe on one computer, with each person playing when its their turn.'); 
-INSERT INTO game_type (name, description) VALUES ('online_pvp', 'Online multiplayer tictactoe on multiple computers, with each person playing when its their turn.'); 
-INSERT INTO game (winner_username, type_id, player_usernames, box_usernames) VALUES ('monkey', 1, ARRAY['donkey', 'monkey'], 
-ARRAY[ARRAY['donkey', 'donkey', 'monkey'], ARRAY['monkey', 'monkey', 'monkey'], ARRAY['', '', '']]);
--- INSERT INTO account_game (account_id, game_id) VALUES (1, 1);
--- INSERT INTO account_game (account_id, game_id) VALUES (2, 1);
+INSERT INTO _user (email, username, password, _role) VALUES ('donkey', 'donkey', 'donkey', 'admin');
+INSERT INTO _user (email, username, password) VALUES ('monkey@monkey.ca', 'monkey', 'monkey');
+INSERT INTO user_setting (user_id, _theme) VALUES (1, 'system'); 
+INSERT INTO user_setting (user_id, _theme) VALUES (2, 'dark'); 
+INSERT INTO game_type (name, description) VALUES ('local_pvp', 
+'Local multiplayer tictactoe on one computer, with each person playing when its their turn.'); 
+INSERT INTO game_type (name, description) VALUES ('online_pvp', 
+'Online multiplayer tictactoe on multiple computers, with each person playing when its their turn.'); 
+INSERT INTO game (winner_id, type_id, player_ids, box_ids) VALUES (1, 1, ARRAY[1, 2], 
+ARRAY[ARRAY[1, 1, 2], ARRAY[2, 2, 2], ARRAY[1, 2, 1]]);
+-- INSERT INTO account_game (user_id, game_id) VALUES (1, 1);
+-- INSERT INTO account_game (user_id, game_id) VALUES (2, 1);
