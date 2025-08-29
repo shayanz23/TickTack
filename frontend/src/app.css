@@ -1,7 +1,7 @@
 @font-face {
     font-family: helvetica;
     src: url('/fonts/Helvetica.woff2');
-  }
+}
 
 
 body {
@@ -32,13 +32,13 @@ p {
     background-color: rgb(41, 41, 41);
 }
 
+.object-dark a {
+    color: aqua;
+}
+
 .object-dark {
     color: white;
     background-color: #222222;
-}
-
-.object-dark a {
-    color: aqua;
 }
 
 .object-light {
@@ -62,13 +62,31 @@ button {
     cursor: pointer;
 }
 
-button:focus {
+input {
+    border: none;
+    min-height: fit-content;
+    height: 17px;
+    padding: 5px;
+    margin: 3px;
+    border-radius: 5px;
+}
+
+select {
+    border: none;
+    min-height: fit-content;
+    height: 27px;
+    padding: 5px;
+    margin: 3px;
+    border-radius: 5px;
+}
+
+button:hover {
     outline: 0;
     background-color: rgb(39, 158, 255);
 }
 
 .recommended-button {
-    background-color: rgb(39, 201, 255);
+    background-color: rgb(32, 197, 253);
 }
 
 .recommended-button:hover {
@@ -76,14 +94,11 @@ button:focus {
 }
 
 .input-dark {
-    background-color: #222222;
-    border: 2px solid rgb(51, 51, 51) !important;
+    background-color: #2d2d2d;
     color: white;
 }
 
 .input-light {
-    background-color: #efefef;
-    border: 2px solid rgb(201, 201, 201) !important;
+    background-color: #d9d9d9;
     color: black;
 }
-

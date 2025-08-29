@@ -30,14 +30,15 @@
 	bind:this={dialog}
 	on:close={() => (showModal = false)}
 	on:click|self={() => dialog.close()}
+	class:background-dark={$darkTheme}
 >
 	<!-- svelte-ignore a11y-no-static-element-interactions -->
 	<div id="modal-div" on:click|stopPropagation class:background-dark={$darkTheme}>
 		<slot id="modal-slot"/>
 		<!-- svelte-ignore a11y-autofocus -->
 		<div id="modal-buttons">
-			<button id="modal-home-button" autofocus on:click={() => toHome()}>Home</button>
-			<button id="modal-restart-button" autofocus on:click={() => play()}>{startStr}</button>
+			<button id="modal-home-button" class:input-dark={$darkTheme} class:input-light={!$darkTheme} autofocus on:click={() => toHome()}>Home</button>
+			<button id="modal-restart-button" class:input-dark={$darkTheme} class:input-light={!$darkTheme} autofocus on:click={() => play()}>{startStr}</button>
 		</div>
 	</div>
 </dialog>
@@ -49,6 +50,7 @@
 		grid-template-rows: 7;
 		grid-template-columns: 1;
 		height:auto;
+		min-width: fit-content;
 	}
 
 	#modal-buttons {

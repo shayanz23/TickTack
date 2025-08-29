@@ -1,37 +1,23 @@
 <script lang="ts">
-	import appTheme from '$lib/shared/stores/appTheme';
+	import appTheme, { darkTheme } from '$lib/shared/stores/appTheme';
+
+	const themeOptions = ['system', 'dark', 'light']
 	
-	let theme: string;
-
-	$: if ($appTheme === 0) {
-		theme = 'system';
-	} else if ($appTheme === 1) {
-		theme = 'dark';
-	} else {
-		theme = 'light';
-	}
-
-	function changeTheme() {
-		if ($appTheme >= 2) {
-			$appTheme = 0;
-		} else {
-			$appTheme += 1;
-		}
-	}
 </script>
 
 <footer id="footer">
-	<p id="copyright" >2024 - Shayan Zahedanaraki</p>
-
-	<button id="theme-switch" class="button" on:click={changeTheme}>Toggle dark mode</button>
-	<p id="theme-indicator">Theme: {theme}</p>
+	<p id="copyright">2025 - Shayan Zahedanaraki</p>
+	<br />
+	<p>Theme</p>
+	<select class:input-dark={$darkTheme} class:input-light={!$darkTheme} bind:value={$appTheme}>
+	{#each themeOptions as option, i}
+		<option value={i}>{option}</option>
+	{/each}
+	</select>
 </footer>
 
 <style>
 	#footer {
-		display: grid;
-		padding-bottom: 10px;
-		padding-left: 10px;
-		padding-right: 10px;
+		display: list-item;
 	}
 </style>

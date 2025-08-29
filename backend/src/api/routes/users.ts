@@ -1,25 +1,26 @@
-import express from 'express';
+import express from "express";
+import "dotenv/config";
 
 import * as controller from '../controllers/users.js';
+import { verifyJwt, verifyAdminJwt } from "../middlewares/verification.js";
 
 export const usersRoute = express.Router();
-const routeUri = "/api/v1/users";
 
+const routeUri = process.env.API_URI_V1 + "/users";
 
-usersRoute.get(routeUri + "/:id", controller.getUserById);
+usersRoute.get(routeUri + "/:id", verifyJwt, controller.getUserById);
 
-usersRoute.get(routeUri + "/:id/games/", controller.getGamesByUserId);
+usersRoute.get(routeUri + "/:id/games", verifyJwt, controller.getGamesByUserId);
 
-usersRoute.delete(routeUri + "/:id", controller.deleteUser);
+usersRoute.delete(routeUri + "/:id", verifyJwt, controller.deleteUser);
 
-usersRoute.patch(routeUri + "/:id", controller.editUser);
+usersRoute.patch(routeUri + "/:id", verifyJwt, controller.editUser);
 
-usersRoute.post(routeUri, controller.createUser);
+usersRoute.post(routeUri, verifyJwt, controller.createUser);
 
 usersRoute.post(routeUri + "/login", controller.logIn);
 
 // admin
-usersRoute.get(routeUri, controller.getAllUsers);
+const adminRouteUri = process.env.ADMIN_API_URI_V1 + "/users";
 
-// usersRoute.get("/switch", controller.switche)
-// usersRoute.get("/notswitch", controller.notswitche)
+usersRoute.get(adminRouteUri, verifyAdminJwt, controller.getAllUsers);

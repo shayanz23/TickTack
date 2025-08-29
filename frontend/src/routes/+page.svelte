@@ -9,7 +9,8 @@
 		<p>
 			Visit <a href="https://github.com/shayanz23">my GitHub page </a> to look at more of my projects.
 		</p>
-		<p>Select the theme from the bottom right.</p>
+		<br>
+		<p>Select between system, light, and dark theme from the bottom right button.</p>
 	</div>
 </div>
 

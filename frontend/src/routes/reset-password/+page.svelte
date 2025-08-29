@@ -1,69 +1,37 @@
 <script lang="ts">
 	import { darkTheme } from '$lib/shared/stores/appTheme';
-	import backendRoutes from '$lib/shared/backendRoutes.json';
-    import { goto } from '$app/navigation';
-    import { userId } from "$lib/shared/stores/user"
-	import { getUserInfo } from '$lib';
-
-	const url = backendRoutes.login;
-	let username = '';
-	let password = '';
-
-	async function login() {
-		const reqBody = JSON.stringify({
-			username: username,
-			password: password
-		});
-		let response: Response;
-		try {
-			response = await fetch(url, {
-				method: 'POST',
-				mode: 'cors',
-				credentials: 'include',
-				headers: {
-					'Content-Type': 'application/json; charset=utf-8',
-					Accept: 'application/json'
-				},
-				body: reqBody
-			});
-			console.log();
-            $userId = (await response!.json()).id;
-			await getUserInfo();
-            goto('/home');
-        } catch (error) {
-			console.log('error:', error);
-		}
-	}
 </script>
 
 <div id="page-div">
-	<form id="login-form" class:object-dark={$darkTheme} class:object-light={!$darkTheme}>
+	<form action="" id="login-form" class:object-dark={$darkTheme} class:object-light={!$darkTheme}>
 		<h1>Sign in</h1>
 
 		<input
-			id="username-input"
-			name="usernameInput"
+			id="email-input"
 			class:input-dark={$darkTheme}
 			class:input-light={!$darkTheme}
-			type="text"
-			placeholder="Username"
-			bind:value={username}
+			type="email"
+			placeholder="Email"
 		/>
 		<input
 			id="password-input"
-			name="passwordInput"
 			class:input-dark={$darkTheme}
 			class:input-light={!$darkTheme}
 			type="password"
-			placeholder="Password"
-			bind:value={password}
+			placeholder="New Password"
+			hidden={true}
 		/>
-		<p id="forgot-pw">Forgot Password? <a href="/reset-password">Reset</a></p>
-		<button id="login-button" class="button recommended-button" on:click={login}> Sign In </button>
+		<input
+			id="password-conf-input"
+			class:input-dark={$darkTheme}
+			class:input-light={!$darkTheme}
+			type="password"
+			placeholder="Confirm Password"
+			hidden={true}
+		/>
+		<button id="login-button" class="button recommended-button">Reset</button>
 	</form>
-	<p id="no-account" class:object-dark={$darkTheme}>
-		Don't have an account? <a href="/signup">Sign up</a>
-	</p>
+	<p id="no-account" class:object-dark={$darkTheme}>Don't have an account? <a href="/signup">Sign Up</a></p>
 </div>
 
 <style>

@@ -2,8 +2,11 @@
 	import Canvas from '$lib/components/gameTypes/OnlineCanvas.svelte';
 	import GameOverModal from '$lib/components/GameComponents/GameOverModal.svelte';
 	import StartGameModal from '$lib/components/GameComponents/LocalPvp/StartGameModal.svelte';
-	import {darkTheme} from '$lib/shared/stores/appTheme';
-	import gameDefaults from '$lib/shared/gameDefaults.json'
+	import { darkTheme } from '$lib/shared/stores/appTheme';
+	import gameDefaults from '$lib/shared/gameDefaults.json';
+	import { onMount } from 'svelte';
+	import { userId } from '$lib/shared/stores/user';
+	import { goto } from '$app/navigation';
 
 	let gameOver = false;
 	let winner = '';
@@ -16,11 +19,11 @@
 	let gridX = gameDefaults.gridX;
 	let gridY = gameDefaults.gridY;
 	let winLength = gameDefaults.winLength;
-	let startStr = "Create"
+	let startStr = 'Create';
 
 	for (let index = 0; index < gameDefaults.localPvp.playerNum; index++) {
 		if (index < gameDefaults.maxPlayers) {
-			players.push("");
+			players.push('');
 		}
 	}
 
@@ -41,8 +44,17 @@
 			showGameOverModal = gameOver;
 		}, 750);
 	} else {
-		showGameOverModal = gameOver
+		showGameOverModal = gameOver;
 	}
+
+	onMount(() => {
+		// This code runs only on the client
+		userId.subscribe((value) => {
+			if (value == null) {
+				goto('/login');
+			}
+		});
+	});
 </script>
 
 <div id="page-div" class:background-dark={$darkTheme}>
@@ -52,19 +64,27 @@
 	{#if !showpickPlayerModal}
 		<div id="canvas-div" class:object-dark={$darkTheme} class:object-light={!$darkTheme}>
 			{#each unique as key (key)}
-				<Canvas bind:gameOver bind:winner bind:currentPlayer bind:players bind:gridX={gridX} bind:gridY={gridY} bind:winLength/>
+				<Canvas
+					bind:gameOver
+					bind:winner
+					bind:currentPlayer
+					bind:players
+					bind:gridX
+					bind:gridY
+					bind:winLength
+				/>
 			{/each}
 		</div>
 	{/if}
 	<StartGameModal bind:showModal={showpickPlayerModal} bind:restartState bind:startStr>
-		<div class:background-dark={$darkTheme}>
-			<h2>Game Settings</h2>
+		<div id="input-div" class:background-dark={$darkTheme}>
+			<h2 id="input-title">Game Settings</h2>
 			{#each players as player, i}
-			<input type="text" placeholder={"player " + (i+1)}  bind:value={player} />
+				<input type="text" placeholder={'player ' + (i + 1)} bind:value={player} />
 			{/each}
-			<input id="modal-row-input" type="number" bind:value={gridY}/>
-			<input id="modal-column-input" type="number" bind:value={gridX}/>
-			<input id="modal-winLength-input" type="number" bind:value={winLength}/>
+			<input id="modal-row-input" type="number" bind:value={gridY} />
+			<input id="modal-column-input" type="number" bind:value={gridX} />
+			<input id="modal-winLength-input" type="number" bind:value={winLength} />
 		</div>
 	</StartGameModal>
 	<GameOverModal bind:showModal={showGameOverModal} bind:restartState>
@@ -95,6 +115,24 @@
 		margin-left: 20%;
 		margin-right: 20%;
 		margin-top: 50px;
+	}
+
+    #input-div {
+		display: grid;
+        grid-template-columns: auto auto;
+        
+	}
+
+    #input-title {
+        grid-column: span 2;
+    }
+
+    #input-div  input {
+        min-height: fit-content;
+        height: 17px;
+		padding: 3px;
+        margin: 3px;
+        border-radius: 5px;
 	}
 
 	#page-div {

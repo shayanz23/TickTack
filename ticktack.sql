@@ -2,7 +2,7 @@ DROP SCHEMA IF EXISTS public CASCADE;
 CREATE SCHEMA public;
 SET search_path TO public;
 
-CREATE TYPE _role AS ENUM ('user', 'admin');
+CREATE TYPE _role AS ENUM ('user', 'admin', 'god');
 CREATE TYPE _theme AS ENUM ('system', 'dark', 'light');
 
 CREATE TABLE _user (
@@ -31,8 +31,8 @@ CREATE TABLE game (
   winner_id VARCHAR(25) NOT NULL,
   type_id INTEGER NOT NULL REFERENCES game_type,
   date TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  player_ids VARCHAR(25)[] NOT NULL,
-  box_player_ids VARCHAR(25)[][] NOT NULL
+  player_ids INTEGER[] NOT NULL,
+  box_player_ids INTEGER[][] NOT NULL
 );   
 
 INSERT INTO _user (email, username, password, role) VALUES ('donkey', 'donkey', 'donkey', 'admin');
@@ -43,7 +43,9 @@ INSERT INTO game_type (name, description) VALUES ('local_pvp',
 'Local multiplayer tictactoe on one computer, with each person playing when its their turn.'); 
 INSERT INTO game_type (name, description) VALUES ('online_pvp', 
 'Online multiplayer tictactoe on multiple computers, with each person playing when its their turn.'); 
-INSERT INTO game (winner_id, type_id, player_ids, box_player_ids) VALUES ('1', 1, ARRAY['1', '2'], 
-ARRAY[ARRAY['1', '1', '2'], ARRAY['2', '2', '2'], ARRAY['1', '2', '1']]);
+INSERT INTO game_type (name, description) VALUES ('online_pve', 
+'Offline singleplayer game without any humans.');
+INSERT INTO game (winner_id, type_id, player_ids, box_player_ids) VALUES (1, 1, ARRAY[1, 2], 
+ARRAY[ARRAY[1, 1, 2], ARRAY[2, 2, 2], ARRAY[1, 2, 1]]);
 -- INSERT INTO account_game (user_id, game_id) VALUES (1, 1);
 -- INSERT INTO account_game (user_id, game_id) VALUES (2, 1);

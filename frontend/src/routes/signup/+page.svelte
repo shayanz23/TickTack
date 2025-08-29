@@ -93,8 +93,8 @@
 		transition: 0.5s;
 		outline: none;
 		border-radius: 10px;
+		height: 40px;
 	}
-
 	input:focus {
 		border: 2px solid rgb(39, 201, 255) !important;
 		border-radius: 10px;
