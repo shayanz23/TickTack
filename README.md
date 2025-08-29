@@ -9,18 +9,18 @@ Then to run the project, run `npm run dev` and go to the url(s) given in the con
 
 ## Screenshots
 ### Home Page
-![Home page](/Frontend/screenshots/home.png "Home page")
+![Home page](/frontend/screenshots/home.png "Home page")
 ### Sign In Page
-![Sign In Page](/Frontend/screenshots/sign_in.png "Sign In Page")
+![Sign In Page](/frontend/screenshots/sign_in.png "Sign In Page")
 ### Game Start Settings
-![Game Settings](/Frontend/screenshots/game_settings.png "Game Settings")
+![Game Settings](/frontend/screenshots/game_settings.png "Game Settings")
 ### Local TickTack
-![Local TickTack](/Frontend/screenshots/local_ticktack.png "Local TickTack")
+![Local TickTack](/frontend/screenshots/local_ticktack.png "Local TickTack")
 ### Light Mode
-![Light Mode](/Frontend/screenshots/light_mode.png "Light Mode")
+![Light Mode](/frontend/screenshots/light_mode.png "Light Mode")
 ### 5x25 TickTack
-![5x25 TickTack](/Frontend/screenshots/5x25_ticktack.png "5x25 TickTack")
+![5x25 TickTack](/frontend/screenshots/5x25_ticktack.png "5x25 TickTack")
 ### 25x25 TickTack
-![25x25 TickTack](/Frontend/screenshots/25x25_winLen20.png "25x25 TickTack")
+![25x25 TickTack](/frontend/screenshots/25x25_winLen20.png "25x25 TickTack")
 ### 1x1 TickTack
-![1x1 TickTack](/Frontend/screenshots/1x1_ticktack.png "1x1 TickTack")
+![1x1 TickTack](/frontend/screenshots/1x1_ticktack.png "1x1 TickTack")
