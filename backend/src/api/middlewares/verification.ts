@@ -8,7 +8,6 @@ import { errorHandler } from "./errors.js";
 import { stringToInteger } from "../../services/converters.js";
 import Unauthorized from "../../models/errors/unauthorized-error.js";
 import { User } from "../../models/user.js";
-import * as UserService from "../../database/services/user.js"
 import { Role } from "../../models/role.js";
 
 interface MyRequest extends Request {
@@ -46,7 +45,7 @@ export function insurehasValue(values: any[]) {
     });
 }
 
-function hasAccess(jwtUser: User, user: User) {
+function UserAccessCheck(jwtUser: User, user: User) {
     if (jwtUser.id === user.id ||
         (jwtUser.role === Role.admin && user.role !== Role.god && user.role !== Role.admin) ||
         (jwtUser.role === Role.god)) {
@@ -57,21 +56,21 @@ function hasAccess(jwtUser: User, user: User) {
 
 
 
-export function verifyAccess(token: any, user?: User, users?: User[]) {
+export function verifyUserAccess(token: any, user?: User, users?: User[]) {
     const secret: jwt.Secret = process.env.JWT_SECRET!;
     const jwtUser: User = jwt.verify(token, secret) as User;
     jwtUser.role = Role[jwtUser.role as unknown as keyof typeof Role];
     let validId = false;
     if (user !== undefined) {
-        validId = hasAccess(jwtUser, user);
+        validId = UserAccessCheck(jwtUser, user);
     }
     if (users !== undefined) {
         users.forEach(user => {
-            validId = hasAccess(jwtUser, user);
+            validId = UserAccessCheck(jwtUser, user);
         });
     }
     if (!validId) {
-        throw new Unauthorized({ message: "fuckk" });
+        throw new Unauthorized({ message: "Cannot modify user(s)" });
     }
 }
 
@@ -84,6 +83,7 @@ export async function verifyJwt(req: MyRequest, res: Response, next: NextFunctio
         req.user = user;
         next();
     } catch (error) {
+        console.log(error);
         res.clearCookie("token");
         errorHandler(new Unauthorized({ message: "Invalid Token" }), res);
     }
@@ -102,7 +102,7 @@ export function verifyAdminJwt(req: MyRequest, res: Response, next: NextFunction
             errorHandler(new Unauthorized(), res);
         }
     } catch (error) {
-        console.log((error as Error).message)
+        console.log(token)
         res.clearCookie("token");
         errorHandler(new Unauthorized(), res);
     }

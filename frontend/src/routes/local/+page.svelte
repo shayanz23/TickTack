@@ -1,5 +1,5 @@
 <script lang="ts">
-	import Canvas from '$lib/components/gameTypes/LocalCanvas.svelte';
+	import GameCanvas from '$lib/components/gameCanvases/LocalCanvas.svelte';
 	import GameOverModal from '$lib/components/GameComponents/GameOverModal.svelte';
 	import StartGameModal from '$lib/components/GameComponents/LocalPvp/StartGameModal.svelte';
 	import { darkTheme } from '$lib/shared/stores/appTheme';
@@ -12,19 +12,18 @@
 	let showGameOverModal = false;
 	let showpickPlayerModal = true;
 	let unique = [{}];
-	let players: string[] = [];
+	let playerNames: string[] = [];
 	let playerNum = gameDefaults.localPvp.playerNum;
 	let fakeplayerNum = playerNum;
 	let gridX = gameDefaults.gridX;
 	let gridY = gameDefaults.gridY;
 	let winLength = gameDefaults.winLength;
 	let startStr = 'Play';
-
 	function setPlayerArray() {
-		players = [];
+		playerNames = [];
 		for (let index = 0; index < playerNum; index++) {
 			if (index < gameDefaults.maxPlayers) {
-				players.push('');
+				playerNames.push('');
 			}
 		}
 	}
@@ -39,7 +38,7 @@
 	}
 
 	function playerFakeToReal() {
-		if (!(fakeplayerNum > 400)) {
+		if (fakeplayerNum <= 400) {
 			playerNum = fakeplayerNum;
 		}
 	}
@@ -66,8 +65,6 @@
 		setTimeout(() => {
 			showGameOverModal = gameOver;
 		}, 750);
-	} else {
-		showGameOverModal = gameOver;
 	}
 </script>
 
@@ -78,15 +75,14 @@
 	{#if !showpickPlayerModal}
 		<div id="canvas-div" class:object-dark={$darkTheme} class:object-light={!$darkTheme}>
 			{#each unique as key (key)}
-				<Canvas
+				<GameCanvas
 					bind:gameOver
 					bind:winner
 					bind:currentPlayer
-					bind:players
+					bind:playerNames
 					bind:gridX
 					bind:gridY
-					bind:winLength
-				/>
+					bind:winLength				/>
 			{/each}
 		</div>
 	{/if}
@@ -100,7 +96,7 @@
 			<label id="modal-players" class="modal-label-players"
 				>Players:
 				<p></p>
-				{#each players as player, i}
+				{#each playerNames as player, i}
 					<input
 						type="text"
 						placeholder={'player ' + (i + 1)}

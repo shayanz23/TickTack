@@ -26,7 +26,7 @@ export async function createUser(req: Request, res: Response): Promise<void> {
 		const salt = genSaltSync(10);
 		const hash = hashSync(password, salt);
 		newUser = new User(0, email, username, hash, xp, role);
-		verificationService.verifyAccess(req.cookies.token, newUser);
+		verificationService.verifyUserAccess(req.cookies.token, newUser);
 		const user = await service.createUser(newUser);
 		res.status(200).json(user.toJSON());
 		return;
@@ -67,7 +67,7 @@ export async function deleteUser(req: Request, res: Response): Promise<void> {
 		res.setHeader('Content-Type', 'application/json');
 		const id = verificationService.verifyId(req.params.id);
 		const userToManipulate = await service.getUser(id);
-		verificationService.verifyAccess(req.cookies.token, userToManipulate);
+		verificationService.verifyUserAccess(req.cookies.token, userToManipulate);
 		const user = await service.deleteUser(id) as User;
 		res.json(user.toJSON());
 	} catch (error) {
@@ -81,7 +81,7 @@ export async function getGamesByUserId(req: Request, res: Response): Promise<voi
 		res.setHeader('Content-Type', 'application/json');
 		const id = verificationService.verifyId(req.params.id);
 		const user = await service.getUser(id);
-		verificationService.verifyAccess(req.cookies.token, user);
+		verificationService.verifyUserAccess(req.cookies.token, user);
 		const games = await service.getGamesByUserId(id) as Game[];
 		let jsonGames = Array();
 		games.forEach(game => {
@@ -99,7 +99,7 @@ export async function getUserById(req: Request, res: Response): Promise<void> {
 		res.setHeader('Content-Type', 'application/json');
 		const id = verificationService.verifyId(req.params.id);
 		const user = await service.getUser(id);
-		verificationService.verifyAccess(req.cookies.token, user);
+		verificationService.verifyUserAccess(req.cookies.token, user);
 		res.json(user.toJSON());
 	} catch (error) {
 		console.log("error!!!!!!!!!");
@@ -127,7 +127,7 @@ export async function editUser(req: Request, res: Response): Promise<void> {
 		res.setHeader('Content-Type', 'application/json');
 		const id = verificationService.verifyId(req.params.id);
 		const user = await service.getUser(id);
-		verificationService.verifyAccess(req.cookies.token, user);
+		verificationService.verifyUserAccess(req.cookies.token, user);
 		res.json(user.toJSON());
 	} catch (error) {
 		console.log("error!!!!!!!!!");

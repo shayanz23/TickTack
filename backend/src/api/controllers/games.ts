@@ -13,7 +13,7 @@ export async function getUsersByGameId(req: Request, res: Response): Promise<voi
 		res.setHeader('Content-Type', 'application/json');
 		const id = verifyId(req.params.id);
 		let players = await gameDbService.getPlayers(id);
-		verificationService.verifyAccess(req.cookies.token, undefined, players);
+		verificationService.verifyUserAccess(req.cookies.token, undefined, players);
 		res.json(players);
 	} catch (error) {
 		console.log("error!!!!!!!!!");
@@ -38,7 +38,7 @@ export async function getGame(req: Request, res: Response): Promise<void> {
 		const id = verifyId(req.params.id);
 		const game = (await gameDbService.getGame(id)) as Game;
 		let players = await gameDbService.getPlayers(id);
-		verificationService.verifyAccess(req.cookies.token, undefined, players);
+		verificationService.verifyUserAccess(req.cookies.token, undefined, players);
 		res.json(game);
 	} catch (error) {
 		console.log("error!!!!!!!!!");
@@ -51,7 +51,7 @@ export async function getWinner(req: Request, res: Response): Promise<void> {
 		res.setHeader('Content-Type', 'application/json');
 		const id = verifyId(req.params.id);
 		let players = await gameDbService.getPlayers(id);
-		verificationService.verifyAccess(req.cookies.token, undefined, players);
+		verificationService.verifyUserAccess(req.cookies.token, undefined, players);
 		const winner = await gameDbService.getWinner(id) as User;
 		res.json(winner);
 	} catch (error) {

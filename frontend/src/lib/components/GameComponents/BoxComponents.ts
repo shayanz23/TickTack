@@ -1,4 +1,4 @@
-import { GameCanvas } from './GameCanvas';
+import { GameLogic } from './GameLogic';
 
 export class BoxComponent {
 	public areaXBegin: number;
@@ -10,7 +10,7 @@ export class BoxComponent {
 	drawPosY: number = 0;
 	drawn: boolean = false;
 	player: string = 'empty box';
-	gameCanvas: GameCanvas;
+	gameCanvas: GameLogic;
 	private _winOrientation: number = 0;
 	private _winnerCoords: { x: number; y: number; }[] = [];
 
@@ -21,7 +21,7 @@ export class BoxComponent {
         return this._winOrientation;
     }
 
-	constructor(areaXBegin: number, areaYBegin: number, canvas: GameCanvas) {
+	constructor(areaXBegin: number, areaYBegin: number, canvas: GameLogic) {
 		this.areaXBegin = areaXBegin;
 		this.areaYBegin = areaYBegin;
 		this.gameCanvas = canvas;
@@ -107,7 +107,7 @@ export class BoxComponent {
 }
 
 export class Component0 extends BoxComponent {
-	constructor(AreaXBegin: number, AreaYBegin: number, canvas: GameCanvas, player: string) {
+	constructor(AreaXBegin: number, AreaYBegin: number, canvas: GameLogic, player: string) {
 		super(AreaXBegin, AreaYBegin, canvas);
 		this.player = player;
 		this.draw();
@@ -124,7 +124,7 @@ export class Component0 extends BoxComponent {
 }
 
 export class Component1 extends BoxComponent {
-	constructor(AreaXBegin: number, AreaYBegin: number, canvas: GameCanvas, player: string) {
+	constructor(AreaXBegin: number, AreaYBegin: number, canvas: GameLogic, player: string) {
 		super(AreaXBegin, AreaYBegin, canvas);
 		this.player = player;
 		this.draw();
@@ -144,7 +144,7 @@ export class Component1 extends BoxComponent {
 }
 
 export class Component2 extends BoxComponent {
-	constructor(AreaXBegin: number, AreaYBegin: number, canvas: GameCanvas, player: string) {
+	constructor(AreaXBegin: number, AreaYBegin: number, canvas: GameLogic, player: string) {
 		super(AreaXBegin, AreaYBegin, canvas);
 		this.player = player;
 		this.draw();
@@ -161,7 +161,7 @@ export class Component2 extends BoxComponent {
 }
 
 export class Component3 extends BoxComponent {
-	constructor(AreaXBegin: number, AreaYBegin: number, canvas: GameCanvas, player: string) {
+	constructor(AreaXBegin: number, AreaYBegin: number, canvas: GameLogic, player: string) {
 		super(AreaXBegin, AreaYBegin, canvas);
 		this.player = player;
 		this.draw();

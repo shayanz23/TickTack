@@ -1,3 +1,7 @@
+CREATE DATABASE ticktack_db;
+
+\c ticktack_db
+
 DROP SCHEMA IF EXISTS public CASCADE;
 CREATE SCHEMA public;
 SET search_path TO public;
