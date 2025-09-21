@@ -26,7 +26,6 @@
 				},
 				body: reqBody
 			});
-			console.log();
             $userId = (await response!.json()).id;
 			await getUserInfo();
             goto('/home');

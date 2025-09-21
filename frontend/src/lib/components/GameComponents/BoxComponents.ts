@@ -84,7 +84,6 @@ export class BoxComponent {
 		if (len >= this.gameCanvas.winLength) {
 			this._winOrientation = orientation;
 			this._winnerCoords = tempCoords;
-			console.log(this.winOrientation)
 			return true;
 		}
 		if (this.gameCanvas.boxes[col] === undefined || this.gameCanvas.boxes[col][row] === undefined) {

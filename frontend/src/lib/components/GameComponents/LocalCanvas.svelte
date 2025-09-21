@@ -4,6 +4,7 @@
 	import { GameLogic } from '../GameComponents/GameLogic';
 	import { darkTheme } from '$lib/shared/stores/appTheme';
 	import gameDefaults from '$lib/shared/gameDefaults.json';
+	import { get } from 'svelte/store';
 
 	export let winner = '';
 	export let gameOver = false;

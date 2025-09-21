@@ -8,23 +8,24 @@
     "almostWhiteColor": "#efefef",
     "winLineColor": "#FFFF00",
     "pxHtml": "px",
-    "scaling": 2,
+    "scaleDivider": 2,
     "gridLineFactor": 9,
     "winLineFactor": 5.5,
     "winLnDrawIncrement": 40,
     "genPrePlNm": "Player ",
     "halfScale": 0.5,
     "maxPlayers": 400,
-    "screens" : {
+    "screens": {
         "sm": 640,
         "md": 768,
         "lg": 1024,
         "xl": 1280
     },
     "localPvp": {
-        "playerNum": 4,
+        "playerNum": 2,
         "height": 600,
-        "width": 600
+        "width": 600,
+        "minPlayers": 2
     },
     "onlinePvp": {
         "playerNum": 2,

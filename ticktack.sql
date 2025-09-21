@@ -39,8 +39,6 @@ CREATE TABLE game (
   box_player_ids INTEGER[][] NOT NULL
 );   
 
-INSERT INTO _user (email, username, password, role) VALUES ('donkey', 'donkey', 'donkey', 'admin');
-INSERT INTO _user (email, username, password) VALUES ('monkey@monkey.ca', 'monkey', 'monkey');
 INSERT INTO user_setting (user_id, theme) VALUES (1, 'system'); 
 INSERT INTO user_setting (user_id, theme) VALUES (2, 'dark'); 
 INSERT INTO game_type (name, description) VALUES ('local_pvp', 
@@ -49,7 +47,3 @@ INSERT INTO game_type (name, description) VALUES ('online_pvp',
 'Online multiplayer tictactoe on multiple computers, with each person playing when its their turn.'); 
 INSERT INTO game_type (name, description) VALUES ('online_pve', 
 'Offline singleplayer game without any humans.');
-INSERT INTO game (winner_id, type_id, player_ids, box_player_ids) VALUES (1, 1, ARRAY[1, 2], 
-ARRAY[ARRAY[1, 1, 2], ARRAY[2, 2, 2], ARRAY[1, 2, 1]]);
--- INSERT INTO account_game (user_id, game_id) VALUES (1, 1);
--- INSERT INTO account_game (user_id, game_id) VALUES (2, 1);

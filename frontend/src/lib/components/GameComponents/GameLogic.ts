@@ -8,27 +8,27 @@ import { get } from 'svelte/store';
 let thisGameCanvas: GameLogic;
 
 export class GameLogic {
-	private gridY: number;
-	private gridX: number;
-	private _winLength;
-	private _height: number;
-	private _width: number;
-	private _scale: number;
-	private _htmlCanvas: HTMLCanvasElement;
-	private _context!: CanvasRenderingContext2D;
-	private _boxes: BoxComponent[][] = [];
-	private readonly strokeStyles = [gameDefaults.darkGreyColor, gameDefaults.almostWhiteColor];
-	private _boxAreaHeight: number;
-	private _boxAreaWidth: number;
-	private gridLineWidth: number;
-	private _winLineWidth: number;
-	private _winLnPts = [] as { x: number; y: number; }[];
-	private _lnAnimateT = 1;
-	private _gameOver =  false;
-	private _mouseDownBoxPos: { boxCol: number | null; boxRow: number | null; } = {boxCol: null, boxRow: null};
-	private _playerTurnNum = 0;
-	private _winnerName = '';
-	private _playerNames: string[];
+	protected gridY: number;
+	protected gridX: number;
+	protected _winLength;
+	protected _height: number;
+	protected _width: number;
+	protected _scale: number;
+	protected _htmlCanvas: HTMLCanvasElement;
+	protected _context!: CanvasRenderingContext2D;
+	protected _boxes: BoxComponent[][] = [];
+	protected readonly strokeStyles = [gameDefaults.darkGreyColor, gameDefaults.almostWhiteColor];
+	protected _boxAreaHeight: number;
+	protected _boxAreaWidth: number;
+	protected gridLineWidth: number;
+	protected _winLineWidth: number;
+	protected _winLnPts = [] as { x: number; y: number; }[];
+	protected _lnAnimateT = 1;
+	protected _gameOver =  false;
+	protected _mouseDownBoxPos: { boxCol: number | null; boxRow: number | null; } = {boxCol: null, boxRow: null};
+	protected _playerTurnNum = 0;
+	protected _winnerName = '';
+	protected _playerNames: string[];
 	
 	public get playerNames(): string[] {
 		return this._playerNames;
@@ -69,7 +69,7 @@ export class GameLogic {
 	public set lnAnimateT(value) {
 		this._lnAnimateT = value;
 	}
-	private _winnerCanvasCoords: {
+	protected _winnerCanvasCoords: {
 		firstBoxCanvasX: number | null;
 		firstBoxCanvasY: number | null;
 		lastBoxCanvasX: number | null;
@@ -96,7 +96,7 @@ export class GameLogic {
 		return this._scale;
 	}
 	public set scale(value: number) {
-		this._scale = value / gameDefaults.scaling;
+		this._scale = value / gameDefaults.scaleDivider;
 		this.htmlCanvas.style.width = this._width * this._scale + gameDefaults.pxHtml;
 		this.htmlCanvas.style.height = this._height * this._scale + gameDefaults.pxHtml;
 	}
@@ -110,11 +110,11 @@ export class GameLogic {
 	}
 
 	public get width() {
-		return this._width / gameDefaults.scaling;
+		return this._width / gameDefaults.scaleDivider;
 	}
 
 	public get height() {
-		return this._height / gameDefaults.scaling;
+		return this._height / gameDefaults.scaleDivider;
 	}
 
 	public get boxes(): BoxComponent[][] {
@@ -140,7 +140,7 @@ export class GameLogic {
 		return this._htmlCanvas;
 	}
 
-	private set htmlCanvas(value: HTMLCanvasElement) {
+	protected set htmlCanvas(value: HTMLCanvasElement) {
 		this._htmlCanvas = value;
 	}
 
@@ -155,7 +155,7 @@ export class GameLogic {
 		return this._playerTurnNum;
 	}
 
-	private set playerTurnNum(value) {
+	protected set playerTurnNum(value) {
 		this._playerTurnNum = value;
 	}
 
@@ -174,9 +174,9 @@ export class GameLogic {
 		this.gridX = gridX;
 		this.gridY = gridY;
 
-		this._width = width * gameDefaults.scaling;
-		this._height = height * gameDefaults.scaling;
-		this._scale = scale / gameDefaults.scaling;
+		this._width = width * gameDefaults.scaleDivider;
+		this._height = height * gameDefaults.scaleDivider;
+		this._scale = scale / gameDefaults.scaleDivider;
 
 		this._boxAreaHeight = this._height / this.gridY;
 		this._boxAreaWidth = this._width / this.gridX;
@@ -211,7 +211,7 @@ export class GameLogic {
 		return false;
 	}
 
-	private determineWinnerCoords(winGridCoords: { x: number; y: number }[], orientation: number) {
+	protected determineWinnerCoords(winGridCoords: { x: number; y: number }[], orientation: number) {
 		const firstBox = this.boxes[winGridCoords[0].x][winGridCoords[0].y];
 		const lastBox =
 			this.boxes[winGridCoords[winGridCoords.length - 1].x][
@@ -319,7 +319,7 @@ export class GameLogic {
 		return success;
 	}
 
-	private initializeCanvas(): void {
+	protected initializeCanvas(): void {
 		this.htmlCanvas.width = this._width;
 		this.htmlCanvas.height = this._height;
 		this.htmlCanvas.style.width = this._width * this.scale + gameDefaults.pxHtml;
@@ -401,7 +401,7 @@ export class GameLogic {
 	 * or the canvas is full.
 	 * @param boxPos
 	 */
-	private gameClickLogic(boxPos: { boxCol: number | null; boxRow: number | null }) {
+	protected gameClickLogic(boxPos: { boxCol: number | null; boxRow: number | null }) {
 		let success = this.replaceEmptyBox(boxPos, this.playerTurnNum);
 		if (!success) {
 			return;
@@ -417,7 +417,7 @@ export class GameLogic {
 		}
 	}
 
-	private calcWinLnCoords(){
+	protected calcWinLnCoords(){
 		if (
 			this.winnerCanvasCoords.firstBoxCanvasX == null ||
 			this.winnerCanvasCoords.firstBoxCanvasY == null ||
@@ -439,7 +439,7 @@ export class GameLogic {
 		return(waypoints);
 	}
 
-	private drawBackground() {
+	protected drawBackground() {
 		let occumilatedLineHeight = 0;
 		let occumilatedLineWidth = 0;
 		// Pick the opposite of the current theme for the background.
@@ -484,7 +484,7 @@ export class GameLogic {
 	/**
 	 * Creates empty boxes to be replaced with filled boxes.
 	 */
-	private createBoxes() {
+	protected createBoxes() {
 		for (let i = 0; i < this.gridX; i++) {
 			this._boxes.push([]);
 			for (let j = 0; j < this.gridY; j++) {

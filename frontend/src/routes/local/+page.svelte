@@ -1,24 +1,34 @@
 <script lang="ts">
-	import GameCanvas from '$lib/components/gameCanvases/LocalCanvas.svelte';
 	import GameOverModal from '$lib/components/GameComponents/GameOverModal.svelte';
 	import StartGameModal from '$lib/components/GameComponents/LocalPvp/StartGameModal.svelte';
 	import { darkTheme } from '$lib/shared/stores/appTheme';
 	import gameDefaults from '$lib/shared/gameDefaults.json';
+	import { onMount } from 'svelte';
+	import { GameLogic } from '$lib/components/GameComponents/GameLogic';
+	import { browser } from '$app/environment';
+	import { GameLogicLocalPvp } from '$lib/components/GameComponents/GameLogicLocalPvp';
+	import { get, writable, type Writable } from 'svelte/store';
+	import FindGameModal from '$lib/components/GameComponents/OnlinePvp/FindGameModal.svelte';
+	import LocalCanvas from '$lib/components/GameComponents/LocalCanvas.svelte';
 
 	let gameOver = false;
 	let winner = '';
 	let restartState = false;
-	let currentPlayer: string = '';
-	let showGameOverModal = false;
-	let showpickPlayerModal = true;
+	let currentPlayer = '';
+	let showGameOverModal = writable(false);
+	let showStartGameModal = true;
 	let unique = [{}];
 	let playerNames: string[] = [];
 	let playerNum = gameDefaults.localPvp.playerNum;
 	let fakeplayerNum = playerNum;
-	let gridX = gameDefaults.gridX;
-	let gridY = gameDefaults.gridY;
+	let columns = gameDefaults.gridX;
+	let rows = gameDefaults.gridY;
 	let winLength = gameDefaults.winLength;
 	let startStr = 'Play';
+
+	let htmlCanvas: HTMLCanvasElement | null;
+	let gameLogic: GameLogic | null = null;
+
 	function setPlayerArray() {
 		playerNames = [];
 		for (let index = 0; index < playerNum; index++) {
@@ -51,7 +61,7 @@
 
 	function restart() {
 		unique = [{}];
-		showpickPlayerModal = true;
+		showStartGameModal = true;
 	}
 
 	$: if (restartState) {
@@ -63,7 +73,7 @@
 
 	$: if (gameOver) {
 		setTimeout(() => {
-			showGameOverModal = gameOver;
+			$showGameOverModal = gameOver;
 		}, 750);
 	}
 </script>
@@ -72,26 +82,34 @@
 	<p id="player-indicator">
 		Current player is {currentPlayer}
 	</p>
-	{#if !showpickPlayerModal}
+	{#if !showStartGameModal}
 		<div id="canvas-div" class:object-dark={$darkTheme} class:object-light={!$darkTheme}>
 			{#each unique as key (key)}
-				<GameCanvas
-					bind:gameOver
+				<LocalCanvas
 					bind:winner
+					bind:gameOver
 					bind:currentPlayer
 					bind:playerNames
-					bind:gridX
-					bind:gridY
-					bind:winLength				/>
+					bind:gridX={columns}
+					bind:gridY={rows}
+					bind:winLength
+				></LocalCanvas>
 			{/each}
 		</div>
 	{/if}
-	<StartGameModal bind:showModal={showpickPlayerModal} bind:restartState bind:startStr>
+	<StartGameModal bind:showModal={showStartGameModal} bind:restartState bind:startStr>
 		<div id="input-div" class:background-dark={$darkTheme}>
 			<h2 id="input-title">Game Settings</h2>
 			<label id="modal-num-players" class="modal-label"
 				>Number of Players:
-				<input id="modal-num-players-input" class:input-dark={$darkTheme} class:input-light={!$darkTheme} type="number" bind:value={fakeplayerNum} />
+				<input
+					id="modal-num-players-input"
+					class:input-dark={$darkTheme}
+					class:input-light={!$darkTheme}
+					type="number"
+					bind:value={fakeplayerNum}
+					min={gameDefaults.localPvp.minPlayers}
+				/>
 			</label>
 			<label id="modal-players" class="modal-label-players"
 				>Players:
@@ -102,26 +120,49 @@
 						placeholder={'player ' + (i + 1)}
 						id={'name-input-' + (i + 1)}
 						bind:value={player}
-                        class:input-dark={$darkTheme} class:input-light={!$darkTheme}
+						class:input-dark={$darkTheme}
+						class:input-light={!$darkTheme}
 					/>
 				{/each}</label
 			>
 
 			<label id="modal-row" class="modal-label"
 				>Rows:
-				<input id="modal-row-input" class:input-dark={$darkTheme} class:input-light={!$darkTheme} type="number" bind:value={gridY} />
+				<input
+					id="modal-row-input"
+					class:input-dark={$darkTheme}
+					class:input-light={!$darkTheme}
+					type="number"
+					bind:value={rows}
+					min="1"
+				/>
 			</label>
 			<label id="modal-column" class="modal-label"
 				>Columns:
-				<input id="modal-column-input" class:input-dark={$darkTheme} class:input-light={!$darkTheme} type="number" bind:value={gridX} />
+				<input
+					id="modal-column-input"
+					class:input-dark={$darkTheme}
+					class:input-light={!$darkTheme}
+					type="number"
+					bind:value={columns}
+					min="1"
+				/>
 			</label>
 			<label id="modal-winLength" class="modal-label"
 				>Winning Length:
-				<input id="modal-winLength-input" class:input-dark={$darkTheme} class:input-light={!$darkTheme} type="number" bind:value={winLength} />
+				<input
+					id="modal-winLength-input"
+					class:input-dark={$darkTheme}
+					class:input-light={!$darkTheme}
+					type="number"
+					bind:value={winLength}
+					min="1"
+					max={Math.min(columns, rows)}
+				/>
 			</label>
 		</div>
 	</StartGameModal>
-	<GameOverModal bind:showModal={showGameOverModal} bind:restartState>
+	<GameOverModal bind:showModal={$showGameOverModal} bind:restartState>
 		<div>
 			<h2>Game Over!</h2>
 			{#if winner === ''}
@@ -134,6 +175,11 @@
 </div>
 
 <style>
+	#game-canvas {
+		padding: 0;
+		margin: auto;
+	}
+
 	h2 {
 		margin: 0%;
 		margin-bottom: 10px;
@@ -170,7 +216,7 @@
 	#input-div {
 		display: grid;
 		grid-template-columns: auto auto;
-        height: fit-content;
+		height: fit-content;
 	}
 
 	#input-title {
@@ -179,26 +225,26 @@
 
 	#input-div input {
 		min-height: fit-content;
-        height: 17px;
+		height: 17px;
 		padding: 3px;
 		margin: 3px;
 		border-radius: 5px;
-        min-width: fit-content;
+		min-width: fit-content;
 	}
 
-    #input-div label {
+	#input-div label {
 		margin-top: 5px;
-    }
+	}
 
 	.modal-label {
-        display: grid;
-        grid-template-rows: auto auto;
+		display: grid;
+		grid-template-rows: auto auto;
 	}
 
 	.modal-label-players {
-        display: grid;
+		display: grid;
 		grid-template-columns: auto auto;
-        grid-column: span 2;
+		grid-column: span 2;
 	}
 
 	@media (width <= 768px) {
