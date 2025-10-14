@@ -59,7 +59,7 @@ JWT_SECRET=examplePrivateKey
 
 ### Home Page
 
-![Home page](/screenshots/home.png "Home page")
+![Home page](/screenshots/index.png "Home page")
 
 ### Sign In Page
 
