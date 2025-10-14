@@ -47,8 +47,8 @@ export function insurehasValue(values: any[]) {
 
 function UserAccessCheck(jwtUser: User, user: User) {
     if (jwtUser.id === user.id ||
-        (jwtUser.role === Role.admin && user.role !== Role.god && user.role !== Role.admin) ||
-        (jwtUser.role === Role.god)) {
+        (jwtUser.role === Role.admin && user.role !== Role.primary_admin && user.role !== Role.admin) ||
+        (jwtUser.role === Role.primary_admin)) {
         return true;
     }
     return false;
@@ -95,7 +95,7 @@ export function verifyAdminJwt(req: MyRequest, res: Response, next: NextFunction
         const secret: jwt.Secret = process.env.JWT_SECRET!;
         let jwtUser = jwt.verify(token, secret) as User;
         jwtUser.role = Role[jwtUser.role as unknown as keyof typeof Role];
-        if (jwtUser.role === Role.admin || jwtUser.role === Role.god) {
+        if (jwtUser.role === Role.admin || jwtUser.role === Role.primary_admin) {
             req.user = jwtUser;
             next();
         } else {

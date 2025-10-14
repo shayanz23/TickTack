@@ -47,6 +47,7 @@ export async function createUser(req: Request, res: Response): Promise<void> {
 
 export async function logIn(req: Request, res: Response): Promise<void> {
 	try {
+		console.log(req.body.username +" "+ req.body.password);
 		insurehasValue([req.body.username, req.body.password]);
 		const user = await service.logIn(req.body.username, req.body.password) as User;
 		const secret: jwt.Secret = process.env.JWT_SECRET!;

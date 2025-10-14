@@ -3,12 +3,7 @@
 	import StartGameModal from '$lib/components/GameComponents/LocalPvp/StartGameModal.svelte';
 	import { darkTheme } from '$lib/shared/stores/appTheme';
 	import gameDefaults from '$lib/shared/gameDefaults.json';
-	import { onMount } from 'svelte';
-	import { GameLogic } from '$lib/components/GameComponents/GameLogic';
-	import { browser } from '$app/environment';
-	import { GameLogicLocalPvp } from '$lib/components/GameComponents/GameLogicLocalPvp';
 	import { get, writable, type Writable } from 'svelte/store';
-	import FindGameModal from '$lib/components/GameComponents/OnlinePvp/FindGameModal.svelte';
 	import LocalCanvas from '$lib/components/GameComponents/LocalCanvas.svelte';
 
 	let gameOver = false;
@@ -25,9 +20,6 @@
 	let rows = gameDefaults.gridY;
 	let winLength = gameDefaults.winLength;
 	let startStr = 'Play';
-
-	let htmlCanvas: HTMLCanvasElement | null;
-	let gameLogic: GameLogic | null = null;
 
 	function setPlayerArray() {
 		playerNames = [];
@@ -75,6 +67,9 @@
 		setTimeout(() => {
 			$showGameOverModal = gameOver;
 		}, 750);
+	}
+	$: if (winLength > rows || winLength > columns) {
+		winLength = Math.min(rows, columns);
 	}
 </script>
 

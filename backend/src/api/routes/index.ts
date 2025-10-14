@@ -8,5 +8,3 @@ export const routes = express.Router();
 routes.use(usersRoute);
 
 routes.use(gamesRoute);
-
-console.log(usersRoute.toString())

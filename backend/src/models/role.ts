@@ -1,5 +1,5 @@
 export enum Role {
     user,
     admin,
-    god
+    primary_admin
 }

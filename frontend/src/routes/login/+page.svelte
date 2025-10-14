@@ -14,6 +14,7 @@
 			username: username,
 			password: password
 		});
+		console.log(reqBody);
 		let response: Response;
 		try {
 			response = await fetch(url, {

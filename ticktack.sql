@@ -1,12 +1,8 @@
-CREATE DATABASE ticktack_db;
-
-\c ticktack_db
-
 DROP SCHEMA IF EXISTS public CASCADE;
 CREATE SCHEMA public;
 SET search_path TO public;
 
-CREATE TYPE _role AS ENUM ('user', 'admin', 'god');
+CREATE TYPE _role AS ENUM ('user', 'admin', 'primary_admin');
 CREATE TYPE _theme AS ENUM ('system', 'dark', 'light');
 
 CREATE TABLE _user (
@@ -39,8 +35,8 @@ CREATE TABLE game (
   box_player_ids INTEGER[][] NOT NULL
 );   
 
-INSERT INTO user_setting (user_id, theme) VALUES (1, 'system'); 
-INSERT INTO user_setting (user_id, theme) VALUES (2, 'dark'); 
+INSERT INTO user_setting (user_id, theme) VALUES (1, 'system');
+INSERT INTO user_setting (user_id, theme) VALUES (2, 'dark');
 INSERT INTO game_type (name, description) VALUES ('local_pvp', 
 'Local multiplayer tictactoe on one computer, with each person playing when its their turn.'); 
 INSERT INTO game_type (name, description) VALUES ('online_pvp', 
