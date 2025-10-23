@@ -37,7 +37,7 @@ p {
 }
 
 .object-dark {
-    color: white;
+    color: white !important;
     background-color: #222222;
 }
 
@@ -80,7 +80,7 @@ select {
     border-radius: 5px;
 }
 
-button:hover {
+.button:hover {
     outline: 0;
     background-color: rgb(39, 158, 255);
 }

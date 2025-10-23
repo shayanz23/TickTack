@@ -42,8 +42,8 @@
         </table>
 		<!-- svelte-ignore a11y-autofocus -->
 		<div id="modal-buttons">
-			<button id="modal-home-button" autofocus on:click={() => toHome()}>Home</button>
-			<button id="modal-restart-button" autofocus on:click={() => play()}>{startStr}</button>
+			<button id="modal-home-button" autofocus on:click={() => toHome()} class="button">Home</button>
+			<button id="modal-restart-button" autofocus on:click={() => play()} class="button">{startStr}</button>
 		</div>
 	</div>
 </dialog>

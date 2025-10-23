@@ -1,4 +1,5 @@
 <script>
+	import { goto } from '$app/navigation';
 	import { darkTheme } from '$lib/shared/stores/appTheme';
 </script>
 
@@ -9,7 +10,9 @@
 		<p>
 			Visit <a href="https://github.com/shayanz23">my GitHub page </a> to look at more of my projects.
 		</p>
-		<br>
+		<button on:click={() => {
+			goto('/select-game')
+		}}>Play</button>
 		<p>Select between system, light, and dark theme from the bottom left dropdown.</p>
 	</div>
 </div>

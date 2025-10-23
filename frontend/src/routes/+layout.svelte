@@ -4,13 +4,16 @@
 	import { darkTheme } from '$lib/shared/stores/appTheme';
     import { getUserInfo } from '$lib';
 	import '../app.css';
+	import { onMount } from 'svelte';
 
-		let userInfoPromise = getUserInfo();
+	onMount(() => {
+		getUserInfo();
+	})
+	
 </script>
 
 <div id="main-div" class:background-dark={$darkTheme}>
-	{#await userInfoPromise then}
-	{/await}
+
 	<Navbar />
 
 	<slot />

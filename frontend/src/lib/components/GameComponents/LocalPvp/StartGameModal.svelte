@@ -37,8 +37,8 @@
 		<slot id="modal-slot"/>
 		<!-- svelte-ignore a11y-autofocus -->
 		<div id="modal-buttons">
-			<button id="modal-home-button" class:input-dark={$darkTheme} class:input-light={!$darkTheme} autofocus on:click={() => toHome()}>Home</button>
-			<button id="modal-restart-button" class:input-dark={$darkTheme} class:input-light={!$darkTheme} autofocus on:click={() => play()}>{startStr}</button>
+			<button id="modal-home-button" class:input-dark={$darkTheme} class:input-light={!$darkTheme} autofocus on:click={() => toHome()} class="button">Home</button>
+			<button id="modal-restart-button" class:input-dark={$darkTheme} class:input-light={!$darkTheme} autofocus on:click={() => play()} class="button">{startStr}</button>
 		</div>
 	</div>
 </dialog>
