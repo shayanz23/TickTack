@@ -10,6 +10,10 @@ const routeUri = process.env.API_URI_V1 + "/users";
 
 usersRoute.post(routeUri + "/login", controller.logIn);
 
+usersRoute.get(routeUri, controller.getAllUsersPublic);
+
+usersRoute.get(routeUri + "/usernames/:ids", controller.getUsernames);
+
 usersRoute.get(routeUri + "/:id", verifyJwt, controller.getUserById);
 
 usersRoute.get(routeUri + "/:id/games", verifyJwt, controller.getGamesByUserId);

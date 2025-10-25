@@ -12,11 +12,12 @@ import { PostgresError } from 'postgres';
 import { Role } from '../../models/role.js';
 import Unauthorized from '../../models/errors/unauthorized-error.js';
 import { insurehasValue } from '../middlewares/verification.js';
+import { UserPublic } from '../../models/user-public.js';
 
 
 export async function createUser(req: Request, res: Response): Promise<void> {
 	let newUser: User | undefined = undefined;
-	const { email, username, password, xp, role } = req.body;
+	const { email, username, password, xp, xpPublic, theme, role } = req.body;
 	try {
 		res.setHeader('Content-Type', 'application/json');
 		if (email === undefined || username === undefined|| password === undefined || xp === undefined || role === undefined) {
@@ -25,7 +26,7 @@ export async function createUser(req: Request, res: Response): Promise<void> {
 		}
 		const salt = genSaltSync(10);
 		const hash = hashSync(password, salt);
-		newUser = new User(0, email, username, hash, xp, role);
+		newUser = new User(0, email, username, hash, xp, xpPublic, theme, role);
 		verificationService.verifyUserAccess(req.cookies.token, newUser);
 		const user = await service.createUser(newUser);
 		res.status(200).json(user.toJSON());
@@ -47,7 +48,6 @@ export async function createUser(req: Request, res: Response): Promise<void> {
 
 export async function logIn(req: Request, res: Response): Promise<void> {
 	try {
-		console.log(req.body.username +" "+ req.body.password);
 		insurehasValue([req.body.username, req.body.password]);
 		const user = await service.logIn(req.body.username, req.body.password) as User;
 		const secret: jwt.Secret = process.env.JWT_SECRET!;
@@ -130,6 +130,37 @@ export async function editUser(req: Request, res: Response): Promise<void> {
 		const user = await service.getUser(id);
 		verificationService.verifyUserAccess(req.cookies.token, user);
 		res.json(user.toJSON());
+	} catch (error) {
+		console.log("error!!!!!!!!!");
+		errorHandler(error as Error, res);
+	}
+}
+
+export async function getUsernames(req: Request, res: Response): Promise<void> {
+    try {
+		var idsString = req.params.ids.split(',');
+		var ids: number[] = [];
+		idsString.forEach(string => {
+			ids.push(verificationService.verifyId(string));
+		});
+		res.setHeader('Content-Type', 'application/json');
+		const users = await service.getUsernames(ids) as string[];
+		res.json(users);
+	} catch (error) {
+		console.log("error!!!!!!!!!");
+		errorHandler(error as Error, res);
+	}
+}
+
+export async function getAllUsersPublic(req: Request, res: Response): Promise<void> {
+    try {
+		res.setHeader('Content-Type', 'application/json');
+		const users = await service.getAllUsersPublic() as UserPublic[];
+		let jsonUsers = Array();
+		users.forEach((user: UserPublic) => {
+			jsonUsers.push(user.toJSON());
+		});
+		res.json(jsonUsers);
 	} catch (error) {
 		console.log("error!!!!!!!!!");
 		errorHandler(error as Error, res);

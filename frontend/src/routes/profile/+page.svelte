@@ -38,7 +38,7 @@
 		</div>
 		<div id="game-history-div">
 			<div id="game-history-title-div">
-				<h2 id="game-history-title">Game history</h2>
+				<h2 id="game-history-title">Game History</h2>
 			</div>
 			<table>
 				<thead>
@@ -55,7 +55,7 @@
 						{#each games as game}
 						<tr>
 							<td>{game.id}</td>
-							<td>{game.}</td>
+							<td>{game.winnerId}</td>
 						</tr>
 						{/each}
 					{/if}
@@ -68,7 +68,7 @@
 			</div>
 		</div>
 		<div id="edit-profile-div">
-			<h2 id="edit-profile-title">Edit profile</h2>
+			<h2 id="edit-profile-title">Profile</h2>
 		</div>
 	</div>
 </div>

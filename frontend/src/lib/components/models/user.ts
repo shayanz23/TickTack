@@ -1,4 +1,5 @@
 import type { Role } from "./role.js";
+import { Theme } from "./theme.js";
 
 export class User {
     private _id: number;
@@ -6,7 +7,23 @@ export class User {
     private _username: string;
     private _password: string;
     private _xp: number;
+    private _xpPublic: boolean = true;
+    private _theme: Theme;
     private _role: Role;
+
+    public get xpPublic(): boolean {
+        return this._xpPublic;
+    }
+    public set xpPublic(value: boolean) {
+        this._xpPublic = value;
+    }
+
+    public get theme(): Theme {
+        return this._theme;
+    }
+    public set theme(value: Theme) {
+        this._theme = value;
+    }
 
     public get id(): number {
         return this._id;
@@ -75,6 +92,8 @@ export class User {
         username: string,
         password: string,
         xp: number,
+        xpPublic: boolean,
+        theme: Theme,
         role: Role
     ) {
         this._id = id;
@@ -82,6 +101,8 @@ export class User {
         this._username = username;
         this._password = password;
         this._xp = xp;
+        this._xpPublic = xpPublic;
+        this._theme = theme;
         this._role = role;
     }
 }

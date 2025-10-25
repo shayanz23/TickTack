@@ -11,13 +11,10 @@ CREATE TABLE _user (
   username VARCHAR(20) NOT NULL UNIQUE,
   password VARCHAR(100) NOT NULL,
   xp INTEGER NOT NULL DEFAULT 0,
+  xp_public BOOLEAN NOT NULL DEFAULT TRUE,
+  --  dark_theme 0 is system, 1 is dark, 2 is light
+  theme _theme NOT NULL DEFAULT 'system',
   role _role NOT NULL DEFAULT 'user'
-);  
-
---   dark_theme 0 is system, 1 is dark, 2 is light
-CREATE TABLE user_setting (
-  user_id INTEGER PRIMARY KEY REFERENCES _user ON DELETE CASCADE,
-  theme _theme NOT NULL DEFAULT 'system'
 );  
 
 CREATE TABLE game_type (
@@ -35,11 +32,15 @@ CREATE TABLE game (
   box_player_ids INTEGER[][] NOT NULL
 );   
 
-INSERT INTO user_setting (user_id, theme) VALUES (1, 'system');
-INSERT INTO user_setting (user_id, theme) VALUES (2, 'dark');
 INSERT INTO game_type (name, description) VALUES ('local_pvp', 
 'Local multiplayer tictactoe on one computer, with each person playing when its their turn.'); 
 INSERT INTO game_type (name, description) VALUES ('online_pvp', 
 'Online multiplayer tictactoe on multiple computers, with each person playing when its their turn.'); 
 INSERT INTO game_type (name, description) VALUES ('online_pve', 
 'Offline singleplayer game without any humans.');
+
+   IF (SELECT xp_public FROM _users) = TRUE THEN
+      SELECT id, username, xp, xp_public, FROM _user;
+   ELSE
+      SELECT id, username, xp_public, FROM _user;
+   END IF;

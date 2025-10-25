@@ -10,6 +10,7 @@ import * as dbUsrService from "../database/services/user.js"
 import { checkIfEmailIsAvailable, checkIfUsernameIsAvailable } from '../database/services/user.js';
 import { Role } from '../models/role.js';
 import { User } from '../models/user.js';
+import { Theme } from '../models/theme.js';
 
 const jsonParser = bodyParser.json();
 
@@ -25,7 +26,7 @@ async function createInitAdminUsr() {
         && (await checkIfEmailIsAvailable(process.env.PRIMARY_ADMIN_EMAIL))) {
         const salt = genSaltSync(10);
         const hash = hashSync(process.env.PRIMARY_ADMIN_PW, salt);
-        const newUser = new User(0, process.env.PRIMARY_ADMIN_EMAIL, process.env.PRIMARY_ADMIN_USERNAME, hash, 0, Role.primary_admin);
+        const newUser = new User(0, process.env.PRIMARY_ADMIN_EMAIL, process.env.PRIMARY_ADMIN_USERNAME, hash, 0, true, Theme.system, Role.primary_admin);
         await dbUsrService.createUser(newUser);
         console.log("Primary admin user created.")
     }
