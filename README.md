@@ -25,7 +25,8 @@ POSTGRES_PASSWORD=examplePassword
 3. Run `docker compose up -d` in the root directory to create the PostgreSQL database server.
 4. Enter the new database server by running `docker exec -it ticktack_db sh -c 'psql -U exampleUser'`.
 5. Create the database for this program by entering `CREATE DATABASE ticktack_db;` and switch to this database using `\c ticktack_db`.
-6. Set the POSTGRES_USER and POSTGRES_PASSWORD in a .env file in the backend directory to something like this:
+6. Copy paste the contents of the sql file in the root directory into the terminal and press enter.
+7. Create a .env file in the backend directory and set the contents to something like this:
 ```
 PRIMARY_ADMIN_USERNAME=primary
 PRIMARY_ADMIN_EMAIL=primary@primary.com
